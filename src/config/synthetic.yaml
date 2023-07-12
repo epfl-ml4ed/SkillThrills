@@ -1,0 +1,9 @@
+nb_resumes: 5
+nb_jobs: 5
+nb_skills: 20
+nb_courses: 5
+
+max_resume_skills: 5
+max_job_skills: 5
+
+dataset_path: data/raw/synthetic/
