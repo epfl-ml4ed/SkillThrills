@@ -1,1 +1,27 @@
-{"resume_0": ["skill_17", "skill_9", "skill_11", "skill_12", "skill_8"], "resume_1": ["skill_3"], "resume_2": ["skill_16", "skill_2", "skill_11", "skill_18"], "resume_3": ["skill_11"], "resume_4": ["skill_19", "skill_17", "skill_3", "skill_7"]}
+{
+    "resume_0": [
+        "skill_17",
+        "skill_9",
+        "skill_11",
+        "skill_12",
+        "skill_8"
+    ],
+    "resume_1": [
+        "skill_3"
+    ],
+    "resume_2": [
+        "skill_16",
+        "skill_2",
+        "skill_11",
+        "skill_18"
+    ],
+    "resume_3": [
+        "skill_11"
+    ],
+    "resume_4": [
+        "skill_19",
+        "skill_17",
+        "skill_3",
+        "skill_7"
+    ]
+}

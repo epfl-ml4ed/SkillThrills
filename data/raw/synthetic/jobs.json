@@ -1,1 +1,23 @@
-{"jobs_0": ["skill_3", "skill_11"], "jobs_1": ["skill_2", "skill_12", "skill_4", "skill_17"], "jobs_2": ["skill_3"], "jobs_3": ["skill_12", "skill_0", "skill_8"], "jobs_4": ["skill_6"]}
+{
+    "jobs_0": [
+        "skill_3",
+        "skill_11"
+    ],
+    "jobs_1": [
+        "skill_2",
+        "skill_12",
+        "skill_4",
+        "skill_17"
+    ],
+    "jobs_2": [
+        "skill_3"
+    ],
+    "jobs_3": [
+        "skill_12",
+        "skill_0",
+        "skill_8"
+    ],
+    "jobs_4": [
+        "skill_6"
+    ]
+}
