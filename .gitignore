@@ -166,4 +166,4 @@ cython_debug/
 data/raw/parsed_vacancies.csv 
 
 # Inverted index files
-data/inverted_index/synthetic/
+data/inverted_index/synthetic/.pkl
