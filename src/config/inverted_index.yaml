@@ -1,0 +1,2 @@
+raw_dataset_path: data/raw/synthetic/
+inverted_index_path: data/inverted_index/synthetic/

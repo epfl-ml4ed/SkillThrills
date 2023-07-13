@@ -18,14 +18,14 @@ def make_skills(config):
 
 
 def save_skills(skills, config):
-    """Saves the dict of skills to a json file
+    """Saves the dict of skills to a csv file
 
     Args:
         skills (dict): dict of skills
         config (dict): Configuration dictionary
     """
     with open(os.path.join(config["dataset_path"], "skills.json"), "w") as f:
-        json.dump({i: skill for i, skill in enumerate(skills)}, f)
+        json.dump({skill: i for i, skill in enumerate(skills)}, f)
 
 
 def get_random_skills(skills, max_skills):
