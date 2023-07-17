@@ -143,6 +143,7 @@ def make_synthetic(config):
     Args:
         config (dict): Configuration dictionary
     """
+    random.seed(config["seed"])
     skills = make_skills(config)
     save_skills(skills, config)
     resumes = make_resumes(config, skills)
@@ -156,8 +157,10 @@ def make_synthetic(config):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=str, default="protosp03/config/synthetic.yaml")
+    parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
     config = yaml.load(open(args.config, "r"), Loader=yaml.FullLoader)
+    config["seed"] = args.seed
     make_synthetic(config)
 
 

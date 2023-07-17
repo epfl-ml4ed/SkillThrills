@@ -17,7 +17,7 @@ def profile_job_match(profile, job):
 
 
 def profile_alljobs_match(profile, jobs, job_inverted_index):
-    """Computes a matching for all jobs based on the proportion of skills that the user possesses
+    """Computes a matching for all jobs using the proportion of skills that the user possesses
 
     Args:
         profile (set): set of skills that the profile has
