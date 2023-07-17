@@ -2,7 +2,6 @@ import argparse
 import yaml
 import json
 import os
-import pickle
 
 
 def make_jobs_inverted_index(config):
@@ -20,13 +19,13 @@ def make_jobs_inverted_index(config):
         for skill in job:
             skill_id = skills[skill]
             if skill_id not in inverted_index:
-                inverted_index[skill_id] = {job_id}
+                inverted_index[skill_id] = [job_id]
             else:
-                inverted_index[skill_id].add(job_id)
+                inverted_index[skill_id].append(job_id)
     with open(
-        os.path.join(config["inverted_index_path"], "jobs_inverted_index.pkl"), "wb"
+        os.path.join(config["inverted_index_path"], "jobs_inverted_index.json"), "w"
     ) as f:
-        pickle.dump(inverted_index, f)
+        json.dump(inverted_index, f)
 
 
 def make_course_provided_inverted_index(config):
@@ -46,16 +45,16 @@ def make_course_provided_inverted_index(config):
         for skill in course["provided"]:
             skill_id = skills[skill]
             if skill_id not in inverted_index:
-                inverted_index[skill_id] = {course_id}
+                inverted_index[skill_id] = [course_id]
             else:
-                inverted_index[skill_id].add(course_id)
+                inverted_index[skill_id].append(course_id)
     with open(
         os.path.join(
-            config["inverted_index_path"], "courses_provided_inverted_index.pkl"
+            config["inverted_index_path"], "courses_provided_inverted_index.json"
         ),
-        "wb",
+        "w",
     ) as f:
-        pickle.dump(inverted_index, f)
+        json.dump(inverted_index, f)
 
 
 def make_course_required_inverted_index(config):
@@ -75,16 +74,43 @@ def make_course_required_inverted_index(config):
         for skill in course["required"]:
             skill_id = skills[skill]
             if skill_id not in inverted_index:
-                inverted_index[skill_id] = {course_id}
+                inverted_index[skill_id] = [course_id]
             else:
-                inverted_index[skill_id].add(course_id)
+                inverted_index[skill_id].append(course_id)
     with open(
         os.path.join(
-            config["inverted_index_path"], "courses_required_inverted_index.pkl"
+            config["inverted_index_path"], "courses_required_inverted_index.json"
         ),
-        "wb",
+        "w",
     ) as f:
-        pickle.dump(inverted_index, f)
+        json.dump(inverted_index, f)
+
+
+def inverted_index_decoder(inverted_index):
+    """Decodes the inverted index, to convert the keys to integers (if they are strings representing integers) and the values to sets if the are lists
+
+    Args:
+        inverted_index (dict): Inverted index
+
+    Returns:
+        decoded_inverted_index: Decoded inverted index
+    """
+    decoded_inverted_index = {}
+    for k, v in inverted_index.items():
+        # Check if key is an integer in string format
+        if k.isdigit():
+            new_k = int(k)
+        else:
+            new_k = k
+
+        # Check if value is a list
+        if isinstance(v, list):
+            new_v = set(v)
+        else:
+            new_v = v
+
+        decoded_inverted_index[new_k] = new_v
+    return decoded_inverted_index
 
 
 def make_inverted_indexes(config):
@@ -95,7 +121,9 @@ def make_inverted_indexes(config):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", type=str, default="src/config/inverted_index.yaml")
+    parser.add_argument(
+        "--config", type=str, default="protosp03/config/inverted_index.yaml"
+    )
     args = parser.parse_args()
     config = yaml.load(open(args.config, "r"), Loader=yaml.FullLoader)
     make_inverted_indexes(config)

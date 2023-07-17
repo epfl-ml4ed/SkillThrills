@@ -164,9 +164,3 @@ cython_debug/
 
 # Private data
 data/raw/parsed_vacancies.csv 
-
-# Inverted index files
-data/inverted_index/synthetic/*.pkl
-
-# Generated synthetic data
-data/raw/synthetic/*.json
