@@ -64,7 +64,7 @@ Considering Profile resume_3 with the skills: {4}
         The matching between the profile and the desired job is: 25%
         Printing the attractiveness of each skill of the profile:
                 Skill 4 is required for 80% of the jobs on the market
-        The overall attractiveness of the profile is: 0.25 (min 0, max 1)
+        The overall attractiveness of the profile is: 25%
         Printing the matching of the profile with respect to each job (from most compatible to least compatible):
                 Job jobs_0 has a matching of 50%
                 Job jobs_4 has a matching of 33%
@@ -75,12 +75,12 @@ Considering Profile resume_3 with the skills: {4}
                         If the profile takes the course course_1, it will learn the skills: {3}
                         The matching with the job jobs_1 will increase from 20% to: 40%
                         The overall attractiveness of the profile will increase from 25 to: 34
-                Course course_4 has a matching of 33%
-                        If the profile takes the course course_4, it will learn the skills: {1}
-                        The matching with the job jobs_1 will increase from 20% to: 40%
-                        The overall attractiveness of the profile will increase from 25 to: 56
                 Course course_3 has a matching of 33%
                         If the profile takes the course course_3, it will learn the skills: {1}
+                        The matching with the job jobs_1 will increase from 20% to: 40%
+                        The overall attractiveness of the profile will increase from 25 to: 56
+                Course course_4 has a matching of 33%
+                        If the profile takes the course course_4, it will learn the skills: {1}
                         The matching with the job jobs_1 will increase from 20% to: 40%
                         The overall attractiveness of the profile will increase from 25 to: 56
 ```
