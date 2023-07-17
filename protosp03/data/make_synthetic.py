@@ -155,7 +155,7 @@ def make_synthetic(config):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", type=str, default="src/config/synthetic.yaml")
+    parser.add_argument("--config", type=str, default="protosp03/config/synthetic.yaml")
     args = parser.parse_args()
     config = yaml.load(open(args.config, "r"), Loader=yaml.FullLoader)
     make_synthetic(config)
