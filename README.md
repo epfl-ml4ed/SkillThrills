@@ -106,5 +106,11 @@ A few details about the numbers displayed here:
 
 ### TODOs:
 - Add skill level
+- Add Languages
 - Replace skill names
-- Provide ElasticSearch functions fort matching 
+- Provide ElasticSearch functions fort matching
+- Change required name with prerequisite 
+- Multiple matchings with and without prerequisistes
+- Recommending multiple skills
+- Adding must have and optional skills in jobs
+- Add time dimension to the job market skills 
