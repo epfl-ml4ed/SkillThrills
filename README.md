@@ -32,7 +32,7 @@ The [config](protosp03/config/synthetic.yaml) file provides requirements about t
 
 To generate the synthetic data files:  
 ```shell script
-python protosp03/data/make_synthetic.py --config protosp03/config/synthetic.yaml --seed 42
+python protosp03/data/make_synthetic.py --config protosp03/config/synthetic.yaml --seed 1
 ```
 
 The default value for the seed is 42. 
@@ -54,35 +54,45 @@ python protosp03/data/inverted_index.py --config protosp03/config/inverted_index
 To try the first version of the functions I can do in the user journey, run 
 
 ```shell script
-python -m tests.user_journey01 --seed 0
+python -m tests.user_journey01 --seed 1
 ```
  It should display this:
 
 ```shell script
-Considering Profile resume_3 with the skills: {4}
-        We are assuming that the Profile is interested in Job jobs_3 that requires the skills: {0, 2, 3, 4}
-        The matching between the profile and the desired job is: 25%
-        Printing the attractiveness of each skill of the profile:
-                Skill 4 is required for 80% of the jobs on the market
-        The overall attractiveness of the profile is: 25%
+Considering Profile resume_1 with the skills: {0, 1, 3}
+        We are assuming that the Profile is interested in Job jobs_4 that requires the skills: {0, 3}
+        The matching between the profile and the desired job is: 100%
+        Printing the attractiveness of each skill of the profile and comparing to other learners:
+                Skill 0 is required for 60% of the jobs on the market and 80% of the learners have it
+                Skill 1 is required for 20% of the jobs on the market and 60% of the learners have it
+                Skill 3 is required for 40% of the jobs on the market and 60% of the learners have it
+        The overall attractiveness of the profile is: 73%
         Printing the matching of the profile with respect to each job (from most compatible to least compatible):
-                Job jobs_0 has a matching of 50%
-                Job jobs_4 has a matching of 33%
-                Job jobs_3 has a matching of 25%
-                Job jobs_1 has a matching of 20%
+                Job jobs_1 has a matching of 100%
+                Job jobs_4 has a matching of 100%
+                Job jobs_3 has a matching of 100%
+                Job jobs_0 has a matching of 66%
         Printing the matching of the profile with respect to each course (from most compatible to least compatible):
-                Course course_1 has a matching of 50%
-                        If the profile takes the course course_1, it will learn the skills: {3}
-                        The matching with the job jobs_1 will increase from 20% to: 40%
-                        The overall attractiveness of the profile will increase from 25 to: 34
-                Course course_3 has a matching of 33%
-                        If the profile takes the course course_3, it will learn the skills: {1}
-                        The matching with the job jobs_1 will increase from 20% to: 40%
-                        The overall attractiveness of the profile will increase from 25 to: 56
-                Course course_4 has a matching of 33%
-                        If the profile takes the course course_4, it will learn the skills: {1}
-                        The matching with the job jobs_1 will increase from 20% to: 40%
-                        The overall attractiveness of the profile will increase from 25 to: 56
+                Course course_3 has a matching of 100%
+                        If the profile takes the course course_3, it will learn the skills: {4}
+                        The matching with the job jobs_0 will increase from 66% to: 100%
+                        The overall attractiveness of the profile will increase from 73 to: 100
+                Course course_1 has a matching of 66%
+                        If the profile takes the course course_1, it will learn the skills: {4}
+                        The matching with the job jobs_0 will increase from 66% to: 100%
+                        The overall attractiveness of the profile will increase from 73 to: 100
+                Course course_4 has a matching of 66%
+                        If the profile takes the course course_4, it will learn the skills: {4}
+                        The matching with the job jobs_0 will increase from 66% to: 100%
+                        The overall attractiveness of the profile will increase from 73 to: 100
+                Course course_0 has a matching of 66%
+                        If the profile takes the course course_0, it will learn the skills: {2}
+                        The matching with the job jobs_0 will increase from 66% to: 66%
+                        The overall attractiveness of the profile will increase from 73 to: 73
+                Course course_2 has a matching of 66%
+                        If the profile takes the course course_2, it will learn the skills: {2}
+                        The matching with the job jobs_0 will increase from 66% to: 66%
+                        The overall attractiveness of the profile will increase from 73 to: 73
 ```
 
 ### Some explanations
@@ -92,3 +102,9 @@ A few details about the numbers displayed here:
 - The matching between a profile and a job is the percentage of skills required for the job that the profile posesses
 - The overall attractiveness of the profile is the average matching between the profile and all jobs in the market.
 - The matching between a profile and a course is the number of the percentage of skills required to follow the course that the profile posesses 
+
+
+### TODOs:
+- Add skill level
+- Replace skill names
+- Provide ElasticSearch functions fort matching 

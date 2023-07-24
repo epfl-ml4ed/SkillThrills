@@ -28,6 +28,32 @@ def make_jobs_inverted_index(config):
         json.dump(inverted_index, f)
 
 
+def make_profile_inverted_index(config):
+    """Creates an inverted index of profiles
+
+    Args:
+        config (dict): Configuration dictionary
+    """
+    profiles = json.load(
+        open(os.path.join(config["raw_dataset_path"], "resumes.json"), "r")
+    )
+    skills = json.load(
+        open(os.path.join(config["raw_dataset_path"], "skills.json"), "r")
+    )
+    inverted_index = {}
+    for profile_id, profile in profiles.items():
+        for skill in profile:
+            skill_id = skills[skill]
+            if skill_id not in inverted_index:
+                inverted_index[skill_id] = [profile_id]
+            else:
+                inverted_index[skill_id].append(profile_id)
+    with open(
+        os.path.join(config["inverted_index_path"], "profiles_inverted_index.json"), "w"
+    ) as f:
+        json.dump(inverted_index, f)
+
+
 def make_course_provided_inverted_index(config):
     """Creates an inverted index of courses based on the skills they provide
 
@@ -115,6 +141,7 @@ def inverted_index_decoder(inverted_index):
 
 def make_inverted_indexes(config):
     make_jobs_inverted_index(config)
+    make_profile_inverted_index(config)
     make_course_provided_inverted_index(config)
     make_course_required_inverted_index(config)
 

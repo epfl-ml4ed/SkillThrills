@@ -15,19 +15,26 @@ def main():
     random.seed(args.seed)
 
     # Define file paths
+    inverted_index_job_path = "data/inverted_index/synthetic/jobs_inverted_index.json"
+    inverted_index_profile_path = (
+        "data/inverted_index/synthetic/profiles_inverted_index.json"
+    )
     inverted_index_required_course_path = (
         "data/inverted_index/synthetic/courses_required_inverted_index.json"
     )
     inverted_index_provided_course_path = (
         "data/inverted_index/synthetic/courses_provided_inverted_index.json"
     )
-    inverted_index_job_path = "data/inverted_index/synthetic/jobs_inverted_index.json"
     resume_path = "data/raw/synthetic/resumes.json"
     course_path = "data/raw/synthetic/courses.json"
     skill_path = "data/raw/synthetic/skills.json"
     job_path = "data/raw/synthetic/jobs.json"
 
     # Load data using context manager for handling file open/close
+    with open(inverted_index_job_path, "r") as file:
+        job_inverted_index = json.load(file, object_hook=inverted_index_decoder)
+    with open(inverted_index_profile_path, "r") as file:
+        profile_inverted_index = json.load(file, object_hook=inverted_index_decoder)
     with open(inverted_index_required_course_path, "r") as file:
         course_required_inverted_index = json.load(
             file, object_hook=inverted_index_decoder
@@ -36,8 +43,7 @@ def main():
         course_provided_inverted_index = json.load(
             file, object_hook=inverted_index_decoder
         )
-    with open(inverted_index_job_path, "r") as file:
-        job_inverted_index = json.load(file, object_hook=inverted_index_decoder)
+
     with open(skill_path, "r") as file:
         skills = json.load(file)
     with open(resume_path, "r") as file:
@@ -78,14 +84,17 @@ def main():
         f"\tThe matching between the profile and the desired job is: {int(profile_job_matching)}%"
     )
 
-    print(f"\tPrinting the attractiveness of each skill of the profile:")
+    print(
+        f"\tPrinting the attractiveness of each skill of the profile and comparing to other learners:"
+    )
     for skill in profile:
         if skill not in job_inverted_index:
             print(f"\t\tSkill {skill} is not required for any job on the market")
             continue
         skill_attractiveness = 100 * len(job_inverted_index[skill]) / len(jobs)
+        skill_uniqueness = 100 * len(profile_inverted_index[skill]) / len(profiles)
         print(
-            f"\t\tSkill {skill} is required for {int(skill_attractiveness)}% of the jobs on the market"
+            f"\t\tSkill {skill} is required for {int(skill_attractiveness)}% of the jobs on the market and {int(skill_uniqueness)}% of the learners have it"
         )
 
     # Compute matchings of the profile with respect to each job

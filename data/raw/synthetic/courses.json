@@ -1,1 +1,53 @@
-{"course_0": {"required": ["skill_0", "skill_1", "skill_2"], "provided": ["skill_4"]}, "course_1": {"required": ["skill_1"], "provided": ["skill_0", "skill_3"]}, "course_2": {"required": ["skill_4"], "provided": ["skill_1", "skill_2"]}, "course_3": {"required": ["skill_0", "skill_4"], "provided": ["skill_2", "skill_1"]}, "course_4": {"required": ["skill_4", "skill_3"], "provided": ["skill_1", "skill_0"]}}
+{
+    "course_0": {
+        "required": [
+            "skill_1",
+            "skill_3",
+            "skill_4"
+        ],
+        "provided": [
+            "skill_0",
+            "skill_2"
+        ]
+    },
+    "course_1": {
+        "required": [
+            "skill_1",
+            "skill_2",
+            "skill_0"
+        ],
+        "provided": [
+            "skill_3",
+            "skill_4"
+        ]
+    },
+    "course_2": {
+        "required": [
+            "skill_1",
+            "skill_3",
+            "skill_4"
+        ],
+        "provided": [
+            "skill_2",
+            "skill_0"
+        ]
+    },
+    "course_3": {
+        "required": [
+            "skill_3"
+        ],
+        "provided": [
+            "skill_4"
+        ]
+    },
+    "course_4": {
+        "required": [
+            "skill_0",
+            "skill_1",
+            "skill_2"
+        ],
+        "provided": [
+            "skill_4"
+        ]
+    }
+}
