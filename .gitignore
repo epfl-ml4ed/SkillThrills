@@ -163,4 +163,5 @@ cython_debug/
 #.idea/
 
 # Private data
-data/raw/parsed_vacancies.csv 
+data/raw/evrlearn/
+data/inverted_index/evrlearn/

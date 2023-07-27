@@ -107,10 +107,18 @@ A few details about the numbers displayed here:
 ### TODOs:
 - Add skill level
 - Add Languages
+- Add Programming languages
+- Add certifications
 - Replace skill names
 - Provide ElasticSearch functions fort matching
 - Change required name with prerequisite 
 - Multiple matchings with and without prerequisistes
+- Add ranking functions that take into account skill demand and skill offer
 - Recommending multiple skills
 - Adding must have and optional skills in jobs
 - Add time dimension to the job market skills 
+- Add ICT jobs file
+
+### Questions:
+- In learnig_opportunities, what is the difference between a course and a program?
+- In learnig_opportunities, if the key 'certificate_type' is not empty, do we automatically consider the learning opportunity to provide a certificate upon completion?
