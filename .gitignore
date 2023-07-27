@@ -164,4 +164,4 @@ cython_debug/
 
 # Private data
 data/raw/evrlearn/
-data/inverted_index/evrlearn/
+data/processed/evrlearn/
