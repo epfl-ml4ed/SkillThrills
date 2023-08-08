@@ -1,53 +1,53 @@
 {
     "course_0": {
-        "required": [
-            "skill_1",
-            "skill_3",
-            "skill_4"
-        ],
-        "provided": [
-            "skill_0",
-            "skill_2"
-        ]
+        "required": {
+            "skill_1": 2,
+            "skill_4": 1,
+            "skill_2": 2
+        },
+        "provided": {
+            "skill_4": 3,
+            "skill_3": 1
+        }
     },
     "course_1": {
-        "required": [
-            "skill_1",
-            "skill_2",
-            "skill_0"
-        ],
-        "provided": [
-            "skill_3",
-            "skill_4"
-        ]
+        "required": {
+            "skill_4": 3,
+            "skill_1": 3,
+            "skill_3": 4
+        },
+        "provided": {
+            "skill_0": 3
+        }
     },
     "course_2": {
-        "required": [
-            "skill_1",
-            "skill_3",
-            "skill_4"
-        ],
-        "provided": [
-            "skill_2",
-            "skill_0"
-        ]
+        "required": {
+            "skill_4": 4,
+            "skill_0": 2
+        },
+        "provided": {
+            "skill_0": 4
+        }
     },
     "course_3": {
-        "required": [
-            "skill_3"
-        ],
-        "provided": [
-            "skill_4"
-        ]
+        "required": {
+            "skill_4": 1,
+            "skill_1": 4,
+            "skill_3": 3
+        },
+        "provided": {
+            "skill_2": 2
+        }
     },
     "course_4": {
-        "required": [
-            "skill_0",
-            "skill_1",
-            "skill_2"
-        ],
-        "provided": [
-            "skill_4"
-        ]
+        "required": {
+            "skill_4": 4,
+            "skill_1": 4,
+            "skill_2": 3
+        },
+        "provided": {
+            "skill_0": 2,
+            "skill_3": 3
+        }
     }
 }

@@ -1,26 +1,28 @@
 {
-    "4": [
-        "resume_0",
-        "resume_2",
-        "resume_4"
-    ],
-    "0": [
-        "resume_0",
-        "resume_1",
-        "resume_2",
-        "resume_4"
-    ],
-    "3": [
-        "resume_1",
-        "resume_2",
-        "resume_3"
-    ],
-    "1": [
-        "resume_1",
-        "resume_2",
-        "resume_4"
-    ],
-    "2": [
-        "resume_4"
-    ]
+    "skill_4": {
+        "resume_0": 3,
+        "resume_1": 1,
+        "resume_4": 4
+    },
+    "skill_0": {
+        "resume_0": 1,
+        "resume_2": 2,
+        "resume_3": 1,
+        "resume_4": 1
+    },
+    "skill_3": {
+        "resume_1": 2,
+        "resume_2": 3,
+        "resume_4": 2
+    },
+    "skill_2": {
+        "resume_1": 4,
+        "resume_2": 1,
+        "resume_4": 4
+    },
+    "skill_1": {
+        "resume_1": 1,
+        "resume_2": 3,
+        "resume_4": 2
+    }
 }

@@ -22,7 +22,7 @@ We have 4 raw files as input, for now they are json but this can be changed.
 
 The files are in the folder data/raw/synthetic. 
 
-They can be generated using the script [protosp03/data/make_synthetic.py](protosp03/data/make_synthetic.py) and the config file [protosp03/config/synthetic.yaml](protosp03/config/synthetic.yaml)
+They can be generated using the script [protosp03/data/synthetic/make_synthetic.py](protosp03/data/synthetic/make_synthetic.py) and the config file [protosp03/config/synthetic.yaml](protosp03/config/synthetic.yaml)
 - **skills.json** : a dict whoses keys are the skills name and values are the skill id 
 - **jobs.json** : a dict whoses keys are the job id and values are the list of skill required
 - **resume.json** : a dict whoses keys are the resume id (or profile id) and values are the list of skill present
@@ -30,22 +30,22 @@ They can be generated using the script [protosp03/data/make_synthetic.py](protos
 
 The [config](protosp03/config/synthetic.yaml) file provides requirements about the synthetic dataset (nb of skills, jobs, resume) and the path where the files are to be saved.  
 
-To generate the synthetic data files:  
+To generate the synthetic data files:
 ```shell script
-python protosp03/data/make_synthetic.py --config protosp03/config/synthetic.yaml --seed 1
+python protosp03/data/synthetic/make_synthetic.py --config protosp03/config/synthetic.yaml --seed 1
 ```
 
 The default value for the seed is 42. 
 
 ## Pre-Processing
-Data preprocessing is done with the script [protosp03/data/inverted_index.py](protosp03/data/inverted_index.py) and the config file [protosp03/config/inverted_index.yaml](protosp03/config/inverted_index.yaml).
+Data preprocessing is done with the script [protosp03/data/synthetic/inverted_index.py](protosp03/data/synthetic/inverted_index.py) and the config file [protosp03/config/inverted_index.yaml](protosp03/config/inverted_index.yaml).
 
 For now the main idea of the pre-processing is simply to create inverted indexes that can be used for effeicient search. The [config](protosp03/config/inverted_index.yaml) contains the path of the directory that contains the raw files and the path of the directory where to save the inverted indexes.
 
 To pre-process the raw data files:  
 
 ```shell script
-python protosp03/data/inverted_index.py --config protosp03/config/inverted_index.yaml
+python protosp03/data/synthetic/inverted_index.py --config protosp03/config/inverted_index.yaml
 ```
 
 ## User-journey Version 1.0
@@ -105,7 +105,6 @@ A few details about the numbers displayed here:
 
 
 ### TODOs:
-- Add skill level
 - Add Languages
 - Add Programming languages
 - Add certifications

@@ -139,21 +139,31 @@ def inverted_index_decoder(inverted_index):
     return decoded_inverted_index
 
 
-def make_inverted_indexes(config):
-    make_jobs_inverted_index(config)
-    make_profile_inverted_index(config)
-    make_course_provided_inverted_index(config)
-    make_course_required_inverted_index(config)
+def read_job_skills(config):
+    job_skills = json.load(
+        open(os.path.join(config["raw_dataset_path"], "job_skills.json"), "r")
+    )
+    job_skills_dict = {}
+    for job in job_skills:
+        job_skills_dict[job["id"]] = job
+        job_skills_dict[job["id"]].pop("id")
+    return job_skills_dict
+
+
+def process_raw(config):
+    job_skills = read_job_skills(config)
+    print(f"Read {len(job_skills)} job skills")
+    print(job_skills)
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--config", type=str, default="protosp03/config/inverted_index.yaml"
+        "--config", type=str, default="protosp03/config/process_raw.yaml"
     )
     args = parser.parse_args()
     config = yaml.load(open(args.config, "r"), Loader=yaml.FullLoader)
-    make_inverted_indexes(config)
+    process_raw(config)
 
 
 if __name__ == "__main__":

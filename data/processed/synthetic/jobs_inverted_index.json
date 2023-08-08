@@ -1,18 +1,31 @@
 {
-    "1": [
-        "jobs_0"
-    ],
-    "0": [
-        "jobs_0",
-        "jobs_1",
-        "jobs_4"
-    ],
-    "4": [
-        "jobs_0",
-        "jobs_2"
-    ],
-    "3": [
-        "jobs_3",
-        "jobs_4"
-    ]
+    "skill_1": {
+        "jobs_0": 3,
+        "jobs_1": 4,
+        "jobs_2": 3,
+        "jobs_3": 4
+    },
+    "skill_4": {
+        "jobs_0": 1,
+        "jobs_1": 3,
+        "jobs_2": 4,
+        "jobs_3": 4
+    },
+    "skill_3": {
+        "jobs_0": 4,
+        "jobs_1": 3,
+        "jobs_2": 2,
+        "jobs_3": 1
+    },
+    "skill_0": {
+        "jobs_1": 3,
+        "jobs_2": 2,
+        "jobs_3": 3
+    },
+    "skill_2": {
+        "jobs_1": 2,
+        "jobs_2": 4,
+        "jobs_3": 4,
+        "jobs_4": 4
+    }
 }

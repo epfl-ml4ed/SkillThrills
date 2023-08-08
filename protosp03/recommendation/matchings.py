@@ -2,17 +2,21 @@ from collections import Counter
 
 
 def profile_job_match(profile, job):
-    """Computes the proportion of required skills for a job that the profile posseses.
+    """Computes a profile job matching score.
 
     Args:
         profile (set): set of skills that the profile has
         job (set): set of skills required for the job
 
     Returns:
-        float: proporition of skills possesed
+        float: matching score
     """
-    possesed_skills = profile.intersection(job)
-    matching = 100 * len(possesed_skills) / len(job)
+    matching = 0
+    for skill in job:
+        if skill in profile:
+            sim = min(profile[skill], job[skill]) / job[skill]
+            matching += sim
+    matching = 100 * matching / len(job)
     return matching
 
 
@@ -58,8 +62,10 @@ def profile_allcourse_requirements(profile, courses, course_required_inverted_in
     # Create a list of courses to remove after iterating over the dictionary
     courses_to_remove = []
     for course in ranked_courses:
-        if courses[course]["provided"].issubset(profile):
-            courses_to_remove.append(course)
+        for skill, level in courses[course]["provided"].items():
+            if skill in profile and profile[skill] >= level:
+                courses_to_remove.append(course)
+                break
         else:
             ranked_courses[course] /= len(courses[course]["required"])
 

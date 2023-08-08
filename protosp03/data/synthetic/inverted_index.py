@@ -11,21 +11,17 @@ def make_jobs_inverted_index(config):
         config (dict): Configuration dictionary
     """
     jobs = json.load(open(os.path.join(config["raw_dataset_path"], "jobs.json"), "r"))
-    skills = json.load(
-        open(os.path.join(config["raw_dataset_path"], "skills.json"), "r")
-    )
     inverted_index = {}
     for job_id, job in jobs.items():
-        for skill in job:
-            skill_id = skills[skill]
-            if skill_id not in inverted_index:
-                inverted_index[skill_id] = [job_id]
+        for skill, level in job.items():
+            if skill not in inverted_index:
+                inverted_index[skill] = {job_id: level}
             else:
-                inverted_index[skill_id].append(job_id)
+                inverted_index[skill][job_id] = level
     with open(
         os.path.join(config["inverted_index_path"], "jobs_inverted_index.json"), "w"
     ) as f:
-        json.dump(inverted_index, f)
+        json.dump(inverted_index, f, indent=4)
 
 
 def make_profile_inverted_index(config):
@@ -37,21 +33,17 @@ def make_profile_inverted_index(config):
     profiles = json.load(
         open(os.path.join(config["raw_dataset_path"], "resumes.json"), "r")
     )
-    skills = json.load(
-        open(os.path.join(config["raw_dataset_path"], "skills.json"), "r")
-    )
     inverted_index = {}
     for profile_id, profile in profiles.items():
-        for skill in profile:
-            skill_id = skills[skill]
-            if skill_id not in inverted_index:
-                inverted_index[skill_id] = [profile_id]
+        for skill, level in profile.items():
+            if skill not in inverted_index:
+                inverted_index[skill] = {profile_id: level}
             else:
-                inverted_index[skill_id].append(profile_id)
+                inverted_index[skill][profile_id] = level
     with open(
         os.path.join(config["inverted_index_path"], "profiles_inverted_index.json"), "w"
     ) as f:
-        json.dump(inverted_index, f)
+        json.dump(inverted_index, f, indent=4)
 
 
 def make_course_provided_inverted_index(config):
@@ -63,24 +55,20 @@ def make_course_provided_inverted_index(config):
     courses = json.load(
         open(os.path.join(config["raw_dataset_path"], "courses.json"), "r")
     )
-    skills = json.load(
-        open(os.path.join(config["raw_dataset_path"], "skills.json"), "r")
-    )
     inverted_index = {}
     for course_id, course in courses.items():
-        for skill in course["provided"]:
-            skill_id = skills[skill]
-            if skill_id not in inverted_index:
-                inverted_index[skill_id] = [course_id]
+        for skill, level in course["provided"].items():
+            if skill not in inverted_index:
+                inverted_index[skill] = {course_id: level}
             else:
-                inverted_index[skill_id].append(course_id)
+                inverted_index[skill][course_id] = level
     with open(
         os.path.join(
             config["inverted_index_path"], "courses_provided_inverted_index.json"
         ),
         "w",
     ) as f:
-        json.dump(inverted_index, f)
+        json.dump(inverted_index, f, indent=4)
 
 
 def make_course_required_inverted_index(config):
@@ -92,51 +80,20 @@ def make_course_required_inverted_index(config):
     courses = json.load(
         open(os.path.join(config["raw_dataset_path"], "courses.json"), "r")
     )
-    skills = json.load(
-        open(os.path.join(config["raw_dataset_path"], "skills.json"), "r")
-    )
     inverted_index = {}
     for course_id, course in courses.items():
-        for skill in course["required"]:
-            skill_id = skills[skill]
-            if skill_id not in inverted_index:
-                inverted_index[skill_id] = [course_id]
+        for skill, level in course["required"].items():
+            if skill not in inverted_index:
+                inverted_index[skill] = {course_id: level}
             else:
-                inverted_index[skill_id].append(course_id)
+                inverted_index[skill][course_id] = level
     with open(
         os.path.join(
             config["inverted_index_path"], "courses_required_inverted_index.json"
         ),
         "w",
     ) as f:
-        json.dump(inverted_index, f)
-
-
-def inverted_index_decoder(inverted_index):
-    """Decodes the inverted index, to convert the keys to integers (if they are strings representing integers) and the values to sets if the are lists
-
-    Args:
-        inverted_index (dict): Inverted index
-
-    Returns:
-        decoded_inverted_index: Decoded inverted index
-    """
-    decoded_inverted_index = {}
-    for k, v in inverted_index.items():
-        # Check if key is an integer in string format
-        if k.isdigit():
-            new_k = int(k)
-        else:
-            new_k = k
-
-        # Check if value is a list
-        if isinstance(v, list):
-            new_v = set(v)
-        else:
-            new_v = v
-
-        decoded_inverted_index[new_k] = new_v
-    return decoded_inverted_index
+        json.dump(inverted_index, f, indent=4)
 
 
 def make_inverted_indexes(config):

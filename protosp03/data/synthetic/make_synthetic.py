@@ -14,7 +14,7 @@ def make_skills(config):
     Returns:
         dict: dict of skills
     """
-    return ["skill_" + str(i) for i in range(config["nb_skills"])]
+    return {"skill_" + str(i): i for i in range(config["nb_skills"])}
 
 
 def save_skills(skills, config):
@@ -25,11 +25,12 @@ def save_skills(skills, config):
         config (dict): Configuration dictionary
     """
     with open(os.path.join(config["dataset_path"], "skills.json"), "w") as f:
-        json.dump({skill: i for i, skill in enumerate(skills)}, f)
+        json.dump(skills, f, indent=4)
 
 
 def get_random_skills(skills, max_skills):
-    """Returns a random list of skills
+    """Returns a random dict of {skills: level}
+    the skills are unique and the level is between 1 and 4
 
     Args:
         skills (dict): dict of skills
@@ -39,7 +40,40 @@ def get_random_skills(skills, max_skills):
         list: list of skills
     """
     nb_skills = random.randint(1, max_skills)
-    return random.sample(skills, nb_skills)
+    random_skills = random.sample(sorted(skills), nb_skills)
+    return {skill: random.randint(1, 4) for skill in random_skills}
+
+
+def get_random_provided_skills(skills, required_skills, max_skills):
+    """Returns a random list of [skills, level], the level is between 1 and 4
+    the provided skills must either not be in the required skills or have a higher level
+
+    Args:
+        skills (dict): dict of skills
+        required_skills (dict): dict of required skills: level
+        max_skills (int): maximum number of skills
+
+    Returns:
+        list: list of skills
+    """
+    nb_skills = random.randint(1, max_skills)
+    list_skills = list(skills.keys())
+    provided_skills = dict()
+    while len(provided_skills) < nb_skills:
+        candidate_skill = random.choice(list_skills)
+        candidate_level = random.randint(1, 4)
+        if (
+            candidate_skill not in required_skills
+            and candidate_skill not in provided_skills
+        ):
+            provided_skills[candidate_skill] = candidate_level
+        elif (
+            candidate_skill in required_skills
+            and candidate_level > required_skills[candidate_skill]
+        ):
+            provided_skills[candidate_skill] = candidate_level
+
+    return provided_skills
 
 
 def make_resumes(config, skills):
@@ -66,7 +100,7 @@ def save_resumes(resumes, config):
         config (dict): Configuration dictionary
     """
     with open(os.path.join(config["dataset_path"], "resumes.json"), "w") as f:
-        json.dump(resumes, f)
+        json.dump(resumes, f, indent=4)
 
 
 def make_jobs(config, skills):
@@ -93,7 +127,7 @@ def save_jobs(jobs, config):
         config (dict): Configuration dictionary
     """
     with open(os.path.join(config["dataset_path"], "jobs.json"), "w") as f:
-        json.dump(jobs, f)
+        json.dump(jobs, f, indent=4)
 
 
 def make_courses(config, skills):
@@ -117,11 +151,9 @@ def make_courses(config, skills):
     }
 
     for course in courses:
-        skills_candidates = [
-            skill for skill in skills if skill not in courses[course]["required"]
-        ]
-        courses[course]["provided"] = get_random_skills(
-            skills_candidates, config["max_provided_course_skills"]
+        required_skills = courses[course]["required"]
+        courses[course]["provided"] = get_random_provided_skills(
+            skills, required_skills, config["max_provided_course_skills"]
         )
     return courses
 
@@ -134,7 +166,7 @@ def save_courses(courses, config):
         config (dict): Configuration dictionary
     """
     with open(os.path.join(config["dataset_path"], "courses.json"), "w") as f:
-        json.dump(courses, f)
+        json.dump(courses, f, indent=4)
 
 
 def make_synthetic(config):
