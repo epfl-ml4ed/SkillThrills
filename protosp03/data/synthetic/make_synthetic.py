@@ -14,7 +14,14 @@ def make_skills(config):
     Returns:
         dict: dict of skills
     """
-    return {"skill_" + str(i): i for i in range(config["nb_skills"])}
+    return {
+        "skill_"
+        + str(i): {
+            "skill_id": i,
+            "group_id": random.randint(0, config["nb_groups"] - 1),
+        }
+        for i in range(config["nb_skills"])
+    }
 
 
 def save_skills(skills, config):

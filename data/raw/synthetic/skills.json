@@ -1,7 +1,102 @@
 {
-    "skill_0": 0,
-    "skill_1": 1,
-    "skill_2": 2,
-    "skill_3": 3,
-    "skill_4": 4
+    "skill_0": {
+        "skill_id": 0,
+        "group_id": 1
+    },
+    "skill_1": {
+        "skill_id": 1,
+        "group_id": 4
+    },
+    "skill_2": {
+        "skill_id": 2,
+        "group_id": 0
+    },
+    "skill_3": {
+        "skill_id": 3,
+        "group_id": 2
+    },
+    "skill_4": {
+        "skill_id": 4,
+        "group_id": 0
+    },
+    "skill_5": {
+        "skill_id": 5,
+        "group_id": 3
+    },
+    "skill_6": {
+        "skill_id": 6,
+        "group_id": 3
+    },
+    "skill_7": {
+        "skill_id": 7,
+        "group_id": 3
+    },
+    "skill_8": {
+        "skill_id": 8,
+        "group_id": 3
+    },
+    "skill_9": {
+        "skill_id": 9,
+        "group_id": 1
+    },
+    "skill_10": {
+        "skill_id": 10,
+        "group_id": 0
+    },
+    "skill_11": {
+        "skill_id": 11,
+        "group_id": 3
+    },
+    "skill_12": {
+        "skill_id": 12,
+        "group_id": 0
+    },
+    "skill_13": {
+        "skill_id": 13,
+        "group_id": 3
+    },
+    "skill_14": {
+        "skill_id": 14,
+        "group_id": 3
+    },
+    "skill_15": {
+        "skill_id": 15,
+        "group_id": 4
+    },
+    "skill_16": {
+        "skill_id": 16,
+        "group_id": 0
+    },
+    "skill_17": {
+        "skill_id": 17,
+        "group_id": 3
+    },
+    "skill_18": {
+        "skill_id": 18,
+        "group_id": 2
+    },
+    "skill_19": {
+        "skill_id": 19,
+        "group_id": 1
+    },
+    "skill_20": {
+        "skill_id": 20,
+        "group_id": 4
+    },
+    "skill_21": {
+        "skill_id": 21,
+        "group_id": 0
+    },
+    "skill_22": {
+        "skill_id": 22,
+        "group_id": 2
+    },
+    "skill_23": {
+        "skill_id": 23,
+        "group_id": 0
+    },
+    "skill_24": {
+        "skill_id": 24,
+        "group_id": 0
+    }
 }

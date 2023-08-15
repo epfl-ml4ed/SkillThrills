@@ -1,11 +1,14 @@
-nb_resumes: 5
-nb_jobs: 5
-nb_skills: 5
-nb_courses: 5
+nb_resumes: 25
+nb_jobs: 25
+nb_courses: 25
+nb_groups: 5
+nb_skills: 25
 
-max_resume_skills: 5
-max_job_skills: 5
+
+max_resume_skills: 10
+max_job_skills: 10
 max_required_course_skills: 3
 max_provided_course_skills: 2
+
 
 dataset_path: data/raw/synthetic/

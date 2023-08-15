@@ -54,45 +54,46 @@ python protosp03/data/synthetic/inverted_index.py --config protosp03/config/inve
 To try the first version of the functions I can do in the user journey, run 
 
 ```shell script
-python -m tests.user_journey01 --seed 1
+python -m tests.user_journey01 --seed 55
 ```
  It should display this:
 
 ```shell script
-Considering Profile resume_1 with the skills: {0, 1, 3}
-        We are assuming that the Profile is interested in Job jobs_4 that requires the skills: {0, 3}
-        The matching between the profile and the desired job is: 100%
-        Printing the attractiveness of each skill of the profile and comparing to other learners:
-                Skill 0 is required for 60% of the jobs on the market and 80% of the learners have it
-                Skill 1 is required for 20% of the jobs on the market and 60% of the learners have it
-                Skill 3 is required for 40% of the jobs on the market and 60% of the learners have it
-        The overall attractiveness of the profile is: 73%
-        Printing the matching of the profile with respect to each job (from most compatible to least compatible):
-                Job jobs_1 has a matching of 100%
-                Job jobs_4 has a matching of 100%
-                Job jobs_3 has a matching of 100%
-                Job jobs_0 has a matching of 66%
-        Printing the matching of the profile with respect to each course (from most compatible to least compatible):
-                Course course_3 has a matching of 100%
-                        If the profile takes the course course_3, it will learn the skills: {4}
-                        The matching with the job jobs_0 will increase from 66% to: 100%
-                        The overall attractiveness of the profile will increase from 73 to: 100
-                Course course_1 has a matching of 66%
-                        If the profile takes the course course_1, it will learn the skills: {4}
-                        The matching with the job jobs_0 will increase from 66% to: 100%
-                        The overall attractiveness of the profile will increase from 73 to: 100
-                Course course_4 has a matching of 66%
-                        If the profile takes the course course_4, it will learn the skills: {4}
-                        The matching with the job jobs_0 will increase from 66% to: 100%
-                        The overall attractiveness of the profile will increase from 73 to: 100
-                Course course_0 has a matching of 66%
-                        If the profile takes the course course_0, it will learn the skills: {2}
-                        The matching with the job jobs_0 will increase from 66% to: 66%
-                        The overall attractiveness of the profile will increase from 73 to: 73
-                Course course_2 has a matching of 66%
-                        If the profile takes the course course_2, it will learn the skills: {2}
-                        The matching with the job jobs_0 will increase from 66% to: 66%
-                        The overall attractiveness of the profile will increase from 73 to: 73
+Considering Profile resume_2 with the skills:
+        skill_20 at level 1 in group 4
+
+We are assuming that the Profile is interested in Job jobs_6 that requires the skills:
+        skill_9 at level 3 in group 1
+        skill_10 at level 4 in group 0
+        skill_6 at level 4 in group 3
+        skill_21 at level 1 in group 0
+        skill_20 at level 4 in group 4
+
+The matching between the profile and the desired job is: 5%
+
+The matching between the profile and the desired job for each group is
+        Group 1 has a matching of 0%
+        Group 0 has a matching of 0%
+        Group 3 has a matching of 0%
+        Group 4 has a matching of 25%
+
+Printing the attractiveness of each skill of the profile and comparing to other learners:
+        Skill skill_20 is required for 20% of the jobs on the market and 28% of the learners have it
+
+The overall attractiveness of the profile is: 3%
+
+Printing the matching of the profile with respect to each job (from most compatible to least compatible):
+        Job jobs_5 has a matching of 33%
+        Job jobs_6 has a matching of 20%
+        Job jobs_7 has a matching of 16%
+        Job jobs_13 has a matching of 14%
+        Job jobs_19 has a matching of 11%
+
+Printing the matching of the profile with respect to each course (from most compatible to least compatible):
+        Course course_2 has a matching of 33%
+                If the profile takes the course course_2, it will learn the new skills: {'skill_21'}
+                The matching with the job jobs_6 will increase from 5% to: 25%
+                The overall attractiveness of the profile will increase from 3 to: 8
 ```
 
 ### Some explanations
@@ -105,11 +106,8 @@ A few details about the numbers displayed here:
 
 
 ### TODOs:
-- Add Languages
-- Add Programming languages
 - Add certifications
 - Replace skill names
-- Provide ElasticSearch functions fort matching
 - Change required name with prerequisite 
 - Multiple matchings with and without prerequisistes
 - Add ranking functions that take into account skill demand and skill offer
@@ -117,7 +115,3 @@ A few details about the numbers displayed here:
 - Adding must have and optional skills in jobs
 - Add time dimension to the job market skills 
 - Add ICT jobs file
-
-### Questions:
-- In learnig_opportunities, what is the difference between a course and a program?
-- In learnig_opportunities, if the key 'certificate_type' is not empty, do we automatically consider the learning opportunity to provide a certificate upon completion?

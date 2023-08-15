@@ -1,31 +1,198 @@
 {
-    "skill_1": {
-        "jobs_0": 3,
+    "skill_5": {
+        "jobs_0": 2,
         "jobs_1": 4,
-        "jobs_2": 3,
-        "jobs_3": 4
+        "jobs_7": 2,
+        "jobs_9": 4,
+        "jobs_15": 2,
+        "jobs_18": 4,
+        "jobs_19": 4,
+        "jobs_24": 2
     },
-    "skill_4": {
+    "skill_18": {
+        "jobs_0": 3,
+        "jobs_3": 3,
+        "jobs_9": 4,
+        "jobs_13": 4,
+        "jobs_17": 4,
+        "jobs_24": 3
+    },
+    "skill_15": {
+        "jobs_0": 1,
+        "jobs_9": 2,
+        "jobs_15": 3,
+        "jobs_20": 3,
+        "jobs_24": 2
+    },
+    "skill_2": {
+        "jobs_0": 1,
+        "jobs_8": 2,
+        "jobs_11": 3,
+        "jobs_13": 1,
+        "jobs_14": 2,
+        "jobs_18": 2
+    },
+    "skill_17": {
+        "jobs_0": 2,
+        "jobs_5": 2,
+        "jobs_15": 4,
+        "jobs_22": 1
+    },
+    "skill_1": {
+        "jobs_0": 2,
+        "jobs_12": 2
+    },
+    "skill_8": {
         "jobs_0": 1,
         "jobs_1": 3,
-        "jobs_2": 4,
-        "jobs_3": 4
+        "jobs_14": 4,
+        "jobs_15": 4,
+        "jobs_16": 3
+    },
+    "skill_13": {
+        "jobs_0": 2,
+        "jobs_7": 1,
+        "jobs_8": 1,
+        "jobs_11": 2,
+        "jobs_12": 3,
+        "jobs_13": 4,
+        "jobs_15": 3,
+        "jobs_23": 3
     },
     "skill_3": {
         "jobs_0": 4,
-        "jobs_1": 3,
+        "jobs_8": 4,
+        "jobs_16": 1,
+        "jobs_20": 1
+    },
+    "skill_9": {
+        "jobs_0": 1,
         "jobs_2": 2,
-        "jobs_3": 1
+        "jobs_3": 3,
+        "jobs_6": 3,
+        "jobs_9": 1,
+        "jobs_10": 3,
+        "jobs_12": 1,
+        "jobs_17": 3,
+        "jobs_21": 1
+    },
+    "skill_24": {
+        "jobs_1": 1,
+        "jobs_4": 2,
+        "jobs_5": 2,
+        "jobs_12": 1,
+        "jobs_14": 1,
+        "jobs_15": 1,
+        "jobs_16": 3,
+        "jobs_22": 4
+    },
+    "skill_10": {
+        "jobs_1": 3,
+        "jobs_6": 4,
+        "jobs_11": 1,
+        "jobs_12": 4,
+        "jobs_20": 2,
+        "jobs_21": 3,
+        "jobs_23": 2,
+        "jobs_24": 3
     },
     "skill_0": {
-        "jobs_1": 3,
-        "jobs_2": 2,
-        "jobs_3": 3
+        "jobs_1": 4,
+        "jobs_7": 2,
+        "jobs_14": 1,
+        "jobs_16": 2,
+        "jobs_17": 3,
+        "jobs_19": 3,
+        "jobs_23": 3
     },
-    "skill_2": {
-        "jobs_1": 2,
-        "jobs_2": 4,
-        "jobs_3": 4,
-        "jobs_4": 4
+    "skill_11": {
+        "jobs_2": 3,
+        "jobs_11": 4,
+        "jobs_16": 3,
+        "jobs_17": 4
+    },
+    "skill_23": {
+        "jobs_2": 1,
+        "jobs_9": 2,
+        "jobs_10": 3,
+        "jobs_11": 4,
+        "jobs_12": 1,
+        "jobs_17": 4,
+        "jobs_19": 3,
+        "jobs_23": 2,
+        "jobs_24": 4
+    },
+    "skill_12": {
+        "jobs_3": 1,
+        "jobs_4": 3,
+        "jobs_13": 3,
+        "jobs_15": 4,
+        "jobs_22": 3
+    },
+    "skill_14": {
+        "jobs_4": 1,
+        "jobs_10": 3,
+        "jobs_15": 2,
+        "jobs_19": 1,
+        "jobs_24": 1
+    },
+    "skill_20": {
+        "jobs_5": 1,
+        "jobs_6": 4,
+        "jobs_7": 2,
+        "jobs_13": 2,
+        "jobs_19": 4
+    },
+    "skill_6": {
+        "jobs_6": 4,
+        "jobs_17": 4,
+        "jobs_22": 2,
+        "jobs_23": 1
+    },
+    "skill_21": {
+        "jobs_6": 1,
+        "jobs_9": 3,
+        "jobs_11": 4,
+        "jobs_13": 1,
+        "jobs_19": 4,
+        "jobs_22": 1,
+        "jobs_23": 4,
+        "jobs_24": 2
+    },
+    "skill_16": {
+        "jobs_7": 1,
+        "jobs_8": 1,
+        "jobs_12": 2,
+        "jobs_15": 4,
+        "jobs_19": 2,
+        "jobs_22": 4,
+        "jobs_24": 3
+    },
+    "skill_22": {
+        "jobs_7": 3,
+        "jobs_9": 3,
+        "jobs_13": 3,
+        "jobs_20": 4,
+        "jobs_22": 1
+    },
+    "skill_4": {
+        "jobs_8": 2,
+        "jobs_9": 1,
+        "jobs_11": 2,
+        "jobs_19": 2,
+        "jobs_20": 3,
+        "jobs_21": 3
+    },
+    "skill_7": {
+        "jobs_9": 3,
+        "jobs_11": 3,
+        "jobs_15": 2,
+        "jobs_19": 4,
+        "jobs_20": 4
+    },
+    "skill_19": {
+        "jobs_11": 2,
+        "jobs_17": 3,
+        "jobs_24": 4
     }
 }

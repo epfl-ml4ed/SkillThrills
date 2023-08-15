@@ -1,4 +1,4 @@
-from collections import Counter
+from collections import Counter, defaultdict
 
 
 def profile_job_match(profile, job):
@@ -17,6 +17,32 @@ def profile_job_match(profile, job):
             sim = min(profile[skill], job[skill]) / job[skill]
             matching += sim
     matching = 100 * matching / len(job)
+    return matching
+
+
+def profile_job_match_with_group(profile, job, skills):
+    """Computes a profile job matching score.
+
+    Args:
+        profile (set): set of skills that the profile has
+        job (set): set of skills required for the job
+
+    Returns:
+        float: matching score
+    """
+    matching = dict()
+    for skill in job:
+        group = skills[skill]["group_id"]
+        if group not in matching:
+            matching[group] = 0
+
+    for group in matching:
+        job_tmp_group = {
+            skill: level
+            for skill, level in job.items()
+            if skills[skill]["group_id"] == group
+        }
+        matching[group] = profile_job_match(profile, job_tmp_group)
     return matching
 
 

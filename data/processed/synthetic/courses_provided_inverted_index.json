@@ -1,17 +1,71 @@
 {
+    "skill_0": {
+        "course_0": 4
+    },
+    "skill_23": {
+        "course_1": 3,
+        "course_13": 3
+    },
+    "skill_21": {
+        "course_2": 4,
+        "course_6": 1,
+        "course_12": 2,
+        "course_17": 3
+    },
+    "skill_10": {
+        "course_3": 3,
+        "course_16": 2,
+        "course_19": 3
+    },
+    "skill_8": {
+        "course_3": 2,
+        "course_7": 2,
+        "course_14": 3
+    },
+    "skill_1": {
+        "course_4": 2,
+        "course_9": 1,
+        "course_16": 3
+    },
+    "skill_11": {
+        "course_5": 4,
+        "course_22": 4,
+        "course_23": 2
+    },
+    "skill_17": {
+        "course_5": 2
+    },
+    "skill_22": {
+        "course_6": 3
+    },
     "skill_4": {
-        "course_0": 3
+        "course_8": 1,
+        "course_11": 1
+    },
+    "skill_16": {
+        "course_10": 3,
+        "course_21": 1
     },
     "skill_3": {
-        "course_0": 1,
-        "course_4": 3
+        "course_10": 3,
+        "course_20": 2,
+        "course_23": 4
     },
-    "skill_0": {
-        "course_1": 3,
-        "course_2": 4,
-        "course_4": 2
+    "skill_12": {
+        "course_12": 4,
+        "course_17": 1
     },
-    "skill_2": {
-        "course_3": 2
+    "skill_9": {
+        "course_15": 1,
+        "course_21": 2
+    },
+    "skill_13": {
+        "course_18": 2
+    },
+    "skill_18": {
+        "course_20": 4
+    },
+    "skill_20": {
+        "course_24": 3
     }
 }
