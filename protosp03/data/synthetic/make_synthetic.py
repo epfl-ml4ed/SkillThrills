@@ -4,24 +4,29 @@ import yaml
 import json
 import os
 
+from itertools import product
+
 
 def make_skills(config):
-    """Creates a list of skills
+    """Returns a dict of skills
+    Each skill is located within a hierarchy
 
     Args:
-        config (dict): Configuration dictionary
+        config (dict): a configuration dictionary
 
     Returns:
         dict: dict of skills
     """
-    return {
-        "skill_"
-        + str(i): {
-            "skill_id": i,
-            "group_id": random.randint(0, config["nb_groups"] - 1),
-        }
-        for i in range(config["nb_skills"])
-    }
+    skills = dict()
+
+    levels = [range(1, elem + 1) for elem in config["nb_elem_per_levels"]]
+    for i, level in enumerate(product(*levels)):
+        skill_name = "skill_" + str(i)
+        level_str = ".".join([str(elem) for elem in level])
+        skills[skill_name] = {"skill_id": i, "level_str": level_str}
+        skills[skill_name]["level"] = level
+
+    return skills
 
 
 def save_skills(skills, config):

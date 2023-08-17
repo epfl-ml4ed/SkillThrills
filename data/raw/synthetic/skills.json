@@ -1,102 +1,1352 @@
 {
     "skill_0": {
         "skill_id": 0,
-        "group_id": 1
+        "level_str": "1.1.1.1",
+        "level": [
+            1,
+            1,
+            1,
+            1
+        ]
     },
     "skill_1": {
         "skill_id": 1,
-        "group_id": 4
+        "level_str": "1.1.1.2",
+        "level": [
+            1,
+            1,
+            1,
+            2
+        ]
     },
     "skill_2": {
         "skill_id": 2,
-        "group_id": 0
+        "level_str": "1.1.1.3",
+        "level": [
+            1,
+            1,
+            1,
+            3
+        ]
     },
     "skill_3": {
         "skill_id": 3,
-        "group_id": 2
+        "level_str": "1.1.1.4",
+        "level": [
+            1,
+            1,
+            1,
+            4
+        ]
     },
     "skill_4": {
         "skill_id": 4,
-        "group_id": 0
+        "level_str": "1.1.1.5",
+        "level": [
+            1,
+            1,
+            1,
+            5
+        ]
     },
     "skill_5": {
         "skill_id": 5,
-        "group_id": 3
+        "level_str": "1.1.2.1",
+        "level": [
+            1,
+            1,
+            2,
+            1
+        ]
     },
     "skill_6": {
         "skill_id": 6,
-        "group_id": 3
+        "level_str": "1.1.2.2",
+        "level": [
+            1,
+            1,
+            2,
+            2
+        ]
     },
     "skill_7": {
         "skill_id": 7,
-        "group_id": 3
+        "level_str": "1.1.2.3",
+        "level": [
+            1,
+            1,
+            2,
+            3
+        ]
     },
     "skill_8": {
         "skill_id": 8,
-        "group_id": 3
+        "level_str": "1.1.2.4",
+        "level": [
+            1,
+            1,
+            2,
+            4
+        ]
     },
     "skill_9": {
         "skill_id": 9,
-        "group_id": 1
+        "level_str": "1.1.2.5",
+        "level": [
+            1,
+            1,
+            2,
+            5
+        ]
     },
     "skill_10": {
         "skill_id": 10,
-        "group_id": 0
+        "level_str": "1.1.3.1",
+        "level": [
+            1,
+            1,
+            3,
+            1
+        ]
     },
     "skill_11": {
         "skill_id": 11,
-        "group_id": 3
+        "level_str": "1.1.3.2",
+        "level": [
+            1,
+            1,
+            3,
+            2
+        ]
     },
     "skill_12": {
         "skill_id": 12,
-        "group_id": 0
+        "level_str": "1.1.3.3",
+        "level": [
+            1,
+            1,
+            3,
+            3
+        ]
     },
     "skill_13": {
         "skill_id": 13,
-        "group_id": 3
+        "level_str": "1.1.3.4",
+        "level": [
+            1,
+            1,
+            3,
+            4
+        ]
     },
     "skill_14": {
         "skill_id": 14,
-        "group_id": 3
+        "level_str": "1.1.3.5",
+        "level": [
+            1,
+            1,
+            3,
+            5
+        ]
     },
     "skill_15": {
         "skill_id": 15,
-        "group_id": 4
+        "level_str": "1.2.1.1",
+        "level": [
+            1,
+            2,
+            1,
+            1
+        ]
     },
     "skill_16": {
         "skill_id": 16,
-        "group_id": 0
+        "level_str": "1.2.1.2",
+        "level": [
+            1,
+            2,
+            1,
+            2
+        ]
     },
     "skill_17": {
         "skill_id": 17,
-        "group_id": 3
+        "level_str": "1.2.1.3",
+        "level": [
+            1,
+            2,
+            1,
+            3
+        ]
     },
     "skill_18": {
         "skill_id": 18,
-        "group_id": 2
+        "level_str": "1.2.1.4",
+        "level": [
+            1,
+            2,
+            1,
+            4
+        ]
     },
     "skill_19": {
         "skill_id": 19,
-        "group_id": 1
+        "level_str": "1.2.1.5",
+        "level": [
+            1,
+            2,
+            1,
+            5
+        ]
     },
     "skill_20": {
         "skill_id": 20,
-        "group_id": 4
+        "level_str": "1.2.2.1",
+        "level": [
+            1,
+            2,
+            2,
+            1
+        ]
     },
     "skill_21": {
         "skill_id": 21,
-        "group_id": 0
+        "level_str": "1.2.2.2",
+        "level": [
+            1,
+            2,
+            2,
+            2
+        ]
     },
     "skill_22": {
         "skill_id": 22,
-        "group_id": 2
+        "level_str": "1.2.2.3",
+        "level": [
+            1,
+            2,
+            2,
+            3
+        ]
     },
     "skill_23": {
         "skill_id": 23,
-        "group_id": 0
+        "level_str": "1.2.2.4",
+        "level": [
+            1,
+            2,
+            2,
+            4
+        ]
     },
     "skill_24": {
         "skill_id": 24,
-        "group_id": 0
+        "level_str": "1.2.2.5",
+        "level": [
+            1,
+            2,
+            2,
+            5
+        ]
+    },
+    "skill_25": {
+        "skill_id": 25,
+        "level_str": "1.2.3.1",
+        "level": [
+            1,
+            2,
+            3,
+            1
+        ]
+    },
+    "skill_26": {
+        "skill_id": 26,
+        "level_str": "1.2.3.2",
+        "level": [
+            1,
+            2,
+            3,
+            2
+        ]
+    },
+    "skill_27": {
+        "skill_id": 27,
+        "level_str": "1.2.3.3",
+        "level": [
+            1,
+            2,
+            3,
+            3
+        ]
+    },
+    "skill_28": {
+        "skill_id": 28,
+        "level_str": "1.2.3.4",
+        "level": [
+            1,
+            2,
+            3,
+            4
+        ]
+    },
+    "skill_29": {
+        "skill_id": 29,
+        "level_str": "1.2.3.5",
+        "level": [
+            1,
+            2,
+            3,
+            5
+        ]
+    },
+    "skill_30": {
+        "skill_id": 30,
+        "level_str": "1.3.1.1",
+        "level": [
+            1,
+            3,
+            1,
+            1
+        ]
+    },
+    "skill_31": {
+        "skill_id": 31,
+        "level_str": "1.3.1.2",
+        "level": [
+            1,
+            3,
+            1,
+            2
+        ]
+    },
+    "skill_32": {
+        "skill_id": 32,
+        "level_str": "1.3.1.3",
+        "level": [
+            1,
+            3,
+            1,
+            3
+        ]
+    },
+    "skill_33": {
+        "skill_id": 33,
+        "level_str": "1.3.1.4",
+        "level": [
+            1,
+            3,
+            1,
+            4
+        ]
+    },
+    "skill_34": {
+        "skill_id": 34,
+        "level_str": "1.3.1.5",
+        "level": [
+            1,
+            3,
+            1,
+            5
+        ]
+    },
+    "skill_35": {
+        "skill_id": 35,
+        "level_str": "1.3.2.1",
+        "level": [
+            1,
+            3,
+            2,
+            1
+        ]
+    },
+    "skill_36": {
+        "skill_id": 36,
+        "level_str": "1.3.2.2",
+        "level": [
+            1,
+            3,
+            2,
+            2
+        ]
+    },
+    "skill_37": {
+        "skill_id": 37,
+        "level_str": "1.3.2.3",
+        "level": [
+            1,
+            3,
+            2,
+            3
+        ]
+    },
+    "skill_38": {
+        "skill_id": 38,
+        "level_str": "1.3.2.4",
+        "level": [
+            1,
+            3,
+            2,
+            4
+        ]
+    },
+    "skill_39": {
+        "skill_id": 39,
+        "level_str": "1.3.2.5",
+        "level": [
+            1,
+            3,
+            2,
+            5
+        ]
+    },
+    "skill_40": {
+        "skill_id": 40,
+        "level_str": "1.3.3.1",
+        "level": [
+            1,
+            3,
+            3,
+            1
+        ]
+    },
+    "skill_41": {
+        "skill_id": 41,
+        "level_str": "1.3.3.2",
+        "level": [
+            1,
+            3,
+            3,
+            2
+        ]
+    },
+    "skill_42": {
+        "skill_id": 42,
+        "level_str": "1.3.3.3",
+        "level": [
+            1,
+            3,
+            3,
+            3
+        ]
+    },
+    "skill_43": {
+        "skill_id": 43,
+        "level_str": "1.3.3.4",
+        "level": [
+            1,
+            3,
+            3,
+            4
+        ]
+    },
+    "skill_44": {
+        "skill_id": 44,
+        "level_str": "1.3.3.5",
+        "level": [
+            1,
+            3,
+            3,
+            5
+        ]
+    },
+    "skill_45": {
+        "skill_id": 45,
+        "level_str": "2.1.1.1",
+        "level": [
+            2,
+            1,
+            1,
+            1
+        ]
+    },
+    "skill_46": {
+        "skill_id": 46,
+        "level_str": "2.1.1.2",
+        "level": [
+            2,
+            1,
+            1,
+            2
+        ]
+    },
+    "skill_47": {
+        "skill_id": 47,
+        "level_str": "2.1.1.3",
+        "level": [
+            2,
+            1,
+            1,
+            3
+        ]
+    },
+    "skill_48": {
+        "skill_id": 48,
+        "level_str": "2.1.1.4",
+        "level": [
+            2,
+            1,
+            1,
+            4
+        ]
+    },
+    "skill_49": {
+        "skill_id": 49,
+        "level_str": "2.1.1.5",
+        "level": [
+            2,
+            1,
+            1,
+            5
+        ]
+    },
+    "skill_50": {
+        "skill_id": 50,
+        "level_str": "2.1.2.1",
+        "level": [
+            2,
+            1,
+            2,
+            1
+        ]
+    },
+    "skill_51": {
+        "skill_id": 51,
+        "level_str": "2.1.2.2",
+        "level": [
+            2,
+            1,
+            2,
+            2
+        ]
+    },
+    "skill_52": {
+        "skill_id": 52,
+        "level_str": "2.1.2.3",
+        "level": [
+            2,
+            1,
+            2,
+            3
+        ]
+    },
+    "skill_53": {
+        "skill_id": 53,
+        "level_str": "2.1.2.4",
+        "level": [
+            2,
+            1,
+            2,
+            4
+        ]
+    },
+    "skill_54": {
+        "skill_id": 54,
+        "level_str": "2.1.2.5",
+        "level": [
+            2,
+            1,
+            2,
+            5
+        ]
+    },
+    "skill_55": {
+        "skill_id": 55,
+        "level_str": "2.1.3.1",
+        "level": [
+            2,
+            1,
+            3,
+            1
+        ]
+    },
+    "skill_56": {
+        "skill_id": 56,
+        "level_str": "2.1.3.2",
+        "level": [
+            2,
+            1,
+            3,
+            2
+        ]
+    },
+    "skill_57": {
+        "skill_id": 57,
+        "level_str": "2.1.3.3",
+        "level": [
+            2,
+            1,
+            3,
+            3
+        ]
+    },
+    "skill_58": {
+        "skill_id": 58,
+        "level_str": "2.1.3.4",
+        "level": [
+            2,
+            1,
+            3,
+            4
+        ]
+    },
+    "skill_59": {
+        "skill_id": 59,
+        "level_str": "2.1.3.5",
+        "level": [
+            2,
+            1,
+            3,
+            5
+        ]
+    },
+    "skill_60": {
+        "skill_id": 60,
+        "level_str": "2.2.1.1",
+        "level": [
+            2,
+            2,
+            1,
+            1
+        ]
+    },
+    "skill_61": {
+        "skill_id": 61,
+        "level_str": "2.2.1.2",
+        "level": [
+            2,
+            2,
+            1,
+            2
+        ]
+    },
+    "skill_62": {
+        "skill_id": 62,
+        "level_str": "2.2.1.3",
+        "level": [
+            2,
+            2,
+            1,
+            3
+        ]
+    },
+    "skill_63": {
+        "skill_id": 63,
+        "level_str": "2.2.1.4",
+        "level": [
+            2,
+            2,
+            1,
+            4
+        ]
+    },
+    "skill_64": {
+        "skill_id": 64,
+        "level_str": "2.2.1.5",
+        "level": [
+            2,
+            2,
+            1,
+            5
+        ]
+    },
+    "skill_65": {
+        "skill_id": 65,
+        "level_str": "2.2.2.1",
+        "level": [
+            2,
+            2,
+            2,
+            1
+        ]
+    },
+    "skill_66": {
+        "skill_id": 66,
+        "level_str": "2.2.2.2",
+        "level": [
+            2,
+            2,
+            2,
+            2
+        ]
+    },
+    "skill_67": {
+        "skill_id": 67,
+        "level_str": "2.2.2.3",
+        "level": [
+            2,
+            2,
+            2,
+            3
+        ]
+    },
+    "skill_68": {
+        "skill_id": 68,
+        "level_str": "2.2.2.4",
+        "level": [
+            2,
+            2,
+            2,
+            4
+        ]
+    },
+    "skill_69": {
+        "skill_id": 69,
+        "level_str": "2.2.2.5",
+        "level": [
+            2,
+            2,
+            2,
+            5
+        ]
+    },
+    "skill_70": {
+        "skill_id": 70,
+        "level_str": "2.2.3.1",
+        "level": [
+            2,
+            2,
+            3,
+            1
+        ]
+    },
+    "skill_71": {
+        "skill_id": 71,
+        "level_str": "2.2.3.2",
+        "level": [
+            2,
+            2,
+            3,
+            2
+        ]
+    },
+    "skill_72": {
+        "skill_id": 72,
+        "level_str": "2.2.3.3",
+        "level": [
+            2,
+            2,
+            3,
+            3
+        ]
+    },
+    "skill_73": {
+        "skill_id": 73,
+        "level_str": "2.2.3.4",
+        "level": [
+            2,
+            2,
+            3,
+            4
+        ]
+    },
+    "skill_74": {
+        "skill_id": 74,
+        "level_str": "2.2.3.5",
+        "level": [
+            2,
+            2,
+            3,
+            5
+        ]
+    },
+    "skill_75": {
+        "skill_id": 75,
+        "level_str": "2.3.1.1",
+        "level": [
+            2,
+            3,
+            1,
+            1
+        ]
+    },
+    "skill_76": {
+        "skill_id": 76,
+        "level_str": "2.3.1.2",
+        "level": [
+            2,
+            3,
+            1,
+            2
+        ]
+    },
+    "skill_77": {
+        "skill_id": 77,
+        "level_str": "2.3.1.3",
+        "level": [
+            2,
+            3,
+            1,
+            3
+        ]
+    },
+    "skill_78": {
+        "skill_id": 78,
+        "level_str": "2.3.1.4",
+        "level": [
+            2,
+            3,
+            1,
+            4
+        ]
+    },
+    "skill_79": {
+        "skill_id": 79,
+        "level_str": "2.3.1.5",
+        "level": [
+            2,
+            3,
+            1,
+            5
+        ]
+    },
+    "skill_80": {
+        "skill_id": 80,
+        "level_str": "2.3.2.1",
+        "level": [
+            2,
+            3,
+            2,
+            1
+        ]
+    },
+    "skill_81": {
+        "skill_id": 81,
+        "level_str": "2.3.2.2",
+        "level": [
+            2,
+            3,
+            2,
+            2
+        ]
+    },
+    "skill_82": {
+        "skill_id": 82,
+        "level_str": "2.3.2.3",
+        "level": [
+            2,
+            3,
+            2,
+            3
+        ]
+    },
+    "skill_83": {
+        "skill_id": 83,
+        "level_str": "2.3.2.4",
+        "level": [
+            2,
+            3,
+            2,
+            4
+        ]
+    },
+    "skill_84": {
+        "skill_id": 84,
+        "level_str": "2.3.2.5",
+        "level": [
+            2,
+            3,
+            2,
+            5
+        ]
+    },
+    "skill_85": {
+        "skill_id": 85,
+        "level_str": "2.3.3.1",
+        "level": [
+            2,
+            3,
+            3,
+            1
+        ]
+    },
+    "skill_86": {
+        "skill_id": 86,
+        "level_str": "2.3.3.2",
+        "level": [
+            2,
+            3,
+            3,
+            2
+        ]
+    },
+    "skill_87": {
+        "skill_id": 87,
+        "level_str": "2.3.3.3",
+        "level": [
+            2,
+            3,
+            3,
+            3
+        ]
+    },
+    "skill_88": {
+        "skill_id": 88,
+        "level_str": "2.3.3.4",
+        "level": [
+            2,
+            3,
+            3,
+            4
+        ]
+    },
+    "skill_89": {
+        "skill_id": 89,
+        "level_str": "2.3.3.5",
+        "level": [
+            2,
+            3,
+            3,
+            5
+        ]
+    },
+    "skill_90": {
+        "skill_id": 90,
+        "level_str": "3.1.1.1",
+        "level": [
+            3,
+            1,
+            1,
+            1
+        ]
+    },
+    "skill_91": {
+        "skill_id": 91,
+        "level_str": "3.1.1.2",
+        "level": [
+            3,
+            1,
+            1,
+            2
+        ]
+    },
+    "skill_92": {
+        "skill_id": 92,
+        "level_str": "3.1.1.3",
+        "level": [
+            3,
+            1,
+            1,
+            3
+        ]
+    },
+    "skill_93": {
+        "skill_id": 93,
+        "level_str": "3.1.1.4",
+        "level": [
+            3,
+            1,
+            1,
+            4
+        ]
+    },
+    "skill_94": {
+        "skill_id": 94,
+        "level_str": "3.1.1.5",
+        "level": [
+            3,
+            1,
+            1,
+            5
+        ]
+    },
+    "skill_95": {
+        "skill_id": 95,
+        "level_str": "3.1.2.1",
+        "level": [
+            3,
+            1,
+            2,
+            1
+        ]
+    },
+    "skill_96": {
+        "skill_id": 96,
+        "level_str": "3.1.2.2",
+        "level": [
+            3,
+            1,
+            2,
+            2
+        ]
+    },
+    "skill_97": {
+        "skill_id": 97,
+        "level_str": "3.1.2.3",
+        "level": [
+            3,
+            1,
+            2,
+            3
+        ]
+    },
+    "skill_98": {
+        "skill_id": 98,
+        "level_str": "3.1.2.4",
+        "level": [
+            3,
+            1,
+            2,
+            4
+        ]
+    },
+    "skill_99": {
+        "skill_id": 99,
+        "level_str": "3.1.2.5",
+        "level": [
+            3,
+            1,
+            2,
+            5
+        ]
+    },
+    "skill_100": {
+        "skill_id": 100,
+        "level_str": "3.1.3.1",
+        "level": [
+            3,
+            1,
+            3,
+            1
+        ]
+    },
+    "skill_101": {
+        "skill_id": 101,
+        "level_str": "3.1.3.2",
+        "level": [
+            3,
+            1,
+            3,
+            2
+        ]
+    },
+    "skill_102": {
+        "skill_id": 102,
+        "level_str": "3.1.3.3",
+        "level": [
+            3,
+            1,
+            3,
+            3
+        ]
+    },
+    "skill_103": {
+        "skill_id": 103,
+        "level_str": "3.1.3.4",
+        "level": [
+            3,
+            1,
+            3,
+            4
+        ]
+    },
+    "skill_104": {
+        "skill_id": 104,
+        "level_str": "3.1.3.5",
+        "level": [
+            3,
+            1,
+            3,
+            5
+        ]
+    },
+    "skill_105": {
+        "skill_id": 105,
+        "level_str": "3.2.1.1",
+        "level": [
+            3,
+            2,
+            1,
+            1
+        ]
+    },
+    "skill_106": {
+        "skill_id": 106,
+        "level_str": "3.2.1.2",
+        "level": [
+            3,
+            2,
+            1,
+            2
+        ]
+    },
+    "skill_107": {
+        "skill_id": 107,
+        "level_str": "3.2.1.3",
+        "level": [
+            3,
+            2,
+            1,
+            3
+        ]
+    },
+    "skill_108": {
+        "skill_id": 108,
+        "level_str": "3.2.1.4",
+        "level": [
+            3,
+            2,
+            1,
+            4
+        ]
+    },
+    "skill_109": {
+        "skill_id": 109,
+        "level_str": "3.2.1.5",
+        "level": [
+            3,
+            2,
+            1,
+            5
+        ]
+    },
+    "skill_110": {
+        "skill_id": 110,
+        "level_str": "3.2.2.1",
+        "level": [
+            3,
+            2,
+            2,
+            1
+        ]
+    },
+    "skill_111": {
+        "skill_id": 111,
+        "level_str": "3.2.2.2",
+        "level": [
+            3,
+            2,
+            2,
+            2
+        ]
+    },
+    "skill_112": {
+        "skill_id": 112,
+        "level_str": "3.2.2.3",
+        "level": [
+            3,
+            2,
+            2,
+            3
+        ]
+    },
+    "skill_113": {
+        "skill_id": 113,
+        "level_str": "3.2.2.4",
+        "level": [
+            3,
+            2,
+            2,
+            4
+        ]
+    },
+    "skill_114": {
+        "skill_id": 114,
+        "level_str": "3.2.2.5",
+        "level": [
+            3,
+            2,
+            2,
+            5
+        ]
+    },
+    "skill_115": {
+        "skill_id": 115,
+        "level_str": "3.2.3.1",
+        "level": [
+            3,
+            2,
+            3,
+            1
+        ]
+    },
+    "skill_116": {
+        "skill_id": 116,
+        "level_str": "3.2.3.2",
+        "level": [
+            3,
+            2,
+            3,
+            2
+        ]
+    },
+    "skill_117": {
+        "skill_id": 117,
+        "level_str": "3.2.3.3",
+        "level": [
+            3,
+            2,
+            3,
+            3
+        ]
+    },
+    "skill_118": {
+        "skill_id": 118,
+        "level_str": "3.2.3.4",
+        "level": [
+            3,
+            2,
+            3,
+            4
+        ]
+    },
+    "skill_119": {
+        "skill_id": 119,
+        "level_str": "3.2.3.5",
+        "level": [
+            3,
+            2,
+            3,
+            5
+        ]
+    },
+    "skill_120": {
+        "skill_id": 120,
+        "level_str": "3.3.1.1",
+        "level": [
+            3,
+            3,
+            1,
+            1
+        ]
+    },
+    "skill_121": {
+        "skill_id": 121,
+        "level_str": "3.3.1.2",
+        "level": [
+            3,
+            3,
+            1,
+            2
+        ]
+    },
+    "skill_122": {
+        "skill_id": 122,
+        "level_str": "3.3.1.3",
+        "level": [
+            3,
+            3,
+            1,
+            3
+        ]
+    },
+    "skill_123": {
+        "skill_id": 123,
+        "level_str": "3.3.1.4",
+        "level": [
+            3,
+            3,
+            1,
+            4
+        ]
+    },
+    "skill_124": {
+        "skill_id": 124,
+        "level_str": "3.3.1.5",
+        "level": [
+            3,
+            3,
+            1,
+            5
+        ]
+    },
+    "skill_125": {
+        "skill_id": 125,
+        "level_str": "3.3.2.1",
+        "level": [
+            3,
+            3,
+            2,
+            1
+        ]
+    },
+    "skill_126": {
+        "skill_id": 126,
+        "level_str": "3.3.2.2",
+        "level": [
+            3,
+            3,
+            2,
+            2
+        ]
+    },
+    "skill_127": {
+        "skill_id": 127,
+        "level_str": "3.3.2.3",
+        "level": [
+            3,
+            3,
+            2,
+            3
+        ]
+    },
+    "skill_128": {
+        "skill_id": 128,
+        "level_str": "3.3.2.4",
+        "level": [
+            3,
+            3,
+            2,
+            4
+        ]
+    },
+    "skill_129": {
+        "skill_id": 129,
+        "level_str": "3.3.2.5",
+        "level": [
+            3,
+            3,
+            2,
+            5
+        ]
+    },
+    "skill_130": {
+        "skill_id": 130,
+        "level_str": "3.3.3.1",
+        "level": [
+            3,
+            3,
+            3,
+            1
+        ]
+    },
+    "skill_131": {
+        "skill_id": 131,
+        "level_str": "3.3.3.2",
+        "level": [
+            3,
+            3,
+            3,
+            2
+        ]
+    },
+    "skill_132": {
+        "skill_id": 132,
+        "level_str": "3.3.3.3",
+        "level": [
+            3,
+            3,
+            3,
+            3
+        ]
+    },
+    "skill_133": {
+        "skill_id": 133,
+        "level_str": "3.3.3.4",
+        "level": [
+            3,
+            3,
+            3,
+            4
+        ]
+    },
+    "skill_134": {
+        "skill_id": 134,
+        "level_str": "3.3.3.5",
+        "level": [
+            3,
+            3,
+            3,
+            5
+        ]
     }
 }

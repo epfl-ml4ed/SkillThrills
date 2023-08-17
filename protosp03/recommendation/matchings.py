@@ -20,8 +20,8 @@ def profile_job_match(profile, job):
     return matching
 
 
-def profile_job_match_with_group(profile, job, skills):
-    """Computes a profile job matching score.
+def profile_job_match_with_level(profile, job, skills, levels):
+    """Computes a profile job matching score for each level in the hierarchy.
 
     Args:
         profile (set): set of skills that the profile has
@@ -30,19 +30,7 @@ def profile_job_match_with_group(profile, job, skills):
     Returns:
         float: matching score
     """
-    matching = dict()
-    for skill in job:
-        group = skills[skill]["group_id"]
-        if group not in matching:
-            matching[group] = 0
-
-    for group in matching:
-        job_tmp_group = {
-            skill: level
-            for skill, level in job.items()
-            if skills[skill]["group_id"] == group
-        }
-        matching[group] = profile_job_match(profile, job_tmp_group)
+    matching = 0
     return matching
 
 

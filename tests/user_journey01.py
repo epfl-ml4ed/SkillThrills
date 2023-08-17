@@ -52,16 +52,16 @@ def main():
     profile_id = random.choice(list(profiles.keys()))
     profile = profiles[profile_id]
     print(f"Considering Profile {profile_id} with the skills:")
-    for skill, level in profile.items():
-        print(f"\t{skill} at level {level} in group {skills[skill]['group_id']}")
+    for skill, mastery in profile.items():
+        print(f"\t{skill} at mastery {mastery} in group {skills[skill]['level_str']}")
 
     # Assume the profile is interested in a random job and print its skills
     interest_job = random.choice(list(jobs.keys()))
     print(
         f"\nWe are assuming that the Profile is interested in Job {interest_job} that requires the skills:"
     )
-    for skill, level in jobs[interest_job].items():
-        print(f"\t{skill} at level {level} in group {skills[skill]['group_id']}")
+    for skill, mastery in jobs[interest_job].items():
+        print(f"\t{skill} at mastery {mastery} in level {skills[skill]['level_str']}")
 
     # Compute and print the matching between the profile and the desired job
     profile_job_matching = matchings.profile_job_match(profile, jobs[interest_job])
@@ -69,7 +69,7 @@ def main():
         f"\nThe matching between the profile and the desired job is: {int(profile_job_matching)}%"
     )
 
-    profile_job_match_with_group = matchings.profile_job_match_with_group(
+    profile_job_match_with_group = matchings.profile_job_match_with_level(
         profile, jobs[interest_job], skills
     )
 

@@ -1,198 +1,1509 @@
 {
     "jobs_0": {
-        "skill_5": 2,
-        "skill_18": 3,
-        "skill_15": 1,
-        "skill_2": 1,
-        "skill_17": 2,
-        "skill_1": 2,
-        "skill_8": 1,
-        "skill_13": 2,
-        "skill_3": 4,
-        "skill_9": 1
+        "skill_41": 4,
+        "skill_118": 1
     },
     "jobs_1": {
-        "skill_24": 1,
-        "skill_10": 3,
-        "skill_8": 3,
-        "skill_0": 4,
-        "skill_5": 4
+        "skill_55": 3,
+        "skill_3": 1,
+        "skill_67": 1,
+        "skill_48": 2,
+        "skill_107": 2,
+        "skill_52": 1,
+        "skill_2": 2,
+        "skill_50": 4,
+        "skill_47": 1,
+        "skill_33": 3
     },
     "jobs_2": {
-        "skill_11": 3,
-        "skill_23": 1,
-        "skill_9": 2
+        "skill_114": 1,
+        "skill_115": 3,
+        "skill_102": 1,
+        "skill_10": 2,
+        "skill_44": 2,
+        "skill_6": 2,
+        "skill_91": 2,
+        "skill_86": 3,
+        "skill_133": 3
     },
     "jobs_3": {
-        "skill_9": 3,
-        "skill_12": 1,
-        "skill_18": 3
+        "skill_96": 2,
+        "skill_45": 2
     },
     "jobs_4": {
-        "skill_14": 1,
-        "skill_12": 3,
-        "skill_24": 2
+        "skill_105": 2,
+        "skill_5": 3,
+        "skill_24": 4
     },
     "jobs_5": {
-        "skill_17": 2,
-        "skill_20": 1,
-        "skill_24": 2
+        "skill_134": 1,
+        "skill_109": 4,
+        "skill_34": 3,
+        "skill_35": 2,
+        "skill_112": 3,
+        "skill_80": 4,
+        "skill_77": 1,
+        "skill_79": 4,
+        "skill_82": 1
     },
     "jobs_6": {
-        "skill_9": 3,
-        "skill_10": 4,
-        "skill_6": 4,
-        "skill_21": 1,
-        "skill_20": 4
+        "skill_59": 2
     },
     "jobs_7": {
-        "skill_13": 1,
-        "skill_16": 1,
-        "skill_22": 3,
-        "skill_0": 2,
-        "skill_5": 2,
-        "skill_20": 2
+        "skill_127": 1,
+        "skill_13": 2,
+        "skill_37": 3,
+        "skill_40": 4,
+        "skill_69": 2,
+        "skill_7": 2,
+        "skill_17": 3,
+        "skill_118": 4,
+        "skill_30": 4,
+        "skill_9": 2
     },
     "jobs_8": {
-        "skill_16": 1,
-        "skill_2": 2,
-        "skill_3": 4,
-        "skill_13": 1,
-        "skill_4": 2
+        "skill_55": 2,
+        "skill_40": 2,
+        "skill_28": 3,
+        "skill_109": 3,
+        "skill_114": 3,
+        "skill_95": 3,
+        "skill_62": 2
     },
     "jobs_9": {
-        "skill_18": 4,
-        "skill_23": 2,
-        "skill_5": 4,
-        "skill_21": 3,
-        "skill_7": 3,
-        "skill_15": 2,
-        "skill_4": 1,
-        "skill_9": 1,
-        "skill_22": 3
+        "skill_117": 2,
+        "skill_126": 1,
+        "skill_96": 4,
+        "skill_64": 4,
+        "skill_18": 3,
+        "skill_133": 4,
+        "skill_35": 2,
+        "skill_76": 1
     },
     "jobs_10": {
-        "skill_23": 3,
-        "skill_9": 3,
-        "skill_14": 3
+        "skill_119": 4,
+        "skill_36": 4,
+        "skill_120": 4,
+        "skill_39": 2,
+        "skill_117": 3,
+        "skill_13": 4,
+        "skill_116": 2,
+        "skill_8": 4,
+        "skill_32": 2
     },
     "jobs_11": {
-        "skill_19": 2,
-        "skill_13": 2,
-        "skill_7": 3,
-        "skill_21": 4,
-        "skill_4": 2,
-        "skill_10": 1,
-        "skill_11": 4,
-        "skill_23": 4,
-        "skill_2": 3
+        "skill_77": 1,
+        "skill_71": 3
     },
     "jobs_12": {
-        "skill_23": 1,
-        "skill_13": 3,
-        "skill_24": 1,
+        "skill_34": 1,
+        "skill_64": 1,
         "skill_1": 2,
-        "skill_9": 1,
-        "skill_10": 4,
-        "skill_16": 2
+        "skill_20": 3,
+        "skill_79": 2
     },
     "jobs_13": {
-        "skill_20": 2,
-        "skill_2": 1,
-        "skill_13": 4,
-        "skill_18": 4,
-        "skill_21": 1,
-        "skill_12": 3,
-        "skill_22": 3
+        "skill_42": 3,
+        "skill_131": 3,
+        "skill_23": 3
     },
     "jobs_14": {
-        "skill_2": 2,
-        "skill_8": 4,
-        "skill_24": 1,
-        "skill_0": 1
+        "skill_16": 3,
+        "skill_6": 1,
+        "skill_90": 1,
+        "skill_74": 1,
+        "skill_126": 1,
+        "skill_25": 3,
+        "skill_66": 2,
+        "skill_24": 1
     },
     "jobs_15": {
-        "skill_15": 3,
-        "skill_16": 4,
-        "skill_14": 2,
-        "skill_13": 3,
-        "skill_17": 4,
-        "skill_12": 4,
-        "skill_24": 1,
-        "skill_7": 2,
-        "skill_8": 4,
-        "skill_5": 2
+        "skill_63": 4,
+        "skill_49": 3,
+        "skill_78": 3,
+        "skill_93": 4,
+        "skill_6": 3,
+        "skill_51": 4,
+        "skill_0": 1,
+        "skill_126": 4,
+        "skill_8": 4
     },
     "jobs_16": {
-        "skill_11": 3,
-        "skill_0": 2,
-        "skill_3": 1,
-        "skill_8": 3,
-        "skill_24": 3
+        "skill_0": 4,
+        "skill_41": 4,
+        "skill_95": 3,
+        "skill_22": 2
     },
     "jobs_17": {
-        "skill_23": 4,
-        "skill_6": 4,
-        "skill_19": 3,
-        "skill_9": 3,
-        "skill_18": 4,
+        "skill_22": 1,
+        "skill_60": 4,
+        "skill_99": 2,
         "skill_0": 3,
-        "skill_11": 4
+        "skill_67": 1,
+        "skill_76": 4,
+        "skill_70": 2,
+        "skill_55": 4
     },
     "jobs_18": {
-        "skill_5": 4,
-        "skill_2": 2
+        "skill_18": 4,
+        "skill_114": 3,
+        "skill_10": 2,
+        "skill_58": 4,
+        "skill_38": 3
     },
     "jobs_19": {
-        "skill_0": 3,
-        "skill_16": 2,
-        "skill_5": 4,
+        "skill_16": 3,
+        "skill_85": 1,
+        "skill_95": 4,
+        "skill_108": 1,
         "skill_4": 2,
-        "skill_23": 3,
-        "skill_14": 1,
-        "skill_21": 4,
-        "skill_7": 4,
-        "skill_20": 4
+        "skill_120": 2,
+        "skill_75": 1,
+        "skill_113": 4
     },
     "jobs_20": {
-        "skill_4": 3,
-        "skill_3": 1,
-        "skill_7": 4,
-        "skill_10": 2,
-        "skill_22": 4,
-        "skill_15": 3
+        "skill_47": 1,
+        "skill_25": 1,
+        "skill_31": 3,
+        "skill_54": 4,
+        "skill_39": 1
     },
     "jobs_21": {
-        "skill_9": 1,
-        "skill_10": 3,
-        "skill_4": 3
+        "skill_46": 2,
+        "skill_4": 4,
+        "skill_6": 4
     },
     "jobs_22": {
-        "skill_6": 2,
-        "skill_24": 4,
-        "skill_17": 1,
-        "skill_12": 3,
-        "skill_21": 1,
-        "skill_16": 4,
-        "skill_22": 1
+        "skill_89": 2,
+        "skill_37": 3,
+        "skill_53": 2
     },
     "jobs_23": {
-        "skill_10": 2,
-        "skill_6": 1,
-        "skill_21": 4,
-        "skill_0": 3,
-        "skill_13": 3,
-        "skill_23": 2
+        "skill_70": 3
     },
     "jobs_24": {
-        "skill_14": 1,
+        "skill_34": 3,
+        "skill_39": 4,
+        "skill_20": 2,
+        "skill_114": 2,
         "skill_15": 2,
-        "skill_18": 3,
-        "skill_16": 3,
-        "skill_10": 3,
+        "skill_8": 4,
+        "skill_131": 3
+    },
+    "jobs_25": {
+        "skill_7": 1,
+        "skill_32": 1,
+        "skill_124": 2,
+        "skill_24": 4,
+        "skill_48": 3
+    },
+    "jobs_26": {
+        "skill_120": 4,
+        "skill_2": 3,
+        "skill_108": 3,
+        "skill_110": 1,
+        "skill_102": 2,
+        "skill_27": 1,
+        "skill_105": 2,
+        "skill_91": 4
+    },
+    "jobs_27": {
+        "skill_91": 2,
+        "skill_81": 2,
+        "skill_64": 3,
+        "skill_16": 4
+    },
+    "jobs_28": {
+        "skill_67": 1,
+        "skill_26": 1,
+        "skill_81": 4,
+        "skill_37": 3,
+        "skill_53": 4,
+        "skill_92": 3,
+        "skill_123": 2,
+        "skill_116": 4,
+        "skill_108": 2
+    },
+    "jobs_29": {
+        "skill_104": 2,
+        "skill_100": 1,
+        "skill_67": 4
+    },
+    "jobs_30": {
+        "skill_128": 1,
+        "skill_116": 1,
+        "skill_84": 2,
+        "skill_47": 1,
+        "skill_100": 3
+    },
+    "jobs_31": {
+        "skill_77": 2,
+        "skill_119": 1
+    },
+    "jobs_32": {
+        "skill_128": 2,
+        "skill_41": 2,
+        "skill_21": 1,
+        "skill_80": 2,
+        "skill_67": 3,
+        "skill_53": 4,
+        "skill_39": 1,
+        "skill_37": 3
+    },
+    "jobs_33": {
+        "skill_72": 2,
+        "skill_23": 1,
+        "skill_75": 2,
+        "skill_113": 4,
+        "skill_39": 1,
+        "skill_114": 1,
+        "skill_35": 1,
+        "skill_18": 4,
+        "skill_12": 3
+    },
+    "jobs_34": {
         "skill_5": 2,
+        "skill_107": 1
+    },
+    "jobs_35": {
+        "skill_127": 3,
+        "skill_69": 1,
+        "skill_80": 3,
+        "skill_103": 1,
+        "skill_99": 4,
+        "skill_4": 1,
+        "skill_119": 3,
+        "skill_35": 3
+    },
+    "jobs_36": {
+        "skill_37": 3,
+        "skill_65": 1,
+        "skill_124": 4
+    },
+    "jobs_37": {
+        "skill_93": 4,
+        "skill_24": 4,
+        "skill_53": 1,
+        "skill_55": 2
+    },
+    "jobs_38": {
+        "skill_99": 3,
+        "skill_98": 1,
+        "skill_104": 4,
+        "skill_44": 3,
+        "skill_134": 2,
+        "skill_23": 1,
+        "skill_62": 1,
+        "skill_67": 3
+    },
+    "jobs_39": {
+        "skill_5": 1,
+        "skill_73": 1,
+        "skill_46": 2,
+        "skill_50": 3,
+        "skill_59": 3,
+        "skill_4": 3,
+        "skill_52": 1,
+        "skill_98": 4,
+        "skill_93": 3
+    },
+    "jobs_40": {
+        "skill_82": 4,
+        "skill_61": 3,
+        "skill_65": 2,
+        "skill_116": 3,
+        "skill_110": 3,
+        "skill_129": 3,
+        "skill_109": 4,
+        "skill_99": 3
+    },
+    "jobs_41": {
+        "skill_56": 1,
+        "skill_94": 2,
+        "skill_15": 4,
+        "skill_104": 1,
+        "skill_131": 1,
+        "skill_35": 3,
+        "skill_28": 1,
+        "skill_129": 2
+    },
+    "jobs_42": {
+        "skill_113": 2,
+        "skill_99": 4,
+        "skill_116": 1,
+        "skill_114": 3,
+        "skill_27": 4
+    },
+    "jobs_43": {
+        "skill_28": 4,
+        "skill_23": 3,
+        "skill_91": 2,
+        "skill_31": 4,
+        "skill_75": 1
+    },
+    "jobs_44": {
+        "skill_71": 4,
+        "skill_23": 1,
+        "skill_10": 4,
+        "skill_65": 4,
+        "skill_96": 1
+    },
+    "jobs_45": {
+        "skill_83": 3,
+        "skill_1": 3,
+        "skill_20": 4,
+        "skill_46": 4,
+        "skill_125": 3,
+        "skill_47": 4
+    },
+    "jobs_46": {
+        "skill_128": 3,
+        "skill_94": 1,
+        "skill_8": 4,
+        "skill_13": 1,
+        "skill_14": 3
+    },
+    "jobs_47": {
+        "skill_7": 4,
+        "skill_42": 3,
+        "skill_101": 3,
+        "skill_119": 4,
+        "skill_1": 3,
+        "skill_66": 4,
+        "skill_39": 4
+    },
+    "jobs_48": {
+        "skill_89": 2,
+        "skill_59": 4
+    },
+    "jobs_49": {
+        "skill_101": 3,
+        "skill_17": 2,
+        "skill_37": 3
+    },
+    "jobs_50": {
+        "skill_37": 4,
+        "skill_96": 2,
+        "skill_43": 4,
+        "skill_74": 4,
+        "skill_40": 4,
+        "skill_77": 1,
+        "skill_54": 1
+    },
+    "jobs_51": {
+        "skill_24": 1,
+        "skill_132": 1,
+        "skill_3": 3
+    },
+    "jobs_52": {
+        "skill_88": 2,
+        "skill_120": 1,
+        "skill_7": 1
+    },
+    "jobs_53": {
+        "skill_11": 1,
+        "skill_27": 3,
+        "skill_75": 3,
+        "skill_57": 2,
+        "skill_109": 4,
+        "skill_121": 1,
+        "skill_74": 2
+    },
+    "jobs_54": {
+        "skill_67": 4,
+        "skill_126": 3
+    },
+    "jobs_55": {
+        "skill_92": 3,
+        "skill_68": 4,
+        "skill_124": 3,
+        "skill_88": 4,
+        "skill_122": 2,
+        "skill_132": 3,
+        "skill_66": 4,
+        "skill_23": 1,
+        "skill_15": 1
+    },
+    "jobs_56": {
+        "skill_39": 3,
+        "skill_110": 3,
+        "skill_79": 2,
+        "skill_46": 4,
+        "skill_120": 2,
+        "skill_3": 2
+    },
+    "jobs_57": {
+        "skill_21": 4,
+        "skill_71": 3,
+        "skill_110": 3,
+        "skill_95": 4,
+        "skill_132": 3
+    },
+    "jobs_58": {
+        "skill_90": 2,
+        "skill_26": 3,
+        "skill_92": 2,
+        "skill_62": 2,
+        "skill_86": 4
+    },
+    "jobs_59": {
+        "skill_132": 3,
+        "skill_110": 1,
+        "skill_94": 2,
+        "skill_52": 2,
+        "skill_129": 3,
+        "skill_26": 2,
+        "skill_5": 1,
+        "skill_91": 1,
+        "skill_88": 2
+    },
+    "jobs_60": {
+        "skill_29": 3,
+        "skill_23": 4
+    },
+    "jobs_61": {
+        "skill_1": 3,
+        "skill_102": 3,
+        "skill_48": 3,
+        "skill_28": 4,
+        "skill_117": 1,
+        "skill_29": 1
+    },
+    "jobs_62": {
+        "skill_57": 3,
+        "skill_13": 1,
+        "skill_124": 1,
+        "skill_35": 1,
+        "skill_130": 3,
+        "skill_107": 3
+    },
+    "jobs_63": {
+        "skill_39": 1,
+        "skill_109": 2,
+        "skill_60": 4,
+        "skill_104": 3
+    },
+    "jobs_64": {
+        "skill_12": 3,
+        "skill_53": 1,
+        "skill_40": 3,
+        "skill_10": 2
+    },
+    "jobs_65": {
+        "skill_4": 1,
+        "skill_70": 2,
+        "skill_119": 2,
+        "skill_87": 2,
+        "skill_74": 4,
+        "skill_68": 3,
+        "skill_47": 1,
+        "skill_28": 3,
+        "skill_129": 3,
+        "skill_11": 3
+    },
+    "jobs_66": {
+        "skill_127": 3,
+        "skill_70": 4,
+        "skill_121": 2,
+        "skill_63": 2,
+        "skill_113": 1,
+        "skill_60": 2,
+        "skill_94": 2,
+        "skill_104": 4
+    },
+    "jobs_67": {
+        "skill_61": 4,
+        "skill_44": 1,
+        "skill_134": 2,
+        "skill_133": 3,
+        "skill_65": 3,
+        "skill_79": 1
+    },
+    "jobs_68": {
+        "skill_10": 3,
+        "skill_128": 4,
+        "skill_65": 4,
+        "skill_120": 4,
+        "skill_83": 1,
+        "skill_104": 1,
+        "skill_77": 4,
+        "skill_75": 1,
+        "skill_40": 1
+    },
+    "jobs_69": {
+        "skill_123": 2
+    },
+    "jobs_70": {
+        "skill_95": 1,
+        "skill_6": 3,
+        "skill_4": 4,
+        "skill_87": 3,
+        "skill_33": 3,
+        "skill_32": 1,
+        "skill_122": 4,
+        "skill_134": 4,
+        "skill_124": 4
+    },
+    "jobs_71": {
+        "skill_45": 1,
+        "skill_56": 3,
+        "skill_79": 1,
+        "skill_31": 2,
+        "skill_97": 4,
+        "skill_130": 3
+    },
+    "jobs_72": {
+        "skill_102": 2,
+        "skill_88": 4
+    },
+    "jobs_73": {
+        "skill_69": 2,
+        "skill_3": 3,
+        "skill_120": 3
+    },
+    "jobs_74": {
+        "skill_84": 2,
+        "skill_86": 4,
+        "skill_62": 4,
+        "skill_91": 4
+    },
+    "jobs_75": {
+        "skill_125": 1,
+        "skill_9": 1,
+        "skill_39": 2,
+        "skill_127": 4,
+        "skill_132": 4,
+        "skill_100": 3,
+        "skill_64": 2,
+        "skill_73": 2,
+        "skill_122": 1
+    },
+    "jobs_76": {
+        "skill_101": 1,
+        "skill_84": 2,
+        "skill_69": 4,
+        "skill_3": 2,
+        "skill_68": 2
+    },
+    "jobs_77": {
+        "skill_32": 2,
+        "skill_115": 4,
+        "skill_14": 2,
+        "skill_17": 1,
+        "skill_64": 2,
+        "skill_102": 1
+    },
+    "jobs_78": {
+        "skill_69": 4,
+        "skill_85": 1,
+        "skill_125": 1,
+        "skill_109": 4
+    },
+    "jobs_79": {
+        "skill_97": 2
+    },
+    "jobs_80": {
+        "skill_102": 3
+    },
+    "jobs_81": {
+        "skill_41": 4,
+        "skill_73": 2,
+        "skill_15": 4,
+        "skill_129": 3,
+        "skill_50": 3,
+        "skill_80": 2,
+        "skill_93": 3,
+        "skill_69": 3
+    },
+    "jobs_82": {
+        "skill_117": 2,
+        "skill_60": 3,
+        "skill_55": 3
+    },
+    "jobs_83": {
+        "skill_58": 2,
+        "skill_66": 2,
+        "skill_41": 3,
+        "skill_85": 2,
+        "skill_100": 2
+    },
+    "jobs_84": {
+        "skill_22": 2,
+        "skill_76": 2
+    },
+    "jobs_85": {
+        "skill_83": 4,
+        "skill_68": 4,
+        "skill_22": 2,
+        "skill_117": 2,
+        "skill_115": 1,
+        "skill_133": 2,
+        "skill_110": 4,
+        "skill_104": 2,
+        "skill_70": 3
+    },
+    "jobs_86": {
+        "skill_69": 3,
+        "skill_6": 2,
+        "skill_18": 3,
+        "skill_29": 4
+    },
+    "jobs_87": {
+        "skill_44": 4,
+        "skill_118": 3,
+        "skill_96": 1,
+        "skill_46": 1,
+        "skill_25": 3,
+        "skill_84": 2,
+        "skill_102": 2,
+        "skill_121": 1,
+        "skill_63": 1
+    },
+    "jobs_88": {
+        "skill_33": 2,
+        "skill_25": 3,
+        "skill_94": 1,
+        "skill_69": 1,
+        "skill_126": 2,
+        "skill_26": 4,
+        "skill_66": 4
+    },
+    "jobs_89": {
+        "skill_30": 3,
+        "skill_39": 4,
+        "skill_106": 1,
+        "skill_15": 2,
+        "skill_93": 2,
+        "skill_72": 1,
+        "skill_40": 4,
+        "skill_74": 1,
+        "skill_7": 4
+    },
+    "jobs_90": {
+        "skill_68": 1,
+        "skill_55": 1,
+        "skill_33": 4,
+        "skill_12": 4
+    },
+    "jobs_91": {
+        "skill_17": 4,
+        "skill_93": 3,
+        "skill_20": 2,
+        "skill_95": 2
+    },
+    "jobs_92": {
+        "skill_112": 2,
+        "skill_56": 3,
+        "skill_11": 4,
+        "skill_83": 1,
+        "skill_108": 1,
+        "skill_18": 4
+    },
+    "jobs_93": {
+        "skill_7": 3,
+        "skill_96": 4
+    },
+    "jobs_94": {
+        "skill_59": 4,
+        "skill_86": 3,
+        "skill_109": 3,
+        "skill_88": 2,
+        "skill_101": 3
+    },
+    "jobs_95": {
+        "skill_60": 4,
+        "skill_73": 1
+    },
+    "jobs_96": {
+        "skill_124": 1,
+        "skill_106": 4,
+        "skill_100": 3,
+        "skill_120": 1,
+        "skill_54": 2,
+        "skill_55": 3,
+        "skill_62": 3,
+        "skill_105": 2,
+        "skill_114": 2,
+        "skill_9": 2
+    },
+    "jobs_97": {
+        "skill_122": 1,
+        "skill_70": 2,
+        "skill_50": 3,
+        "skill_95": 4,
+        "skill_74": 3,
+        "skill_60": 1,
+        "skill_56": 1,
+        "skill_37": 2,
+        "skill_62": 3,
+        "skill_106": 4
+    },
+    "jobs_98": {
+        "skill_127": 3,
+        "skill_42": 2
+    },
+    "jobs_99": {
+        "skill_120": 3,
+        "skill_40": 2,
+        "skill_88": 1,
+        "skill_109": 3
+    },
+    "jobs_100": {
+        "skill_45": 1,
+        "skill_97": 1,
+        "skill_129": 3,
+        "skill_106": 4,
+        "skill_8": 2,
+        "skill_61": 1
+    },
+    "jobs_101": {
+        "skill_99": 4,
+        "skill_75": 2,
+        "skill_2": 1,
+        "skill_22": 3,
+        "skill_30": 4,
+        "skill_124": 3,
+        "skill_128": 3,
+        "skill_94": 2,
+        "skill_126": 1,
+        "skill_39": 1
+    },
+    "jobs_102": {
+        "skill_105": 2,
+        "skill_15": 1,
+        "skill_35": 2,
+        "skill_107": 2,
+        "skill_10": 4,
+        "skill_3": 3,
+        "skill_117": 2,
+        "skill_99": 4
+    },
+    "jobs_103": {
+        "skill_63": 4,
+        "skill_52": 3,
+        "skill_68": 1,
+        "skill_114": 4,
+        "skill_21": 1,
+        "skill_19": 1,
+        "skill_20": 4,
+        "skill_46": 3,
+        "skill_76": 3
+    },
+    "jobs_104": {
+        "skill_74": 4,
+        "skill_21": 4
+    },
+    "jobs_105": {
+        "skill_81": 1,
+        "skill_86": 1,
+        "skill_15": 4,
+        "skill_39": 4,
+        "skill_99": 3,
+        "skill_47": 2,
+        "skill_69": 4,
+        "skill_37": 2,
+        "skill_36": 4,
+        "skill_49": 3
+    },
+    "jobs_106": {
+        "skill_66": 1,
+        "skill_78": 3,
+        "skill_11": 1
+    },
+    "jobs_107": {
+        "skill_11": 3,
+        "skill_48": 3,
+        "skill_64": 1,
+        "skill_100": 2,
+        "skill_52": 1
+    },
+    "jobs_108": {
+        "skill_125": 2,
+        "skill_112": 1,
+        "skill_127": 2,
+        "skill_45": 3,
+        "skill_71": 3,
+        "skill_56": 3
+    },
+    "jobs_109": {
+        "skill_74": 1,
+        "skill_99": 2,
+        "skill_84": 2,
+        "skill_114": 2,
+        "skill_22": 4,
+        "skill_71": 4,
+        "skill_30": 2
+    },
+    "jobs_110": {
+        "skill_132": 3,
+        "skill_46": 4,
+        "skill_60": 3,
+        "skill_0": 4,
+        "skill_48": 3,
+        "skill_8": 1,
+        "skill_92": 3,
+        "skill_16": 3,
+        "skill_131": 4,
+        "skill_104": 1
+    },
+    "jobs_111": {
+        "skill_118": 3,
+        "skill_90": 4,
+        "skill_124": 3,
+        "skill_93": 2,
+        "skill_28": 1
+    },
+    "jobs_112": {
+        "skill_96": 2,
+        "skill_95": 2
+    },
+    "jobs_113": {
+        "skill_109": 4,
+        "skill_113": 1,
+        "skill_27": 1,
+        "skill_0": 1,
+        "skill_111": 1
+    },
+    "jobs_114": {
+        "skill_55": 3
+    },
+    "jobs_115": {
+        "skill_10": 2
+    },
+    "jobs_116": {
         "skill_23": 4,
+        "skill_39": 1,
+        "skill_45": 2,
+        "skill_98": 4,
+        "skill_35": 1,
+        "skill_30": 3,
+        "skill_19": 3,
+        "skill_25": 4
+    },
+    "jobs_117": {
+        "skill_101": 1,
+        "skill_2": 2
+    },
+    "jobs_118": {
+        "skill_29": 1,
+        "skill_18": 3,
+        "skill_47": 2,
+        "skill_120": 1
+    },
+    "jobs_119": {
+        "skill_132": 2,
+        "skill_30": 2,
+        "skill_108": 2,
+        "skill_43": 1,
+        "skill_57": 1,
+        "skill_110": 2,
+        "skill_118": 1,
+        "skill_8": 1
+    },
+    "jobs_120": {
+        "skill_28": 3,
+        "skill_43": 4
+    },
+    "jobs_121": {
+        "skill_105": 3,
+        "skill_35": 3,
+        "skill_21": 4,
+        "skill_52": 4
+    },
+    "jobs_122": {
+        "skill_118": 2,
+        "skill_76": 1,
+        "skill_33": 4,
+        "skill_90": 3,
+        "skill_56": 3,
+        "skill_18": 3,
+        "skill_124": 3
+    },
+    "jobs_123": {
+        "skill_82": 1,
+        "skill_61": 3,
+        "skill_59": 2,
+        "skill_5": 3,
+        "skill_69": 2,
+        "skill_86": 3,
+        "skill_95": 2
+    },
+    "jobs_124": {
+        "skill_132": 3,
+        "skill_15": 2,
+        "skill_83": 3,
+        "skill_129": 4,
+        "skill_14": 3,
+        "skill_116": 1,
+        "skill_35": 4,
+        "skill_31": 2,
+        "skill_6": 3
+    },
+    "jobs_125": {
+        "skill_122": 2,
+        "skill_133": 3,
+        "skill_5": 3,
+        "skill_113": 3,
+        "skill_2": 3,
+        "skill_88": 3,
+        "skill_105": 1,
+        "skill_108": 2
+    },
+    "jobs_126": {
+        "skill_105": 4,
+        "skill_4": 2,
+        "skill_25": 3,
+        "skill_111": 1,
+        "skill_34": 2,
+        "skill_47": 3,
+        "skill_52": 1
+    },
+    "jobs_127": {
+        "skill_12": 3,
+        "skill_129": 2,
+        "skill_29": 2,
+        "skill_62": 2
+    },
+    "jobs_128": {
+        "skill_49": 4,
+        "skill_95": 4
+    },
+    "jobs_129": {
+        "skill_96": 2,
+        "skill_87": 2,
+        "skill_19": 2,
+        "skill_6": 1,
+        "skill_22": 2,
+        "skill_77": 4,
+        "skill_114": 3,
+        "skill_40": 2,
+        "skill_24": 1,
+        "skill_3": 3
+    },
+    "jobs_130": {
+        "skill_31": 1,
+        "skill_26": 4
+    },
+    "jobs_131": {
+        "skill_56": 3,
+        "skill_15": 4,
+        "skill_101": 1,
+        "skill_27": 1
+    },
+    "jobs_132": {
+        "skill_92": 3,
+        "skill_58": 3,
+        "skill_129": 3,
+        "skill_9": 1,
+        "skill_113": 4,
+        "skill_95": 3
+    },
+    "jobs_133": {
+        "skill_114": 2,
+        "skill_38": 3,
+        "skill_112": 3,
+        "skill_51": 3,
+        "skill_101": 3,
         "skill_19": 4,
-        "skill_21": 2
+        "skill_52": 4
+    },
+    "jobs_134": {
+        "skill_45": 2
+    },
+    "jobs_135": {
+        "skill_109": 3,
+        "skill_124": 4,
+        "skill_77": 3,
+        "skill_27": 3,
+        "skill_41": 2
+    },
+    "jobs_136": {
+        "skill_130": 2,
+        "skill_59": 4,
+        "skill_12": 4,
+        "skill_69": 2,
+        "skill_6": 4,
+        "skill_98": 2
+    },
+    "jobs_137": {
+        "skill_34": 1
+    },
+    "jobs_138": {
+        "skill_106": 4,
+        "skill_97": 4
+    },
+    "jobs_139": {
+        "skill_98": 4,
+        "skill_16": 2,
+        "skill_92": 3,
+        "skill_69": 1,
+        "skill_100": 3,
+        "skill_66": 3
+    },
+    "jobs_140": {
+        "skill_31": 4,
+        "skill_47": 1,
+        "skill_118": 3,
+        "skill_8": 3,
+        "skill_6": 2,
+        "skill_21": 4,
+        "skill_14": 4,
+        "skill_129": 1
+    },
+    "jobs_141": {
+        "skill_30": 3,
+        "skill_111": 2,
+        "skill_8": 2,
+        "skill_14": 3,
+        "skill_95": 2,
+        "skill_25": 2,
+        "skill_7": 3,
+        "skill_85": 2,
+        "skill_126": 4,
+        "skill_5": 4
+    },
+    "jobs_142": {
+        "skill_95": 1,
+        "skill_49": 3,
+        "skill_16": 1,
+        "skill_98": 4,
+        "skill_94": 4,
+        "skill_24": 2,
+        "skill_42": 4,
+        "skill_133": 4
+    },
+    "jobs_143": {
+        "skill_8": 4,
+        "skill_61": 4,
+        "skill_24": 2,
+        "skill_11": 4,
+        "skill_117": 4,
+        "skill_122": 1,
+        "skill_12": 2,
+        "skill_67": 4,
+        "skill_13": 4
+    },
+    "jobs_144": {
+        "skill_44": 1,
+        "skill_58": 2,
+        "skill_17": 4,
+        "skill_4": 3,
+        "skill_19": 4,
+        "skill_104": 3,
+        "skill_111": 1
+    },
+    "jobs_145": {
+        "skill_11": 2,
+        "skill_85": 4,
+        "skill_41": 4,
+        "skill_71": 4,
+        "skill_53": 2,
+        "skill_94": 3,
+        "skill_12": 2
+    },
+    "jobs_146": {
+        "skill_13": 1,
+        "skill_21": 1,
+        "skill_29": 4,
+        "skill_27": 1,
+        "skill_82": 4,
+        "skill_133": 2
+    },
+    "jobs_147": {
+        "skill_51": 4,
+        "skill_41": 3,
+        "skill_69": 3,
+        "skill_100": 4,
+        "skill_67": 3,
+        "skill_9": 3
+    },
+    "jobs_148": {
+        "skill_120": 4,
+        "skill_90": 2,
+        "skill_19": 4
+    },
+    "jobs_149": {
+        "skill_126": 3,
+        "skill_50": 4
+    },
+    "jobs_150": {
+        "skill_56": 2,
+        "skill_50": 2,
+        "skill_84": 1,
+        "skill_51": 3,
+        "skill_9": 1,
+        "skill_68": 3,
+        "skill_27": 4,
+        "skill_15": 1,
+        "skill_32": 3
+    },
+    "jobs_151": {
+        "skill_60": 4,
+        "skill_71": 4,
+        "skill_25": 2,
+        "skill_43": 1,
+        "skill_29": 4,
+        "skill_5": 3
+    },
+    "jobs_152": {
+        "skill_28": 3,
+        "skill_30": 1,
+        "skill_112": 4,
+        "skill_50": 2,
+        "skill_66": 1,
+        "skill_24": 2,
+        "skill_45": 3,
+        "skill_12": 2,
+        "skill_78": 4,
+        "skill_1": 4
+    },
+    "jobs_153": {
+        "skill_98": 2,
+        "skill_40": 2,
+        "skill_25": 1,
+        "skill_21": 4,
+        "skill_134": 2,
+        "skill_15": 4
+    },
+    "jobs_154": {
+        "skill_54": 1,
+        "skill_50": 3,
+        "skill_13": 2
+    },
+    "jobs_155": {
+        "skill_31": 1,
+        "skill_92": 2,
+        "skill_90": 4,
+        "skill_105": 2
+    },
+    "jobs_156": {
+        "skill_60": 1,
+        "skill_13": 4,
+        "skill_41": 4,
+        "skill_58": 1
+    },
+    "jobs_157": {
+        "skill_84": 2,
+        "skill_22": 1,
+        "skill_32": 1,
+        "skill_24": 1,
+        "skill_1": 4,
+        "skill_47": 3,
+        "skill_107": 1,
+        "skill_39": 4,
+        "skill_97": 4
+    },
+    "jobs_158": {
+        "skill_130": 4,
+        "skill_77": 4,
+        "skill_63": 3,
+        "skill_58": 2,
+        "skill_66": 2
+    },
+    "jobs_159": {
+        "skill_131": 2,
+        "skill_31": 1
+    },
+    "jobs_160": {
+        "skill_68": 1,
+        "skill_82": 2,
+        "skill_79": 1,
+        "skill_12": 1
+    },
+    "jobs_161": {
+        "skill_41": 4,
+        "skill_73": 2,
+        "skill_128": 3,
+        "skill_31": 1,
+        "skill_63": 3,
+        "skill_56": 1,
+        "skill_109": 2
+    },
+    "jobs_162": {
+        "skill_78": 1,
+        "skill_132": 3
+    },
+    "jobs_163": {
+        "skill_132": 4,
+        "skill_43": 1,
+        "skill_103": 4
+    },
+    "jobs_164": {
+        "skill_77": 4,
+        "skill_119": 1
+    },
+    "jobs_165": {
+        "skill_68": 4,
+        "skill_71": 4,
+        "skill_32": 3
+    },
+    "jobs_166": {
+        "skill_124": 2,
+        "skill_113": 1,
+        "skill_25": 1,
+        "skill_62": 1,
+        "skill_121": 4,
+        "skill_12": 2,
+        "skill_59": 1,
+        "skill_122": 3
+    },
+    "jobs_167": {
+        "skill_111": 4,
+        "skill_76": 2,
+        "skill_46": 3,
+        "skill_68": 3,
+        "skill_107": 4,
+        "skill_104": 4,
+        "skill_40": 1,
+        "skill_88": 3
+    },
+    "jobs_168": {
+        "skill_17": 4,
+        "skill_79": 4,
+        "skill_82": 2,
+        "skill_45": 3,
+        "skill_19": 1,
+        "skill_51": 1,
+        "skill_95": 2,
+        "skill_69": 4,
+        "skill_72": 1
+    },
+    "jobs_169": {
+        "skill_37": 2,
+        "skill_49": 4,
+        "skill_47": 1,
+        "skill_13": 4,
+        "skill_122": 4,
+        "skill_93": 3
+    },
+    "jobs_170": {
+        "skill_63": 1,
+        "skill_127": 4,
+        "skill_100": 1,
+        "skill_23": 1,
+        "skill_39": 3,
+        "skill_112": 4,
+        "skill_84": 1,
+        "skill_42": 4,
+        "skill_93": 3
+    },
+    "jobs_171": {
+        "skill_108": 2,
+        "skill_20": 2,
+        "skill_16": 2,
+        "skill_110": 1,
+        "skill_124": 3,
+        "skill_107": 4,
+        "skill_125": 3,
+        "skill_48": 2,
+        "skill_23": 3,
+        "skill_14": 2
+    },
+    "jobs_172": {
+        "skill_38": 1,
+        "skill_110": 4
+    },
+    "jobs_173": {
+        "skill_42": 3,
+        "skill_87": 3,
+        "skill_75": 2,
+        "skill_78": 2,
+        "skill_113": 2,
+        "skill_2": 2,
+        "skill_26": 1,
+        "skill_105": 3,
+        "skill_76": 1,
+        "skill_73": 4
+    },
+    "jobs_174": {
+        "skill_27": 1,
+        "skill_28": 4,
+        "skill_36": 1,
+        "skill_133": 4,
+        "skill_98": 3,
+        "skill_65": 3
+    },
+    "jobs_175": {
+        "skill_25": 1,
+        "skill_128": 2,
+        "skill_65": 2,
+        "skill_105": 4,
+        "skill_83": 1
+    },
+    "jobs_176": {
+        "skill_78": 2,
+        "skill_23": 2,
+        "skill_97": 4,
+        "skill_54": 1,
+        "skill_120": 2
+    },
+    "jobs_177": {
+        "skill_6": 1,
+        "skill_77": 3,
+        "skill_7": 4,
+        "skill_74": 4,
+        "skill_103": 1,
+        "skill_130": 2,
+        "skill_75": 3,
+        "skill_127": 4
+    },
+    "jobs_178": {
+        "skill_75": 4,
+        "skill_38": 3,
+        "skill_95": 1,
+        "skill_122": 3,
+        "skill_52": 2,
+        "skill_133": 1,
+        "skill_37": 4,
+        "skill_103": 4,
+        "skill_12": 1,
+        "skill_62": 4
+    },
+    "jobs_179": {
+        "skill_128": 2,
+        "skill_68": 1,
+        "skill_90": 4,
+        "skill_30": 1,
+        "skill_95": 3,
+        "skill_104": 1,
+        "skill_64": 3,
+        "skill_111": 1,
+        "skill_72": 1,
+        "skill_117": 1
+    },
+    "jobs_180": {
+        "skill_48": 3
+    },
+    "jobs_181": {
+        "skill_119": 3,
+        "skill_86": 2,
+        "skill_6": 3,
+        "skill_52": 2,
+        "skill_16": 2
+    },
+    "jobs_182": {
+        "skill_49": 1,
+        "skill_48": 4,
+        "skill_51": 3,
+        "skill_47": 2
+    },
+    "jobs_183": {
+        "skill_32": 3,
+        "skill_14": 4,
+        "skill_117": 2
+    },
+    "jobs_184": {
+        "skill_15": 4,
+        "skill_114": 2,
+        "skill_5": 2
+    },
+    "jobs_185": {
+        "skill_80": 2
+    },
+    "jobs_186": {
+        "skill_123": 1,
+        "skill_49": 1,
+        "skill_28": 1,
+        "skill_44": 2,
+        "skill_95": 1,
+        "skill_80": 4,
+        "skill_55": 4
+    },
+    "jobs_187": {
+        "skill_15": 4
+    },
+    "jobs_188": {
+        "skill_123": 3,
+        "skill_21": 3,
+        "skill_100": 3,
+        "skill_33": 3,
+        "skill_48": 3,
+        "skill_26": 3,
+        "skill_97": 1
+    },
+    "jobs_189": {
+        "skill_10": 4
+    },
+    "jobs_190": {
+        "skill_24": 1
+    },
+    "jobs_191": {
+        "skill_81": 1,
+        "skill_47": 2,
+        "skill_124": 2,
+        "skill_34": 1,
+        "skill_123": 4,
+        "skill_21": 1
+    },
+    "jobs_192": {
+        "skill_3": 1,
+        "skill_87": 3,
+        "skill_17": 2,
+        "skill_10": 4,
+        "skill_29": 1,
+        "skill_13": 3,
+        "skill_112": 3,
+        "skill_101": 3,
+        "skill_51": 4
+    },
+    "jobs_193": {
+        "skill_85": 2,
+        "skill_41": 1,
+        "skill_118": 1,
+        "skill_19": 3,
+        "skill_88": 2,
+        "skill_68": 2,
+        "skill_129": 3
+    },
+    "jobs_194": {
+        "skill_107": 4,
+        "skill_71": 4,
+        "skill_87": 3,
+        "skill_93": 1,
+        "skill_112": 2,
+        "skill_105": 2,
+        "skill_128": 3
+    },
+    "jobs_195": {
+        "skill_46": 2,
+        "skill_97": 1,
+        "skill_102": 2,
+        "skill_39": 4,
+        "skill_20": 2,
+        "skill_98": 1,
+        "skill_14": 4
+    },
+    "jobs_196": {
+        "skill_100": 4,
+        "skill_132": 2,
+        "skill_120": 2,
+        "skill_107": 4,
+        "skill_77": 1
+    },
+    "jobs_197": {
+        "skill_29": 3,
+        "skill_112": 4,
+        "skill_127": 2,
+        "skill_55": 4,
+        "skill_94": 3,
+        "skill_87": 4,
+        "skill_91": 3
+    },
+    "jobs_198": {
+        "skill_3": 4,
+        "skill_64": 4,
+        "skill_122": 1,
+        "skill_19": 4,
+        "skill_57": 1,
+        "skill_115": 2,
+        "skill_103": 4
+    },
+    "jobs_199": {
+        "skill_96": 3,
+        "skill_119": 2,
+        "skill_54": 2,
+        "skill_106": 4,
+        "skill_40": 3,
+        "skill_99": 4
     }
 }

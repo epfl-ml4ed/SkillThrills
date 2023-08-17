@@ -1,198 +1,1379 @@
 {
-    "skill_5": {
-        "jobs_0": 2,
-        "jobs_1": 4,
-        "jobs_7": 2,
-        "jobs_9": 4,
-        "jobs_15": 2,
-        "jobs_18": 4,
-        "jobs_19": 4,
-        "jobs_24": 2
+    "skill_41": {
+        "jobs_0": 4,
+        "jobs_16": 4,
+        "jobs_32": 2,
+        "jobs_81": 4,
+        "jobs_83": 3,
+        "jobs_135": 2,
+        "jobs_145": 4,
+        "jobs_147": 3,
+        "jobs_156": 4,
+        "jobs_161": 4,
+        "jobs_193": 1
     },
-    "skill_18": {
-        "jobs_0": 3,
-        "jobs_3": 3,
-        "jobs_9": 4,
-        "jobs_13": 4,
-        "jobs_17": 4,
-        "jobs_24": 3
-    },
-    "skill_15": {
+    "skill_118": {
         "jobs_0": 1,
-        "jobs_9": 2,
-        "jobs_15": 3,
-        "jobs_20": 3,
-        "jobs_24": 2
+        "jobs_7": 4,
+        "jobs_87": 3,
+        "jobs_111": 3,
+        "jobs_119": 1,
+        "jobs_122": 2,
+        "jobs_140": 3,
+        "jobs_193": 1
     },
-    "skill_2": {
-        "jobs_0": 1,
-        "jobs_8": 2,
-        "jobs_11": 3,
-        "jobs_13": 1,
-        "jobs_14": 2,
-        "jobs_18": 2
-    },
-    "skill_17": {
-        "jobs_0": 2,
-        "jobs_5": 2,
-        "jobs_15": 4,
-        "jobs_22": 1
-    },
-    "skill_1": {
-        "jobs_0": 2,
-        "jobs_12": 2
-    },
-    "skill_8": {
-        "jobs_0": 1,
+    "skill_55": {
         "jobs_1": 3,
-        "jobs_14": 4,
-        "jobs_15": 4,
-        "jobs_16": 3
-    },
-    "skill_13": {
-        "jobs_0": 2,
-        "jobs_7": 1,
-        "jobs_8": 1,
-        "jobs_11": 2,
-        "jobs_12": 3,
-        "jobs_13": 4,
-        "jobs_15": 3,
-        "jobs_23": 3
+        "jobs_8": 2,
+        "jobs_17": 4,
+        "jobs_37": 2,
+        "jobs_82": 3,
+        "jobs_90": 1,
+        "jobs_96": 3,
+        "jobs_114": 3,
+        "jobs_186": 4,
+        "jobs_197": 4
     },
     "skill_3": {
-        "jobs_0": 4,
-        "jobs_8": 4,
-        "jobs_16": 1,
-        "jobs_20": 1
-    },
-    "skill_9": {
-        "jobs_0": 1,
-        "jobs_2": 2,
-        "jobs_3": 3,
-        "jobs_6": 3,
-        "jobs_9": 1,
-        "jobs_10": 3,
-        "jobs_12": 1,
-        "jobs_17": 3,
-        "jobs_21": 1
-    },
-    "skill_24": {
         "jobs_1": 1,
-        "jobs_4": 2,
-        "jobs_5": 2,
-        "jobs_12": 1,
-        "jobs_14": 1,
-        "jobs_15": 1,
-        "jobs_16": 3,
-        "jobs_22": 4
+        "jobs_51": 3,
+        "jobs_56": 2,
+        "jobs_73": 3,
+        "jobs_76": 2,
+        "jobs_102": 3,
+        "jobs_129": 3,
+        "jobs_192": 1,
+        "jobs_198": 4
+    },
+    "skill_67": {
+        "jobs_1": 1,
+        "jobs_17": 1,
+        "jobs_28": 1,
+        "jobs_29": 4,
+        "jobs_32": 3,
+        "jobs_38": 3,
+        "jobs_54": 4,
+        "jobs_143": 4,
+        "jobs_147": 3
+    },
+    "skill_48": {
+        "jobs_1": 2,
+        "jobs_25": 3,
+        "jobs_61": 3,
+        "jobs_107": 3,
+        "jobs_110": 3,
+        "jobs_171": 2,
+        "jobs_180": 3,
+        "jobs_182": 4,
+        "jobs_188": 3
+    },
+    "skill_107": {
+        "jobs_1": 2,
+        "jobs_34": 1,
+        "jobs_62": 3,
+        "jobs_102": 2,
+        "jobs_157": 1,
+        "jobs_167": 4,
+        "jobs_171": 4,
+        "jobs_194": 4,
+        "jobs_196": 4
+    },
+    "skill_52": {
+        "jobs_1": 1,
+        "jobs_39": 1,
+        "jobs_59": 2,
+        "jobs_103": 3,
+        "jobs_107": 1,
+        "jobs_121": 4,
+        "jobs_126": 1,
+        "jobs_133": 4,
+        "jobs_178": 2,
+        "jobs_181": 2
+    },
+    "skill_2": {
+        "jobs_1": 2,
+        "jobs_26": 3,
+        "jobs_101": 1,
+        "jobs_117": 2,
+        "jobs_125": 3,
+        "jobs_173": 2
+    },
+    "skill_50": {
+        "jobs_1": 4,
+        "jobs_39": 3,
+        "jobs_81": 3,
+        "jobs_97": 3,
+        "jobs_149": 4,
+        "jobs_150": 2,
+        "jobs_152": 2,
+        "jobs_154": 3
+    },
+    "skill_47": {
+        "jobs_1": 1,
+        "jobs_20": 1,
+        "jobs_30": 1,
+        "jobs_45": 4,
+        "jobs_65": 1,
+        "jobs_105": 2,
+        "jobs_118": 2,
+        "jobs_126": 3,
+        "jobs_140": 1,
+        "jobs_157": 3,
+        "jobs_169": 1,
+        "jobs_182": 2,
+        "jobs_191": 2
+    },
+    "skill_33": {
+        "jobs_1": 3,
+        "jobs_70": 3,
+        "jobs_88": 2,
+        "jobs_90": 4,
+        "jobs_122": 4,
+        "jobs_188": 3
+    },
+    "skill_114": {
+        "jobs_2": 1,
+        "jobs_8": 3,
+        "jobs_18": 3,
+        "jobs_24": 2,
+        "jobs_33": 1,
+        "jobs_42": 3,
+        "jobs_96": 2,
+        "jobs_103": 4,
+        "jobs_109": 2,
+        "jobs_129": 3,
+        "jobs_133": 2,
+        "jobs_184": 2
+    },
+    "skill_115": {
+        "jobs_2": 3,
+        "jobs_77": 4,
+        "jobs_85": 1,
+        "jobs_198": 2
+    },
+    "skill_102": {
+        "jobs_2": 1,
+        "jobs_26": 2,
+        "jobs_61": 3,
+        "jobs_72": 2,
+        "jobs_77": 1,
+        "jobs_80": 3,
+        "jobs_87": 2,
+        "jobs_195": 2
     },
     "skill_10": {
-        "jobs_1": 3,
-        "jobs_6": 4,
-        "jobs_11": 1,
-        "jobs_12": 4,
-        "jobs_20": 2,
-        "jobs_21": 3,
-        "jobs_23": 2,
-        "jobs_24": 3
+        "jobs_2": 2,
+        "jobs_18": 2,
+        "jobs_44": 4,
+        "jobs_64": 2,
+        "jobs_68": 3,
+        "jobs_102": 4,
+        "jobs_115": 2,
+        "jobs_189": 4,
+        "jobs_192": 4
     },
-    "skill_0": {
-        "jobs_1": 4,
-        "jobs_7": 2,
-        "jobs_14": 1,
-        "jobs_16": 2,
-        "jobs_17": 3,
-        "jobs_19": 3,
-        "jobs_23": 3
-    },
-    "skill_11": {
-        "jobs_2": 3,
-        "jobs_11": 4,
-        "jobs_16": 3,
-        "jobs_17": 4
-    },
-    "skill_23": {
-        "jobs_2": 1,
-        "jobs_9": 2,
-        "jobs_10": 3,
-        "jobs_11": 4,
-        "jobs_12": 1,
-        "jobs_17": 4,
-        "jobs_19": 3,
-        "jobs_23": 2,
-        "jobs_24": 4
-    },
-    "skill_12": {
-        "jobs_3": 1,
-        "jobs_4": 3,
-        "jobs_13": 3,
-        "jobs_15": 4,
-        "jobs_22": 3
-    },
-    "skill_14": {
-        "jobs_4": 1,
-        "jobs_10": 3,
-        "jobs_15": 2,
-        "jobs_19": 1,
-        "jobs_24": 1
-    },
-    "skill_20": {
-        "jobs_5": 1,
-        "jobs_6": 4,
-        "jobs_7": 2,
-        "jobs_13": 2,
-        "jobs_19": 4
+    "skill_44": {
+        "jobs_2": 2,
+        "jobs_38": 3,
+        "jobs_67": 1,
+        "jobs_87": 4,
+        "jobs_144": 1,
+        "jobs_186": 2
     },
     "skill_6": {
-        "jobs_6": 4,
-        "jobs_17": 4,
-        "jobs_22": 2,
-        "jobs_23": 1
+        "jobs_2": 2,
+        "jobs_14": 1,
+        "jobs_15": 3,
+        "jobs_21": 4,
+        "jobs_70": 3,
+        "jobs_86": 2,
+        "jobs_124": 3,
+        "jobs_129": 1,
+        "jobs_136": 4,
+        "jobs_140": 2,
+        "jobs_177": 1,
+        "jobs_181": 3
     },
-    "skill_21": {
-        "jobs_6": 1,
-        "jobs_9": 3,
-        "jobs_11": 4,
-        "jobs_13": 1,
-        "jobs_19": 4,
-        "jobs_22": 1,
-        "jobs_23": 4,
-        "jobs_24": 2
+    "skill_91": {
+        "jobs_2": 2,
+        "jobs_26": 4,
+        "jobs_27": 2,
+        "jobs_43": 2,
+        "jobs_59": 1,
+        "jobs_74": 4,
+        "jobs_197": 3
     },
-    "skill_16": {
-        "jobs_7": 1,
-        "jobs_8": 1,
+    "skill_86": {
+        "jobs_2": 3,
+        "jobs_58": 4,
+        "jobs_74": 4,
+        "jobs_94": 3,
+        "jobs_105": 1,
+        "jobs_123": 3,
+        "jobs_181": 2
+    },
+    "skill_133": {
+        "jobs_2": 3,
+        "jobs_9": 4,
+        "jobs_67": 3,
+        "jobs_85": 2,
+        "jobs_125": 3,
+        "jobs_142": 4,
+        "jobs_146": 2,
+        "jobs_174": 4,
+        "jobs_178": 1
+    },
+    "skill_96": {
+        "jobs_3": 2,
+        "jobs_9": 4,
+        "jobs_44": 1,
+        "jobs_50": 2,
+        "jobs_87": 1,
+        "jobs_93": 4,
+        "jobs_112": 2,
+        "jobs_129": 2,
+        "jobs_199": 3
+    },
+    "skill_45": {
+        "jobs_3": 2,
+        "jobs_71": 1,
+        "jobs_100": 1,
+        "jobs_108": 3,
+        "jobs_116": 2,
+        "jobs_134": 2,
+        "jobs_152": 3,
+        "jobs_168": 3
+    },
+    "skill_105": {
+        "jobs_4": 2,
+        "jobs_26": 2,
+        "jobs_96": 2,
+        "jobs_102": 2,
+        "jobs_121": 3,
+        "jobs_125": 1,
+        "jobs_126": 4,
+        "jobs_155": 2,
+        "jobs_173": 3,
+        "jobs_175": 4,
+        "jobs_194": 2
+    },
+    "skill_5": {
+        "jobs_4": 3,
+        "jobs_34": 2,
+        "jobs_39": 1,
+        "jobs_59": 1,
+        "jobs_123": 3,
+        "jobs_125": 3,
+        "jobs_141": 4,
+        "jobs_151": 3,
+        "jobs_184": 2
+    },
+    "skill_24": {
+        "jobs_4": 4,
+        "jobs_14": 1,
+        "jobs_25": 4,
+        "jobs_37": 4,
+        "jobs_51": 1,
+        "jobs_129": 1,
+        "jobs_142": 2,
+        "jobs_143": 2,
+        "jobs_152": 2,
+        "jobs_157": 1,
+        "jobs_190": 1
+    },
+    "skill_134": {
+        "jobs_5": 1,
+        "jobs_38": 2,
+        "jobs_67": 2,
+        "jobs_70": 4,
+        "jobs_153": 2
+    },
+    "skill_109": {
+        "jobs_5": 4,
+        "jobs_8": 3,
+        "jobs_40": 4,
+        "jobs_53": 4,
+        "jobs_63": 2,
+        "jobs_78": 4,
+        "jobs_94": 3,
+        "jobs_99": 3,
+        "jobs_113": 4,
+        "jobs_135": 3,
+        "jobs_161": 2
+    },
+    "skill_34": {
+        "jobs_5": 3,
+        "jobs_12": 1,
+        "jobs_24": 3,
+        "jobs_126": 2,
+        "jobs_137": 1,
+        "jobs_191": 1
+    },
+    "skill_35": {
+        "jobs_5": 2,
+        "jobs_9": 2,
+        "jobs_33": 1,
+        "jobs_35": 3,
+        "jobs_41": 3,
+        "jobs_62": 1,
+        "jobs_102": 2,
+        "jobs_116": 1,
+        "jobs_121": 3,
+        "jobs_124": 4
+    },
+    "skill_112": {
+        "jobs_5": 3,
+        "jobs_92": 2,
+        "jobs_108": 1,
+        "jobs_133": 3,
+        "jobs_152": 4,
+        "jobs_170": 4,
+        "jobs_192": 3,
+        "jobs_194": 2,
+        "jobs_197": 4
+    },
+    "skill_80": {
+        "jobs_5": 4,
+        "jobs_32": 2,
+        "jobs_35": 3,
+        "jobs_81": 2,
+        "jobs_185": 2,
+        "jobs_186": 4
+    },
+    "skill_77": {
+        "jobs_5": 1,
+        "jobs_11": 1,
+        "jobs_31": 2,
+        "jobs_50": 1,
+        "jobs_68": 4,
+        "jobs_129": 4,
+        "jobs_135": 3,
+        "jobs_158": 4,
+        "jobs_164": 4,
+        "jobs_177": 3,
+        "jobs_196": 1
+    },
+    "skill_79": {
+        "jobs_5": 4,
         "jobs_12": 2,
-        "jobs_15": 4,
-        "jobs_19": 2,
-        "jobs_22": 4,
-        "jobs_24": 3
+        "jobs_56": 2,
+        "jobs_67": 1,
+        "jobs_71": 1,
+        "jobs_160": 1,
+        "jobs_168": 4
     },
-    "skill_22": {
+    "skill_82": {
+        "jobs_5": 1,
+        "jobs_40": 4,
+        "jobs_123": 1,
+        "jobs_146": 4,
+        "jobs_160": 2,
+        "jobs_168": 2
+    },
+    "skill_59": {
+        "jobs_6": 2,
+        "jobs_39": 3,
+        "jobs_48": 4,
+        "jobs_94": 4,
+        "jobs_123": 2,
+        "jobs_136": 4,
+        "jobs_166": 1
+    },
+    "skill_127": {
+        "jobs_7": 1,
+        "jobs_35": 3,
+        "jobs_66": 3,
+        "jobs_75": 4,
+        "jobs_98": 3,
+        "jobs_108": 2,
+        "jobs_170": 4,
+        "jobs_177": 4,
+        "jobs_197": 2
+    },
+    "skill_13": {
+        "jobs_7": 2,
+        "jobs_10": 4,
+        "jobs_46": 1,
+        "jobs_62": 1,
+        "jobs_143": 4,
+        "jobs_146": 1,
+        "jobs_154": 2,
+        "jobs_156": 4,
+        "jobs_169": 4,
+        "jobs_192": 3
+    },
+    "skill_37": {
         "jobs_7": 3,
-        "jobs_9": 3,
-        "jobs_13": 3,
-        "jobs_20": 4,
-        "jobs_22": 1
+        "jobs_22": 3,
+        "jobs_28": 3,
+        "jobs_32": 3,
+        "jobs_36": 3,
+        "jobs_49": 3,
+        "jobs_50": 4,
+        "jobs_97": 2,
+        "jobs_105": 2,
+        "jobs_169": 2,
+        "jobs_178": 4
     },
-    "skill_4": {
+    "skill_40": {
+        "jobs_7": 4,
         "jobs_8": 2,
-        "jobs_9": 1,
-        "jobs_11": 2,
-        "jobs_19": 2,
-        "jobs_20": 3,
-        "jobs_21": 3
+        "jobs_50": 4,
+        "jobs_64": 3,
+        "jobs_68": 1,
+        "jobs_89": 4,
+        "jobs_99": 2,
+        "jobs_129": 2,
+        "jobs_153": 2,
+        "jobs_167": 1,
+        "jobs_199": 3
+    },
+    "skill_69": {
+        "jobs_7": 2,
+        "jobs_35": 1,
+        "jobs_73": 2,
+        "jobs_76": 4,
+        "jobs_78": 4,
+        "jobs_81": 3,
+        "jobs_86": 3,
+        "jobs_88": 1,
+        "jobs_105": 4,
+        "jobs_123": 2,
+        "jobs_136": 2,
+        "jobs_139": 1,
+        "jobs_147": 3,
+        "jobs_168": 4
     },
     "skill_7": {
-        "jobs_9": 3,
-        "jobs_11": 3,
-        "jobs_15": 2,
+        "jobs_7": 2,
+        "jobs_25": 1,
+        "jobs_47": 4,
+        "jobs_52": 1,
+        "jobs_89": 4,
+        "jobs_93": 3,
+        "jobs_141": 3,
+        "jobs_177": 4
+    },
+    "skill_17": {
+        "jobs_7": 3,
+        "jobs_49": 2,
+        "jobs_77": 1,
+        "jobs_91": 4,
+        "jobs_144": 4,
+        "jobs_168": 4,
+        "jobs_192": 2
+    },
+    "skill_30": {
+        "jobs_7": 4,
+        "jobs_89": 3,
+        "jobs_101": 4,
+        "jobs_109": 2,
+        "jobs_116": 3,
+        "jobs_119": 2,
+        "jobs_141": 3,
+        "jobs_152": 1,
+        "jobs_179": 1
+    },
+    "skill_9": {
+        "jobs_7": 2,
+        "jobs_75": 1,
+        "jobs_96": 2,
+        "jobs_132": 1,
+        "jobs_147": 3,
+        "jobs_150": 1
+    },
+    "skill_28": {
+        "jobs_8": 3,
+        "jobs_41": 1,
+        "jobs_43": 4,
+        "jobs_61": 4,
+        "jobs_65": 3,
+        "jobs_111": 1,
+        "jobs_120": 3,
+        "jobs_152": 3,
+        "jobs_174": 4,
+        "jobs_186": 1
+    },
+    "skill_95": {
+        "jobs_8": 3,
+        "jobs_16": 3,
         "jobs_19": 4,
-        "jobs_20": 4
+        "jobs_57": 4,
+        "jobs_70": 1,
+        "jobs_91": 2,
+        "jobs_97": 4,
+        "jobs_112": 2,
+        "jobs_123": 2,
+        "jobs_128": 4,
+        "jobs_132": 3,
+        "jobs_141": 2,
+        "jobs_142": 1,
+        "jobs_168": 2,
+        "jobs_178": 1,
+        "jobs_179": 3,
+        "jobs_186": 1
+    },
+    "skill_62": {
+        "jobs_8": 2,
+        "jobs_38": 1,
+        "jobs_58": 2,
+        "jobs_74": 4,
+        "jobs_96": 3,
+        "jobs_97": 3,
+        "jobs_127": 2,
+        "jobs_166": 1,
+        "jobs_178": 4
+    },
+    "skill_117": {
+        "jobs_9": 2,
+        "jobs_10": 3,
+        "jobs_61": 1,
+        "jobs_82": 2,
+        "jobs_85": 2,
+        "jobs_102": 2,
+        "jobs_143": 4,
+        "jobs_179": 1,
+        "jobs_183": 2
+    },
+    "skill_126": {
+        "jobs_9": 1,
+        "jobs_14": 1,
+        "jobs_15": 4,
+        "jobs_54": 3,
+        "jobs_88": 2,
+        "jobs_101": 1,
+        "jobs_141": 4,
+        "jobs_149": 3
+    },
+    "skill_64": {
+        "jobs_9": 4,
+        "jobs_12": 1,
+        "jobs_27": 3,
+        "jobs_75": 2,
+        "jobs_77": 2,
+        "jobs_107": 1,
+        "jobs_179": 3,
+        "jobs_198": 4
+    },
+    "skill_18": {
+        "jobs_9": 3,
+        "jobs_18": 4,
+        "jobs_33": 4,
+        "jobs_86": 3,
+        "jobs_92": 4,
+        "jobs_118": 3,
+        "jobs_122": 3
+    },
+    "skill_76": {
+        "jobs_9": 1,
+        "jobs_17": 4,
+        "jobs_84": 2,
+        "jobs_103": 3,
+        "jobs_122": 1,
+        "jobs_167": 2,
+        "jobs_173": 1
+    },
+    "skill_119": {
+        "jobs_10": 4,
+        "jobs_31": 1,
+        "jobs_35": 3,
+        "jobs_47": 4,
+        "jobs_65": 2,
+        "jobs_164": 1,
+        "jobs_181": 3,
+        "jobs_199": 2
+    },
+    "skill_36": {
+        "jobs_10": 4,
+        "jobs_105": 4,
+        "jobs_174": 1
+    },
+    "skill_120": {
+        "jobs_10": 4,
+        "jobs_19": 2,
+        "jobs_26": 4,
+        "jobs_52": 1,
+        "jobs_56": 2,
+        "jobs_68": 4,
+        "jobs_73": 3,
+        "jobs_96": 1,
+        "jobs_99": 3,
+        "jobs_118": 1,
+        "jobs_148": 4,
+        "jobs_176": 2,
+        "jobs_196": 2
+    },
+    "skill_39": {
+        "jobs_10": 2,
+        "jobs_20": 1,
+        "jobs_24": 4,
+        "jobs_32": 1,
+        "jobs_33": 1,
+        "jobs_47": 4,
+        "jobs_56": 3,
+        "jobs_63": 1,
+        "jobs_75": 2,
+        "jobs_89": 4,
+        "jobs_101": 1,
+        "jobs_105": 4,
+        "jobs_116": 1,
+        "jobs_157": 4,
+        "jobs_170": 3,
+        "jobs_195": 4
+    },
+    "skill_116": {
+        "jobs_10": 2,
+        "jobs_28": 4,
+        "jobs_30": 1,
+        "jobs_40": 3,
+        "jobs_42": 1,
+        "jobs_124": 1
+    },
+    "skill_8": {
+        "jobs_10": 4,
+        "jobs_15": 4,
+        "jobs_24": 4,
+        "jobs_46": 4,
+        "jobs_100": 2,
+        "jobs_110": 1,
+        "jobs_119": 1,
+        "jobs_140": 3,
+        "jobs_141": 2,
+        "jobs_143": 4
+    },
+    "skill_32": {
+        "jobs_10": 2,
+        "jobs_25": 1,
+        "jobs_70": 1,
+        "jobs_77": 2,
+        "jobs_150": 3,
+        "jobs_157": 1,
+        "jobs_165": 3,
+        "jobs_183": 3
+    },
+    "skill_71": {
+        "jobs_11": 3,
+        "jobs_44": 4,
+        "jobs_57": 3,
+        "jobs_108": 3,
+        "jobs_109": 4,
+        "jobs_145": 4,
+        "jobs_151": 4,
+        "jobs_165": 4,
+        "jobs_194": 4
+    },
+    "skill_1": {
+        "jobs_12": 2,
+        "jobs_45": 3,
+        "jobs_47": 3,
+        "jobs_61": 3,
+        "jobs_152": 4,
+        "jobs_157": 4
+    },
+    "skill_20": {
+        "jobs_12": 3,
+        "jobs_24": 2,
+        "jobs_45": 4,
+        "jobs_91": 2,
+        "jobs_103": 4,
+        "jobs_171": 2,
+        "jobs_195": 2
+    },
+    "skill_42": {
+        "jobs_13": 3,
+        "jobs_47": 3,
+        "jobs_98": 2,
+        "jobs_142": 4,
+        "jobs_170": 4,
+        "jobs_173": 3
+    },
+    "skill_131": {
+        "jobs_13": 3,
+        "jobs_24": 3,
+        "jobs_41": 1,
+        "jobs_110": 4,
+        "jobs_159": 2
+    },
+    "skill_23": {
+        "jobs_13": 3,
+        "jobs_33": 1,
+        "jobs_38": 1,
+        "jobs_43": 3,
+        "jobs_44": 1,
+        "jobs_55": 1,
+        "jobs_60": 4,
+        "jobs_116": 4,
+        "jobs_170": 1,
+        "jobs_171": 3,
+        "jobs_176": 2
+    },
+    "skill_16": {
+        "jobs_14": 3,
+        "jobs_19": 3,
+        "jobs_27": 4,
+        "jobs_110": 3,
+        "jobs_139": 2,
+        "jobs_142": 1,
+        "jobs_171": 2,
+        "jobs_181": 2
+    },
+    "skill_90": {
+        "jobs_14": 1,
+        "jobs_58": 2,
+        "jobs_111": 4,
+        "jobs_122": 3,
+        "jobs_148": 2,
+        "jobs_155": 4,
+        "jobs_179": 4
+    },
+    "skill_74": {
+        "jobs_14": 1,
+        "jobs_50": 4,
+        "jobs_53": 2,
+        "jobs_65": 4,
+        "jobs_89": 1,
+        "jobs_97": 3,
+        "jobs_104": 4,
+        "jobs_109": 1,
+        "jobs_177": 4
+    },
+    "skill_25": {
+        "jobs_14": 3,
+        "jobs_20": 1,
+        "jobs_87": 3,
+        "jobs_88": 3,
+        "jobs_116": 4,
+        "jobs_126": 3,
+        "jobs_141": 2,
+        "jobs_151": 2,
+        "jobs_153": 1,
+        "jobs_166": 1,
+        "jobs_175": 1
+    },
+    "skill_66": {
+        "jobs_14": 2,
+        "jobs_47": 4,
+        "jobs_55": 4,
+        "jobs_83": 2,
+        "jobs_88": 4,
+        "jobs_106": 1,
+        "jobs_139": 3,
+        "jobs_152": 1,
+        "jobs_158": 2
+    },
+    "skill_63": {
+        "jobs_15": 4,
+        "jobs_66": 2,
+        "jobs_87": 1,
+        "jobs_103": 4,
+        "jobs_158": 3,
+        "jobs_161": 3,
+        "jobs_170": 1
+    },
+    "skill_49": {
+        "jobs_15": 3,
+        "jobs_105": 3,
+        "jobs_128": 4,
+        "jobs_142": 3,
+        "jobs_169": 4,
+        "jobs_182": 1,
+        "jobs_186": 1
+    },
+    "skill_78": {
+        "jobs_15": 3,
+        "jobs_106": 3,
+        "jobs_152": 4,
+        "jobs_162": 1,
+        "jobs_173": 2,
+        "jobs_176": 2
+    },
+    "skill_93": {
+        "jobs_15": 4,
+        "jobs_37": 4,
+        "jobs_39": 3,
+        "jobs_81": 3,
+        "jobs_89": 2,
+        "jobs_91": 3,
+        "jobs_111": 2,
+        "jobs_169": 3,
+        "jobs_170": 3,
+        "jobs_194": 1
+    },
+    "skill_51": {
+        "jobs_15": 4,
+        "jobs_133": 3,
+        "jobs_147": 4,
+        "jobs_150": 3,
+        "jobs_168": 1,
+        "jobs_182": 3,
+        "jobs_192": 4
+    },
+    "skill_0": {
+        "jobs_15": 1,
+        "jobs_16": 4,
+        "jobs_17": 3,
+        "jobs_110": 4,
+        "jobs_113": 1
+    },
+    "skill_22": {
+        "jobs_16": 2,
+        "jobs_17": 1,
+        "jobs_84": 2,
+        "jobs_85": 2,
+        "jobs_101": 3,
+        "jobs_109": 4,
+        "jobs_129": 2,
+        "jobs_157": 1
+    },
+    "skill_60": {
+        "jobs_17": 4,
+        "jobs_63": 4,
+        "jobs_66": 2,
+        "jobs_82": 3,
+        "jobs_95": 4,
+        "jobs_97": 1,
+        "jobs_110": 3,
+        "jobs_151": 4,
+        "jobs_156": 1
+    },
+    "skill_99": {
+        "jobs_17": 2,
+        "jobs_35": 4,
+        "jobs_38": 3,
+        "jobs_40": 3,
+        "jobs_42": 4,
+        "jobs_101": 4,
+        "jobs_102": 4,
+        "jobs_105": 3,
+        "jobs_109": 2,
+        "jobs_199": 4
+    },
+    "skill_70": {
+        "jobs_17": 2,
+        "jobs_23": 3,
+        "jobs_65": 2,
+        "jobs_66": 4,
+        "jobs_85": 3,
+        "jobs_97": 2
+    },
+    "skill_58": {
+        "jobs_18": 4,
+        "jobs_83": 2,
+        "jobs_132": 3,
+        "jobs_144": 2,
+        "jobs_156": 1,
+        "jobs_158": 2
+    },
+    "skill_38": {
+        "jobs_18": 3,
+        "jobs_133": 3,
+        "jobs_172": 1,
+        "jobs_178": 3
+    },
+    "skill_85": {
+        "jobs_19": 1,
+        "jobs_78": 1,
+        "jobs_83": 2,
+        "jobs_141": 2,
+        "jobs_145": 4,
+        "jobs_193": 2
+    },
+    "skill_108": {
+        "jobs_19": 1,
+        "jobs_26": 3,
+        "jobs_28": 2,
+        "jobs_92": 1,
+        "jobs_119": 2,
+        "jobs_125": 2,
+        "jobs_171": 2
+    },
+    "skill_4": {
+        "jobs_19": 2,
+        "jobs_21": 4,
+        "jobs_35": 1,
+        "jobs_39": 3,
+        "jobs_65": 1,
+        "jobs_70": 4,
+        "jobs_126": 2,
+        "jobs_144": 3
+    },
+    "skill_75": {
+        "jobs_19": 1,
+        "jobs_33": 2,
+        "jobs_43": 1,
+        "jobs_53": 3,
+        "jobs_68": 1,
+        "jobs_101": 2,
+        "jobs_173": 2,
+        "jobs_177": 3,
+        "jobs_178": 4
+    },
+    "skill_113": {
+        "jobs_19": 4,
+        "jobs_33": 4,
+        "jobs_42": 2,
+        "jobs_66": 1,
+        "jobs_113": 1,
+        "jobs_125": 3,
+        "jobs_132": 4,
+        "jobs_166": 1,
+        "jobs_173": 2
+    },
+    "skill_31": {
+        "jobs_20": 3,
+        "jobs_43": 4,
+        "jobs_71": 2,
+        "jobs_124": 2,
+        "jobs_130": 1,
+        "jobs_140": 4,
+        "jobs_155": 1,
+        "jobs_159": 1,
+        "jobs_161": 1
+    },
+    "skill_54": {
+        "jobs_20": 4,
+        "jobs_50": 1,
+        "jobs_96": 2,
+        "jobs_154": 1,
+        "jobs_176": 1,
+        "jobs_199": 2
+    },
+    "skill_46": {
+        "jobs_21": 2,
+        "jobs_39": 2,
+        "jobs_45": 4,
+        "jobs_56": 4,
+        "jobs_87": 1,
+        "jobs_103": 3,
+        "jobs_110": 4,
+        "jobs_167": 3,
+        "jobs_195": 2
+    },
+    "skill_89": {
+        "jobs_22": 2,
+        "jobs_48": 2
+    },
+    "skill_53": {
+        "jobs_22": 2,
+        "jobs_28": 4,
+        "jobs_32": 4,
+        "jobs_37": 1,
+        "jobs_64": 1,
+        "jobs_145": 2
+    },
+    "skill_15": {
+        "jobs_24": 2,
+        "jobs_41": 4,
+        "jobs_55": 1,
+        "jobs_81": 4,
+        "jobs_89": 2,
+        "jobs_102": 1,
+        "jobs_105": 4,
+        "jobs_124": 2,
+        "jobs_131": 4,
+        "jobs_150": 1,
+        "jobs_153": 4,
+        "jobs_184": 4,
+        "jobs_187": 4
+    },
+    "skill_124": {
+        "jobs_25": 2,
+        "jobs_36": 4,
+        "jobs_55": 3,
+        "jobs_62": 1,
+        "jobs_70": 4,
+        "jobs_96": 1,
+        "jobs_101": 3,
+        "jobs_111": 3,
+        "jobs_122": 3,
+        "jobs_135": 4,
+        "jobs_166": 2,
+        "jobs_171": 3,
+        "jobs_191": 2
+    },
+    "skill_110": {
+        "jobs_26": 1,
+        "jobs_40": 3,
+        "jobs_56": 3,
+        "jobs_57": 3,
+        "jobs_59": 1,
+        "jobs_85": 4,
+        "jobs_119": 2,
+        "jobs_171": 1,
+        "jobs_172": 4
+    },
+    "skill_27": {
+        "jobs_26": 1,
+        "jobs_42": 4,
+        "jobs_53": 3,
+        "jobs_113": 1,
+        "jobs_131": 1,
+        "jobs_135": 3,
+        "jobs_146": 1,
+        "jobs_150": 4,
+        "jobs_174": 1
+    },
+    "skill_81": {
+        "jobs_27": 2,
+        "jobs_28": 4,
+        "jobs_105": 1,
+        "jobs_191": 1
+    },
+    "skill_26": {
+        "jobs_28": 1,
+        "jobs_58": 3,
+        "jobs_59": 2,
+        "jobs_88": 4,
+        "jobs_130": 4,
+        "jobs_173": 1,
+        "jobs_188": 3
+    },
+    "skill_92": {
+        "jobs_28": 3,
+        "jobs_55": 3,
+        "jobs_58": 2,
+        "jobs_110": 3,
+        "jobs_132": 3,
+        "jobs_139": 3,
+        "jobs_155": 2
+    },
+    "skill_123": {
+        "jobs_28": 2,
+        "jobs_69": 2,
+        "jobs_186": 1,
+        "jobs_188": 3,
+        "jobs_191": 4
+    },
+    "skill_104": {
+        "jobs_29": 2,
+        "jobs_38": 4,
+        "jobs_41": 1,
+        "jobs_63": 3,
+        "jobs_66": 4,
+        "jobs_68": 1,
+        "jobs_85": 2,
+        "jobs_110": 1,
+        "jobs_144": 3,
+        "jobs_167": 4,
+        "jobs_179": 1
+    },
+    "skill_100": {
+        "jobs_29": 1,
+        "jobs_30": 3,
+        "jobs_75": 3,
+        "jobs_83": 2,
+        "jobs_96": 3,
+        "jobs_107": 2,
+        "jobs_139": 3,
+        "jobs_147": 4,
+        "jobs_170": 1,
+        "jobs_188": 3,
+        "jobs_196": 4
+    },
+    "skill_128": {
+        "jobs_30": 1,
+        "jobs_32": 2,
+        "jobs_46": 3,
+        "jobs_68": 4,
+        "jobs_101": 3,
+        "jobs_161": 3,
+        "jobs_175": 2,
+        "jobs_179": 2,
+        "jobs_194": 3
+    },
+    "skill_84": {
+        "jobs_30": 2,
+        "jobs_74": 2,
+        "jobs_76": 2,
+        "jobs_87": 2,
+        "jobs_109": 2,
+        "jobs_150": 1,
+        "jobs_157": 2,
+        "jobs_170": 1
+    },
+    "skill_21": {
+        "jobs_32": 1,
+        "jobs_57": 4,
+        "jobs_103": 1,
+        "jobs_104": 4,
+        "jobs_121": 4,
+        "jobs_140": 4,
+        "jobs_146": 1,
+        "jobs_153": 4,
+        "jobs_188": 3,
+        "jobs_191": 1
+    },
+    "skill_72": {
+        "jobs_33": 2,
+        "jobs_89": 1,
+        "jobs_168": 1,
+        "jobs_179": 1
+    },
+    "skill_12": {
+        "jobs_33": 3,
+        "jobs_64": 3,
+        "jobs_90": 4,
+        "jobs_127": 3,
+        "jobs_136": 4,
+        "jobs_143": 2,
+        "jobs_145": 2,
+        "jobs_152": 2,
+        "jobs_160": 1,
+        "jobs_166": 2,
+        "jobs_178": 1
+    },
+    "skill_103": {
+        "jobs_35": 1,
+        "jobs_163": 4,
+        "jobs_177": 1,
+        "jobs_178": 4,
+        "jobs_198": 4
+    },
+    "skill_65": {
+        "jobs_36": 1,
+        "jobs_40": 2,
+        "jobs_44": 4,
+        "jobs_67": 3,
+        "jobs_68": 4,
+        "jobs_174": 3,
+        "jobs_175": 2
+    },
+    "skill_98": {
+        "jobs_38": 1,
+        "jobs_39": 4,
+        "jobs_116": 4,
+        "jobs_136": 2,
+        "jobs_139": 4,
+        "jobs_142": 4,
+        "jobs_153": 2,
+        "jobs_174": 3,
+        "jobs_195": 1
+    },
+    "skill_73": {
+        "jobs_39": 1,
+        "jobs_75": 2,
+        "jobs_81": 2,
+        "jobs_95": 1,
+        "jobs_161": 2,
+        "jobs_173": 4
+    },
+    "skill_61": {
+        "jobs_40": 3,
+        "jobs_67": 4,
+        "jobs_100": 1,
+        "jobs_123": 3,
+        "jobs_143": 4
+    },
+    "skill_129": {
+        "jobs_40": 3,
+        "jobs_41": 2,
+        "jobs_59": 3,
+        "jobs_65": 3,
+        "jobs_81": 3,
+        "jobs_100": 3,
+        "jobs_124": 4,
+        "jobs_127": 2,
+        "jobs_132": 3,
+        "jobs_140": 1,
+        "jobs_193": 3
+    },
+    "skill_56": {
+        "jobs_41": 1,
+        "jobs_71": 3,
+        "jobs_92": 3,
+        "jobs_97": 1,
+        "jobs_108": 3,
+        "jobs_122": 3,
+        "jobs_131": 3,
+        "jobs_150": 2,
+        "jobs_161": 1
+    },
+    "skill_94": {
+        "jobs_41": 2,
+        "jobs_46": 1,
+        "jobs_59": 2,
+        "jobs_66": 2,
+        "jobs_88": 1,
+        "jobs_101": 2,
+        "jobs_142": 4,
+        "jobs_145": 3,
+        "jobs_197": 3
+    },
+    "skill_83": {
+        "jobs_45": 3,
+        "jobs_68": 1,
+        "jobs_85": 4,
+        "jobs_92": 1,
+        "jobs_124": 3,
+        "jobs_175": 1
+    },
+    "skill_125": {
+        "jobs_45": 3,
+        "jobs_75": 1,
+        "jobs_78": 1,
+        "jobs_108": 2,
+        "jobs_171": 3
+    },
+    "skill_14": {
+        "jobs_46": 3,
+        "jobs_77": 2,
+        "jobs_124": 3,
+        "jobs_140": 4,
+        "jobs_141": 3,
+        "jobs_171": 2,
+        "jobs_183": 4,
+        "jobs_195": 4
+    },
+    "skill_101": {
+        "jobs_47": 3,
+        "jobs_49": 3,
+        "jobs_76": 1,
+        "jobs_94": 3,
+        "jobs_117": 1,
+        "jobs_131": 1,
+        "jobs_133": 3,
+        "jobs_192": 3
+    },
+    "skill_43": {
+        "jobs_50": 4,
+        "jobs_119": 1,
+        "jobs_120": 4,
+        "jobs_151": 1,
+        "jobs_163": 1
+    },
+    "skill_132": {
+        "jobs_51": 1,
+        "jobs_55": 3,
+        "jobs_57": 3,
+        "jobs_59": 3,
+        "jobs_75": 4,
+        "jobs_110": 3,
+        "jobs_119": 2,
+        "jobs_124": 3,
+        "jobs_162": 3,
+        "jobs_163": 4,
+        "jobs_196": 2
+    },
+    "skill_88": {
+        "jobs_52": 2,
+        "jobs_55": 4,
+        "jobs_59": 2,
+        "jobs_72": 4,
+        "jobs_94": 2,
+        "jobs_99": 1,
+        "jobs_125": 3,
+        "jobs_167": 3,
+        "jobs_193": 2
+    },
+    "skill_11": {
+        "jobs_53": 1,
+        "jobs_65": 3,
+        "jobs_92": 4,
+        "jobs_106": 1,
+        "jobs_107": 3,
+        "jobs_143": 4,
+        "jobs_145": 2
+    },
+    "skill_57": {
+        "jobs_53": 2,
+        "jobs_62": 3,
+        "jobs_119": 1,
+        "jobs_198": 1
+    },
+    "skill_121": {
+        "jobs_53": 1,
+        "jobs_66": 2,
+        "jobs_87": 1,
+        "jobs_166": 4
+    },
+    "skill_68": {
+        "jobs_55": 4,
+        "jobs_65": 3,
+        "jobs_76": 2,
+        "jobs_85": 4,
+        "jobs_90": 1,
+        "jobs_103": 1,
+        "jobs_150": 3,
+        "jobs_160": 1,
+        "jobs_165": 4,
+        "jobs_167": 3,
+        "jobs_179": 1,
+        "jobs_193": 2
+    },
+    "skill_122": {
+        "jobs_55": 2,
+        "jobs_70": 4,
+        "jobs_75": 1,
+        "jobs_97": 1,
+        "jobs_125": 2,
+        "jobs_143": 1,
+        "jobs_166": 3,
+        "jobs_169": 4,
+        "jobs_178": 3,
+        "jobs_198": 1
+    },
+    "skill_29": {
+        "jobs_60": 3,
+        "jobs_61": 1,
+        "jobs_86": 4,
+        "jobs_118": 1,
+        "jobs_127": 2,
+        "jobs_146": 4,
+        "jobs_151": 4,
+        "jobs_192": 1,
+        "jobs_197": 3
+    },
+    "skill_130": {
+        "jobs_62": 3,
+        "jobs_71": 3,
+        "jobs_136": 2,
+        "jobs_158": 4,
+        "jobs_177": 2
+    },
+    "skill_87": {
+        "jobs_65": 2,
+        "jobs_70": 3,
+        "jobs_129": 2,
+        "jobs_173": 3,
+        "jobs_192": 3,
+        "jobs_194": 3,
+        "jobs_197": 4
+    },
+    "skill_97": {
+        "jobs_71": 4,
+        "jobs_79": 2,
+        "jobs_100": 1,
+        "jobs_138": 4,
+        "jobs_157": 4,
+        "jobs_176": 4,
+        "jobs_188": 1,
+        "jobs_195": 1
+    },
+    "skill_106": {
+        "jobs_89": 1,
+        "jobs_96": 4,
+        "jobs_97": 4,
+        "jobs_100": 4,
+        "jobs_138": 4,
+        "jobs_199": 4
     },
     "skill_19": {
-        "jobs_11": 2,
-        "jobs_17": 3,
-        "jobs_24": 4
+        "jobs_103": 1,
+        "jobs_116": 3,
+        "jobs_129": 2,
+        "jobs_133": 4,
+        "jobs_144": 4,
+        "jobs_148": 4,
+        "jobs_168": 1,
+        "jobs_193": 3,
+        "jobs_198": 4
+    },
+    "skill_111": {
+        "jobs_113": 1,
+        "jobs_126": 1,
+        "jobs_141": 2,
+        "jobs_144": 1,
+        "jobs_167": 4,
+        "jobs_179": 1
     }
 }
