@@ -7,8 +7,8 @@ Prototype of the SubProject 01-02-03 for the SCESC Innosuisse Project.
 For now the installation requires [Conda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html). Will add Docker later.
 
 ```shell script
-git clone https://github.com/epfl-ml4ed/protosp03.git
-cd protosp03
+git clone git@github.com:epfl-ml4ed/SkillThrills.git
+cd SkillThrills
 conda env create -f environment.yaml
 conda activate proto
 ```
