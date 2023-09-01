@@ -2,11 +2,11 @@ from collections import Counter, defaultdict
 
 
 def profile_job_match(profile, job):
-    """Computes a profile job matching score.
+    """Computes a profile job matching score based on the proportion of skills that the user possesses
 
     Args:
-        profile (set): set of skills that the profile has
-        job (set): set of skills required for the job
+        profile (dict): dictionnary of skills that the profile has
+        job (dict): dictionnary of skills required for the job
 
     Returns:
         float: matching score
