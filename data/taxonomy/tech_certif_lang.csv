@@ -1,0 +1,341 @@
+unique_id,Level 1,Level 2,"Level 1.5
+"
+372,Technologies,Microsoft Excel,
+373,Technologies,Microsoft Office software,
+374,Technologies,Microsoft PowerPoint,
+375,Technologies,Microsoft Outlook,
+376,Technologies,Microsoft Word,
+377,Technologies,Structured query language SQL,
+378,Technologies,Python,
+379,Technologies,Oracle Java,
+380,Technologies,Amazon Web Services AWS software,
+381,Technologies,JavaScript,
+382,Technologies,SAP software,
+383,Technologies,Microsoft Azure software,
+384,Technologies,Microsoft Access,
+385,Technologies,Linux,
+386,Technologies,Hypertext markup language HTML,
+387,Technologies,Atlassian JIRA,
+388,Technologies,Tableau,
+389,Technologies,Cascading style sheets CSS,
+390,Technologies,Microsoft SharePoint,
+391,Technologies,Git,
+392,Technologies,C#,
+393,Technologies,React,
+394,Technologies,Google Angular,
+395,Technologies,C++,
+396,Technologies,Docker,
+397,Technologies,Kubernetes,
+398,Technologies,R,
+399,Technologies,Google Workspace software,
+400,Technologies,Autodesk AutoCAD,
+401,Technologies,Microsoft Visio,
+402,Technologies,Jenkins CI,
+403,Technologies,Node.js,
+404,Technologies,Adobe Systems Adobe Photoshop,
+405,Technologies,Intuit QuickBooks,
+406,Technologies,UNIX,
+407,Technologies,C,
+408,Technologies,Zoom,
+409,Technologies,Microsoft Active Directory,
+410,Technologies,Microsoft Windows,
+411,Technologies,Apple iOS,
+412,Technologies,Microsoft SQL Server,
+413,Technologies,SAS,
+414,Technologies,Extensible markup language XML,
+415,Technologies,Microsoft Project,
+416,Technologies,ServiceNow,
+417,Technologies,NoSQL,
+418,Technologies,Apache Spark,
+419,Technologies,Adobe Systems Adobe Illustrator,
+420,Technologies,JavaScript Object Notation JSON,
+421,Technologies,Microsoft Teams,
+422,Technologies,Microsoft PowerShell,
+423,Technologies,Apache Kafka,
+424,Technologies,PostgreSQL,
+425,Technologies,Atlassian Confluence,
+426,Technologies,Ansible software,
+427,Technologies,IBM Terraform,
+428,Technologies,Adobe Systems Adobe Creative Cloud software,
+429,Technologies,Go,
+430,Technologies,Microsoft .NET Framework,
+431,Technologies,GitHub,
+432,Technologies,Workday software,
+433,Technologies,Adobe Systems Adobe InDesign,
+434,Technologies,Spring Framework,
+435,Technologies,Apache Hadoop,
+436,Technologies,TypeScript,
+437,Technologies,Microsoft Windows Server,
+438,Technologies,Bash,
+439,Technologies,Ruby,
+440,Technologies,MongoDB,
+441,Technologies,Perl,
+442,Technologies,eClinicalWorks EHR software,
+443,Technologies,Splunk Enterprise,
+444,Technologies,jQuery,
+445,Technologies,Spring Boot,
+446,Technologies,PHP,
+447,Technologies,The MathWorks MATLAB,
+448,Technologies,Autodesk Revit,
+449,Technologies,Yardi software,
+450,Technologies,Amazon Simple Storage Service S3,
+451,Technologies,Oracle Java 2 Platform Enterprise Edition J2EE,
+452,Technologies,Scala,
+453,Technologies,WordPress,
+454,Technologies,Slack,
+455,Technologies,Apache Maven,
+456,Technologies,Dassault Systemes SolidWorks,
+457,Technologies,Selenium,
+458,Technologies,Microsoft ASP.NET,
+459,Technologies,Chef,
+460,Technologies,Google Cloud software,
+461,Technologies,Microsoft SQL Server Integration Services SSIS,
+462,Technologies,Shell script,
+463,Technologies,Oracle PL/SQL,
+464,Technologies,Swift,
+465,Technologies,Microsoft Visual Studio,
+466,Technologies,Vue.js,
+467,Technologies,Amazon Elastic Compute Cloud EC2,
+468,Technologies,Microsoft SQL Server Reporting Services SSRS,
+469,Technologies,Puppet,
+470,Technologies,Apple macOS,
+471,Technologies,Atlassian Bitbucket,
+472,Technologies,GitLab,
+473,Technologies,Ruby on Rails,
+474,Technologies,Apache Hive,
+475,Technologies,Kronos Workforce Timekeeper,
+476,Technologies,Amazon Web Services AWS CloudFormation,
+477,Technologies,Bootstrap,
+478,Technologies,Amazon Redshift,
+479,Technologies,Informatica software,
+480,Technologies,Transact-SQL,
+481,Technologies,Microsoft Visual Basic,
+482,Technologies,Apache Cassandra,
+483,Technologies,ESRI ArcGIS software,
+484,Technologies,Microsoft Visual Basic for Applications VBA,
+485,Technologies,Google Sheets,
+486,Technologies,Figma,
+487,Technologies,Microsoft Team Foundation Server,
+488,Technologies,JUnit,
+489,Technologies,Elasticsearch,
+490,Technologies,IBM DB2,
+491,Technologies,HubSpot software,
+492,Technologies,Amazon DynamoDB,
+493,Technologies,Apache Subversion SVN,
+494,Technologies,Cisco Webex,
+495,Technologies,Redis,
+496,Technologies,Alteryx software,
+497,Technologies,AJAX,
+498,Technologies,Oracle Database,
+499,Technologies,Eclipse IDE,
+500,Technologies,GraphQL,
+501,Technologies,Hibernate ORM,
+502,Technologies,Oracle SQL Developer,
+503,Technologies,Microsoft Active Server Pages ASP,
+504,Technologies,Bentley MicroStation,
+505,Technologies,Apache Tomcat,
+506,Technologies,Adobe Systems Adobe Acrobat,
+507,Technologies,Teradata Database,
+508,Technologies,Facebook,
+509,Technologies,Autodesk AutoCAD Civil 3D,
+510,Technologies,IBM SPSS Statistics,
+511,Technologies,Adobe Systems Adobe After Effects,
+512,Technologies,UNIX Shell,
+513,Technologies,Red Hat OpenShift,
+514,Technologies,LinkedIn,
+515,Technologies,Objective C,
+516,Technologies,Trimble SketchUp Pro,
+517,Technologies,Oracle Primavera Enterprise Project Portfolio Management,
+518,Technologies,Django,
+519,Technologies,Drupal,
+520,Technologies,Marketo Marketing Automation,
+521,Technologies,Microsoft Dynamics,
+522,Technologies,Epic Systems,
+523,Technologies,Google Docs,
+524,Technologies,Atlassian Bamboo,
+525,Technologies,Oracle JavaServer Pages JSP,
+526,Technologies,IBM WebSphere,
+527,Technologies,MicroStrategy,
+528,Technologies,Qlik Tech QlikView,
+529,Certifications,Adobe Certified Associate (ACA),ADOBE CERTIFICATIONS
+530,Certifications,Adobe Certified Expert (ACE) InDesign,ADOBE CERTIFICATIONS
+531,Certifications,Adobe Certified Expert (ACE) Illustrator,ADOBE CERTIFICATIONS
+532,Certifications,Adobe Certified Expert (ACE) Acrobat,ADOBE CERTIFICATIONS
+533,Certifications,Adobe Certified Expert (ACE) Design Master,ADOBE CERTIFICATIONS
+534,Certifications,Adobe Certified Expert (ACE) Design Specialist,ADOBE CERTIFICATIONS
+535,Certifications,Adobe Certified Instructor (ACI) InDesign,ADOBE CERTIFICATIONS
+536,Certifications,Adobe Certified Instructor (ACI) Illustrator,ADOBE CERTIFICATIONS
+537,Certifications,Adobe Certified Instructor (ACI) Acrobat,ADOBE CERTIFICATIONS
+538,Certifications,Adobe Certified Instructor (ACI) Digital Publishing Suite,ADOBE CERTIFICATIONS
+539,Certifications,AWS Certified Solutions Architect - Associate,AMAZON WEB SERVICES (AWS) CERTIFICATIONS
+540,Certifications,AWS DevOps Engineer,AMAZON WEB SERVICES (AWS) CERTIFICATIONS
+541,Certifications,AWS SysOps Administrator,AMAZON WEB SERVICES (AWS) CERTIFICATIONS
+542,Certifications,AWS Developer,AMAZON WEB SERVICES (AWS) CERTIFICATIONS
+543,Certifications,AWS Cloud Practitioner,AMAZON WEB SERVICES (AWS) CERTIFICATIONS
+544,Certifications,Apple Certified Support Professional (ACSP) – macOS,APPLE CERTIFICATIONS
+545,Certifications,Apple Certified Support Essentials 10.14 – macOS,APPLE CERTIFICATIONS
+546,Certifications,Apple Certified Pro (for Final Cut Pro X and Logic Pro X),APPLE CERTIFICATIONS
+547,Certifications,AppleCare Service Certifications – ACMT & ACiT,APPLE CERTIFICATIONS
+548,Certifications,Cisco Certified Technicians (CCT),CISCO CERTIFICATIONS
+549,Certifications,Cisco Certified Entry Networking Technician (CCENT),CISCO CERTIFICATIONS
+550,Certifications,Cisco Certified Network Associate (CCNA),CISCO CERTIFICATIONS
+551,Certifications,Cisco Certified Network Professional (CCNP),CISCO CERTIFICATIONS
+552,Certifications,Cisco Certified Architect (CCAr),CISCO CERTIFICATIONS
+553,Certifications,Citrix Certified Expert – Virtualization (CCE-V),CITRIX CERTIFICATIONS
+554,Certifications,Citrix Certified Professional – Virtualization (CCP-V),CITRIX CERTIFICATIONS
+555,Certifications,Citrix Certified Associate – Virtualization (CCA-V),CITRIX CERTIFICATIONS
+556,Certifications,Citrix Certified Professional – Networking (CCP-N),CITRIX CERTIFICATIONS
+557,Certifications,Citrix Certified Associate – Networking (CCA-N),CITRIX CERTIFICATIONS
+558,Certifications,Citrix NetScaler SD-WAN Certified (CC-SDWAN),CITRIX CERTIFICATIONS
+559,Certifications,Citrix Certified Professional – Mobility (CCP-M),CITRIX CERTIFICATIONS
+560,Certifications,Check Point Certified Security Administrator (CCSA) R80,CHECK POINT CERTIFICATIONS
+561,Certifications,Check Point Certified Expert (CCSE) R80,CHECK POINT CERTIFICATIONS
+562,Certifications,Check Point Certified Security Master (CCSM) R80,CHECK POINT CERTIFICATIONS
+563,Certifications,A+,COMPTIA CERTIFICATIONS
+564,Certifications,Project+,COMPTIA CERTIFICATIONS
+565,Certifications,Server+,COMPTIA CERTIFICATIONS
+566,Certifications,Certified Technical Trainer (CTT+),COMPTIA CERTIFICATIONS
+567,Certifications,Linux+,COMPTIA CERTIFICATIONS
+568,Certifications,Cloud+,COMPTIA CERTIFICATIONS
+569,Certifications,CloudEssentials+,COMPTIA CERTIFICATIONS
+570,Certifications,PenTest+,COMPTIA CERTIFICATIONS
+571,Certifications,CASP+,COMPTIA CERTIFICATIONS
+572,Certifications,Network+,COMPTIA CERTIFICATIONS
+573,Certifications,ITF+,COMPTIA CERTIFICATIONS
+574,Certifications,CySA+,COMPTIA CERTIFICATIONS
+575,Certifications,Data+,COMPTIA CERTIFICATIONS
+576,Certifications,DataSys+,COMPTIA CERTIFICATIONS
+577,Certifications,EMCISA,DELL EMC CERTIFICATIONS
+578,Certifications,EMCDS,DELL EMC CERTIFICATIONS
+579,Certifications,VCE-CIA,DELL EMC CERTIFICATIONS
+580,Certifications,GSEC: GIAC Security Essentials,GIAC CERTIFICATIONS
+581,Certifications,GCIH: GIAC Certified Incident Handler,GIAC CERTIFICATIONS
+582,Certifications,GCIA: GIAC Certified Intrusion Analyst,GIAC CERTIFICATIONS
+583,Certifications,GCFA: GIAC Certified Forensic Analyst,GIAC CERTIFICATIONS
+584,Certifications,GPEN: GIAC Penetration Tester,GIAC CERTIFICATIONS
+585,Certifications,GSLC: GIAC Security Leadership,GIAC CERTIFICATIONS
+586,Certifications,GREM: GIAC Reverse Engineering Malware,GIAC CERTIFICATIONS
+587,Certifications,GSNA: GIAC Systems and Network Auditor,GIAC CERTIFICATIONS
+588,Certifications,GCED: GIAC Certified Enterprise Defender,GIAC CERTIFICATIONS
+589,Certifications,GCWN: GIAC Certified Windows Security Administrator,GIAC CERTIFICATIONS
+590,Certifications,GPPA: GIAC Certified Perimeter Protection Analyst,GIAC CERTIFICATIONS
+591,Certifications,GPYC: GIAC Python Coder,GIAC CERTIFICATIONS
+592,Certifications,GRID: GIAC Response and Industrial Defense,GIAC CERTIFICATIONS
+593,Certifications,Google Cloud Certification – Associate Cloud Architect,GOOGLE CLOUD PLATFORM (GCP) CERTIFICATIONS
+594,Certifications,Google Cloud Certification – Associate Cloud Developer,GOOGLE CLOUD PLATFORM (GCP) CERTIFICATIONS
+595,Certifications,Google Cloud Certification – Associate Data Engineer,GOOGLE CLOUD PLATFORM (GCP) CERTIFICATIONS
+596,Certifications,Google Cloud Certification – Associate Cloud DevOps Engineer,GOOGLE CLOUD PLATFORM (GCP) CERTIFICATIONS
+597,Certifications,Google Cloud Certification – Associate Cloud Security Engineer,GOOGLE CLOUD PLATFORM (GCP) CERTIFICATIONS
+598,Certifications,Google Cloud Certification – Associate Cloud Network Engineer,GOOGLE CLOUD PLATFORM (GCP) CERTIFICATIONS
+599,Certifications,Google Cloud Certification – Associate Collaboration Engineer,GOOGLE CLOUD PLATFORM (GCP) CERTIFICATIONS
+600,Certifications,Google Cloud Certification – Professional Cloud Architect,GOOGLE CLOUD PLATFORM (GCP) CERTIFICATIONS
+601,Certifications,Google Cloud Certification – Professional Cloud Developer,GOOGLE CLOUD PLATFORM (GCP) CERTIFICATIONS
+602,Certifications,Google Cloud Certification – Professional Data Engineer,GOOGLE CLOUD PLATFORM (GCP) CERTIFICATIONS
+603,Certifications,Google Cloud Certification – Professional Cloud DevOps Engineer,GOOGLE CLOUD PLATFORM (GCP) CERTIFICATIONS
+604,Certifications,Google Cloud Certification – Professional Cloud Security Engineer,GOOGLE CLOUD PLATFORM (GCP) CERTIFICATIONS
+605,Certifications,Google Cloud Certification – Professional Cloud Network Engineer,GOOGLE CLOUD PLATFORM (GCP) CERTIFICATIONS
+606,Certifications,Google Cloud Certification – Professional Collaboration Engineer,GOOGLE CLOUD PLATFORM (GCP) CERTIFICATIONS
+607,Certifications,Google Cloud Certification – G Suite,GOOGLE CLOUD PLATFORM (GCP) CERTIFICATIONS
+608,Certifications,IBM Certified Deployment Professional,IBM CERTIFICATIONS
+609,Certifications,IBM Certified Solution Designer,IBM CERTIFICATIONS
+610,Certifications,IBM Certified Specialist,IBM CERTIFICATIONS
+611,Certifications,IBM Certified Administrator,IBM CERTIFICATIONS
+612,Certifications,IBM Certified Developer,IBM CERTIFICATIONS
+613,Certifications,IBM Certified Designer,IBM CERTIFICATIONS
+614,Certifications,IBM Certified Solution Expert,IBM CERTIFICATIONS
+615,Certifications,IBM Certified System Administrator,IBM CERTIFICATIONS
+616,Certifications,Microsoft Technology Associate (MTA),MICROSOFT CERTIFICATIONS
+617,Certifications,Microsoft Certified Solutions Associate (MCSA),MICROSOFT CERTIFICATIONS
+618,Certifications,Microsoft Certified Solutions Expert (MCSE),MICROSOFT CERTIFICATIONS
+619,Certifications,Micro Focus Identity Manager Certification,MICRO FOCUS CERTIFICATIONS
+620,Certifications,Micro Focus Open Enterprise Server Certification (OES),MICRO FOCUS CERTIFICATIONS
+621,Certifications,Micro Focus ZENworks Certification,MICRO FOCUS CERTIFICATIONS
+622,Certifications,Oracle CRM On Demand Certifications,ORACLE CERTIFICATIONS
+623,Certifications,Oracle Cloud Certifications,ORACLE CERTIFICATIONS
+624,Certifications,Oracle Database Certifications,ORACLE CERTIFICATIONS
+625,Certifications,Oracle Java Certifications,ORACLE CERTIFICATIONS
+626,Certifications,Palo Alto Networks Certified Cybersecurity Associate (PCCSA),PALO ALTO NETWORKS CERTIFICATIONS
+627,Certifications,Palo Alto Networks Certified Network Security Administrator (PCNSA),PALO ALTO NETWORKS CERTIFICATIONS
+628,Certifications,Red Hat Certified System Administrator (RHCSA),RED HAT CERTIFICATIONS
+629,Certifications,Red Hat OpenStack Certifications,RED HAT CERTIFICATIONS
+630,Certifications,Salesforce Certified Technical Architect,SALESFORCE CERTIFICATIONS
+631,Certifications,Salesforce Application Architect,SALESFORCE CERTIFICATIONS
+632,Certifications,Salesforce System Architect,SALESFORCE CERTIFICATIONS
+633,Certifications,Scrum Certification,SCRUM CERTIFICATIONS
+634,Certifications,Scrum Alliance – Certified ScrumMaster (CSM),SCRUM CERTIFICATIONS
+635,Certifications,Scrum Alliance – Certified Scrum Developers (CSD),SCRUM CERTIFICATIONS
+636,Certifications,scrum.org – Professional Scrum Master (PSM),SCRUM CERTIFICATIONS
+637,Certifications,Simplilearn – Agile Scrum Master (ASM),SCRUM CERTIFICATIONS
+638,Certifications,HPE Master ASE - Edge-to-Cloud Architect V1,HPE Master Accredited Solutions Expert (HPE Master ASE)
+639,Certifications,HPE Master ASE - Hybrid IT Solutions Architect V1,HPE Master Accredited Solutions Expert (HPE Master ASE)
+640,Certifications,HPE Master ASE - Infrastructure Automation V1,HPE Master Accredited Solutions Expert (HPE Master ASE)
+641,Certifications,HPE Master ASE - Storage Solutions Architect V1,HPE Master Accredited Solutions Expert (HPE Master ASE)
+642,Certifications,HPE Master ASE - Servers Solutions Architect V1,HPE Master Accredited Solutions Expert (HPE Master ASE)
+643,Certifications,HPE Master ASE - Networking Solutions Architect V1,HPE Master Accredited Solutions Expert (HPE Master ASE)
+644,Certifications,HPE Master ASE - Converged Systems Architect V1,HPE Master Accredited Solutions Expert (HPE Master ASE)
+645,Certifications,HPE Master ASE - Cloud Architect V1,HPE Master Accredited Solutions Expert (HPE Master ASE)
+646,Certifications,HPE Master ASE - Software-Defined Storage Architect V1,HPE Master Accredited Solutions Expert (HPE Master ASE)
+647,Certifications,ASE - 3PAR Storage Solutions V1,HPE Accredited Solutions Expert (HPE ASE)
+648,Certifications,ASE - Converged Systems Solutions V1,HPE Accredited Solutions Expert (HPE ASE)
+649,Certifications,ASE - Data Center Networking Solutions V1,HPE Accredited Solutions Expert (HPE ASE)
+650,Certifications,ASE - Edge-to-Cloud Architect V1,HPE Accredited Solutions Expert (HPE ASE)
+651,Certifications,ASE - Hybrid IT Solutions Architect V1,HPE Accredited Solutions Expert (HPE ASE)
+652,Certifications,ASE - Infrastructure Automation V1,HPE Accredited Solutions Expert (HPE ASE)
+653,Certifications,ASE - Linux Solutions V1,HPE Accredited Solutions Expert (HPE ASE)
+654,Certifications,ASE - Microsoft Solutions V1,HPE Accredited Solutions Expert (HPE ASE)
+655,Certifications,ASE - Networking Solutions V1,HPE Accredited Solutions Expert (HPE ASE)
+656,Certifications,ASE - OpenStack Solutions V1,HPE Accredited Solutions Expert (HPE ASE)
+657,Certifications,ASE - Storage Solutions V1,HPE Accredited Solutions Expert (HPE ASE)
+658,Certifications,ASE - Servers Solutions V1,HPE Accredited Solutions Expert (HPE ASE)
+659,Certifications,ASE - Software-Defined Storage Architect V1,HPE Accredited Solutions Expert (HPE ASE)
+660,Certifications,ATP - 3PAR Storage Solutions V1,HPE Accredited Technical Professional (HPE ATP)
+661,Certifications,ATP - Converged Systems Solutions V1,HPE Accredited Technical Professional (HPE ATP)
+662,Certifications,ATP - Data Center Networking Solutions V1,HPE Accredited Technical Professional (HPE ATP)
+663,Certifications,ATP - Edge-to-Cloud Architect V1,HPE Accredited Technical Professional (HPE ATP)
+664,Certifications,ATP - Hybrid IT Solutions Architect V1,HPE Accredited Technical Professional (HPE ATP)
+665,Certifications,ATP - Infrastructure Automation V1,HPE Accredited Technical Professional (HPE ATP)
+666,Certifications,ATP - Linux Solutions V1,HPE Accredited Technical Professional (HPE ATP)
+667,Certifications,ATP - Microsoft Solutions V1,HPE Accredited Technical Professional (HPE ATP)
+668,Certifications,ATP - Networking Solutions V1,HPE Accredited Technical Professional (HPE ATP)
+669,Certifications,ATP - OpenStack Solutions V1,HPE Accredited Technical Professional (HPE ATP)
+670,Certifications,ATP - Storage Solutions V1,HPE Accredited Technical Professional (HPE ATP)
+671,Certifications,ATP - Servers Solutions V1,HPE Accredited Technical Professional (HPE ATP)
+672,Certifications,HPE Certified Solutions Architect,Other HPE Certifications
+673,Certifications,HPE Certified Solutions Associate,Other HPE Certifications
+674,Certifications,HPE Certified Technical Associate,Other HPE Certifications
+675,Certifications,HPE Certified Specialist,Other HPE Certifications
+676,Certifications,Advanced Information Security (AIS),OTHER CERTIFICATIONS
+677,Certifications,Aruba Certified ClearPass Expert (ACCX),OTHER CERTIFICATIONS
+678,Certifications,Aruba Certified Design Expert (ACDX),OTHER CERTIFICATIONS
+679,Certifications,Aruba Certified Edge Expert (ACEX),OTHER CERTIFICATIONS
+680,Certifications,Aruba Certified Mobility Expert (ACMX),OTHER CERTIFICATIONS
+681,Certifications,Aruba Certified ClearPass Professional (ACCP),OTHER CERTIFICATIONS
+682,Certifications,Aruba Certified Design Professional (ACDP),OTHER CERTIFICATIONS
+683,Certifications,Aruba Certified Edge Professional (ACEP),OTHER CERTIFICATIONS
+684,Certifications,Aruba Certified Mobility Professional (ACMP),OTHER CERTIFICATIONS
+685,Certifications,Certified Broadcast Networking Technologist (CBNT),OTHER CERTIFICATIONS
+686,Certifications,Certified Computer Examiner (CCE),OTHER CERTIFICATIONS
+687,Certifications,Certified Electronics Technician by the ETA (CET),OTHER CERTIFICATIONS
+688,Certifications,Certified Hardware Asset Management Professional (CHAMP),OTHER CERTIFICATIONS
+689,Certifications,Certified Information Systems Auditor (CISA),OTHER CERTIFICATIONS
+690,Certifications,Certified Information Security Manager (CISM),OTHER CERTIFICATIONS
+691,Certifications,Certified Information Systems Security Professional (CISSP),OTHER CERTIFICATIONS
+692,Certifications,Certified Information Technology Asset Manager (CITAM),OTHER CERTIFICATIONS
+693,Certifications,Certified Internet Webmaster (CIW),OTHER CERTIFICATIONS
+694,Certifications,Certified Software Asset Manager (CSAM),OTHER CERTIFICATIONS
+695,Certifications,Certified Software Developer Program (CSDP),OTHER CERTIFICATIONS
+696,Certifications,Certified Software Tester (CSTE),OTHER CERTIFICATIONS
+697,Certifications,Help Desk Institute (HDI),OTHER CERTIFICATIONS
+698,Certifications,Internet and Computing Core Certification (IC3),OTHER CERTIFICATIONS
+699,Certifications,Certified Data Privacy Solutions Engineer (CDPSE),OTHER CERTIFICATIONS
+700,Certifications,ITIL 4 Foundation Level Certification,OTHER CERTIFICATIONS
+701,Certifications,"Certified Cloud Security Professional (CCSP)
+",OTHER CERTIFICATIONS
+702,Certifications,Certified Data Professional (CDP),OTHER CERTIFICATIONS
+703,Certifications,Certified Ethical Hacker (CEH),OTHER CERTIFICATIONS
+704,Certifications,Certified in Risk and Information Systems Control (CRISC),OTHER CERTIFICATIONS
+705,Certifications,VMware Certified Professional – Data Center Virtualization 2022 (VCP-DCV 2022),OTHER CERTIFICATIONS
+706,Languages,Deutsch,
+707,Languages,Englisch,
+708,Languages,Französisch,
+709,Languages,Italienisch,
