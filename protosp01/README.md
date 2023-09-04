@@ -1,17 +1,32 @@
 # Innosuisse SCESC01 Prototype
+
 Prototype of the SubProject 01 for the SCESC Innosuisse Project.
 
 ## Input
 
+### 1. Skills Retrieval
+
 We extract skills from 3 sources:
-* cv
+
+* resumes
 * job description (="vacancy")
 * courses (= "learning opportunity")
 
 These files should be stored in the folder data/raw/. 
-Jobs and courses are downloaded and updated regularly from EvrLearn platform, using the script [protosp01/data/update_platform_data.sh](protosp01/data/update_platform_data.sh).
+Jobs and courses are downloaded and updated regularly from EvrLearn platform, using the script [protosp01/update_platform_data.sh](protosp01/update_platform_data.sh).
+
+From the current **protosp01** directory, run:
+
+```bash
+bash update_platform_data.sh
+```
+
+### 2. Taxonomy Retrieval
 
 We match extracted skills using an existing taxonomy of skills. All the taxonomy files are saved in the folder data/taxonomy/. They are updated regularly from [SP2's online Excel sheet](https://universitaetstgallen.sharepoint.com/:x:/r/sites/O365-PRJ-IWI-Research/_layouts/15/doc2.aspx?sourcedoc=%7BC9BB110D-819F-4469-9127-054ABB53EF09%7D&file=KompetenzmodellKodierbuch.xlsx&action=default&mobileredirect=true&cid=34b78d05-ea86-4ef7-b348-18d57854d510).
+(*access required*)
+
+These files should be stored in the folder data/taxonomy/.
 
 * taxonomy_V4.csv: skill names, desciptions, examples, divided into levels.
 * tech_certif_lang.csv: list of technical skills, certifications and languages.
