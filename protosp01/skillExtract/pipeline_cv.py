@@ -2,7 +2,12 @@ import pandas as pd
 import argparse
 import openai
 import time
-from openai.error import RateLimitError, ServiceUnavailableError, APIError, APIConnectionError
+from openai.error import (
+    RateLimitError,
+    ServiceUnavailableError,
+    APIError,
+    APIConnectionError,
+)
 import os
 from tqdm import tqdm
 import json
@@ -17,10 +22,15 @@ from split_words import Splitter
 from prompt_template import PROMPT_TEMPLATES
 from utils import *
 
+# fmt: off
+## skipping blackformatting for argparse
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--datapath", type=str, help="Path to source data", default = "CVTest_final.csv")
-    parser.add_argument("--taxonomy", type=str, help="Path to taxonomy file in csv format", default = "taxonomy_files/taxonomy_V3.csv")
+    # parser.add_argument("--datapath", type=str, help="Path to source data", default = "CVTest_final.csv")
+    parser.add_argument("--datapath", type=str, help="Path to source data", default = "../data/raw/CVTest_final.csv") #TODO: AD where should this file be?
+    # parser.add_argument("--taxonomy", type=str, help="Path to taxonomy file in csv format", default = "taxonomy_files/taxonomy_V3.csv")
+    parser.add_argument("--taxonomy", type=str, help="Path to taxonomy file in csv format", default = "../data/taxonomy/taxonomy_V4.csv")
     parser.add_argument("--openai_key", type=str, help="openai keys", default = API_KEY)
     parser.add_argument("--model", type=str, help="Model to use for generation", default="gpt-3.5-turbo")
     parser.add_argument("--temperature", type=float, help="Temperature for generation", default=0.3)
@@ -34,7 +44,8 @@ def main():
     parser.add_argument("--do-matching", type=bool, help="Wether to do the matching or not", default=False)
     
     args = parser.parse_args()
-    
+    # fmt: on
+
     args.api_key = API_KEY #args.openai_key
     args.output_path = args.output_path + args.datapath + '_' + args.model + '.json'
     print("Output path", args.output_path)
@@ -91,7 +102,7 @@ def main():
     cv_updated = read_json(args.output_path)
 
     # Do exact match with technologies, languages, certifications
-    tech_certif_lang = pd.read_csv('taxonomy_files/tech_certif_lang.csv')
+    tech_certif_lang = pd.read_csv('../data/taxonomy/tech_certif_lang.csv')
     cv_updated = exact_match(cv_updated, tech_certif_lang)
     # TODO find a way to correctly identify even common strings (eg 'R')!
     

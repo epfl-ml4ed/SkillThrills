@@ -166,3 +166,12 @@ cython_debug/
 data/raw/evrlearn/
 data/processed/evrlearn/
 credentials.json
+api_key*
+
+# Other
+trash*
+data/raw/job_profiles.json
+data/raw/job_skills.json
+data/raw/learning_opportunities.json
+data/raw/vacancies.json
+protosp01/results/*

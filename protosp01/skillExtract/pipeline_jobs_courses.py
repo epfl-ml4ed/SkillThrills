@@ -2,7 +2,12 @@ import pandas as pd
 import argparse
 import openai
 import time
-from openai.error import RateLimitError, ServiceUnavailableError, APIError, APIConnectionError
+from openai.error import (
+    RateLimitError,
+    ServiceUnavailableError,
+    APIError,
+    APIConnectionError,
+)
 import os
 from tqdm import tqdm
 import json
@@ -18,10 +23,14 @@ from split_words import Splitter
 from prompt_template import PROMPT_TEMPLATES
 from utils import *
 
+# fmt: off
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--datapath", type=str, help="Path to source data", default = "platform_data/vacancies")
-    parser.add_argument("--taxonomy", type=str, help="Path to taxonomy file in csv format", default = "taxonomy_files/taxonomy_V4.csv")
+    # parser.add_argument("--datapath", type=str, help="Path to source data", default = "platform_data/vacancies")
+    parser.add_argument("--datapath", type=str, help="Path to source data", default = "../data/raw/vacancies.json")
+    # parser.add_argument("--taxonomy", type=str, help="Path to taxonomy file in csv format", default = "taxonomy_files/taxonomy_V4.csv")
+    parser.add_argument("--taxonomy", type=str, help="Path to taxonomy file in csv format", default = "../data/taxonomy/taxonomy_V4.csv")
     parser.add_argument("--openai_key", type=str, help="openai keys", default = API_KEY)
     parser.add_argument("--model", type=str, help="Model to use for generation", default="gpt-3.5-turbo")
     parser.add_argument("--temperature", type=float, help="Temperature for generation", default=0.3)
@@ -36,6 +45,9 @@ def main():
     parser.add_argument("--debug", type=bool, help="Keep only one sentence per job offer / course to debug", default=False)
     parser.add_argument("--detailed", type=bool, help="Generate detailed output", default=False)
     
+    # fmt: on
+
+
     args = parser.parse_args()
     if args.datapath.split('/')[-1]=='vacancies':
         args.data_type = 'job'
@@ -64,6 +76,10 @@ def main():
     # TODO select best columns for each data type
     # TODO filter the ones with too small descriptions
     # TODO merge sentences if they are too short
+
+    # get number of words in each description
+    # data['desc_len'] = data['description'].apply(lambda x: len(x.split()))
+
 
     # apply language detection
     data['language'] = data['fulltext'].apply(detect_language)
@@ -121,9 +137,9 @@ def main():
             # TODO output only level 2 or rather skill id?
 
         # Do exact match with technologies, languages, certifications
-        tech_certif_lang = pd.read_csv('taxonomy_files/tech_certif_lang.csv')
-        tech_alternative_names = pd.read_csv('taxonomy_files/technologies_alternative_names.csv', sep='\t')
-        certification_alternative_names = pd.read_csv('taxonomy_files/certifications_alternative_names.csv', sep='\t')
+        tech_certif_lang = pd.read_csv('../data/taxonomy/tech_certif_lang.csv')
+        tech_alternative_names = pd.read_csv('../data/taxonomy/technologies_alternative_names.csv', sep='\t')
+        certification_alternative_names = pd.read_csv('../data/taxonomy/certifications_alternative_names.csv', sep='\t')
         sentences_res_list = exact_match(sentences_res_list, tech_certif_lang, tech_alternative_names, certification_alternative_names)
         # TODO find a way to correctly identify even common strings (eg 'R')!
         # Idem for finding C on top of C# and C++
