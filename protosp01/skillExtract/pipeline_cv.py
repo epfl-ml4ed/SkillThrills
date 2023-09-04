@@ -2,7 +2,12 @@ import pandas as pd
 import argparse
 import openai
 import time
-from openai.error import RateLimitError, ServiceUnavailableError, APIError, APIConnectionError
+from openai.error import (
+    RateLimitError,
+    ServiceUnavailableError,
+    APIError,
+    APIConnectionError,
+)
 import os
 from tqdm import tqdm
 import json
@@ -16,6 +21,9 @@ from split_words import Splitter
 
 from prompt_template import PROMPT_TEMPLATES
 from utils import *
+
+# fmt: off
+## skipping blackformatting for argparse
 
 def main():
     parser = argparse.ArgumentParser()
@@ -34,7 +42,8 @@ def main():
     parser.add_argument("--do-matching", type=bool, help="Wether to do the matching or not", default=False)
     
     args = parser.parse_args()
-    
+    # fmt: on
+
     args.api_key = API_KEY #args.openai_key
     args.output_path = args.output_path + args.datapath + '_' + args.model + '.json'
     print("Output path", args.output_path)

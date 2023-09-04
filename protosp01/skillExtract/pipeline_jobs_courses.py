@@ -2,7 +2,12 @@ import pandas as pd
 import argparse
 import openai
 import time
-from openai.error import RateLimitError, ServiceUnavailableError, APIError, APIConnectionError
+from openai.error import (
+    RateLimitError,
+    ServiceUnavailableError,
+    APIError,
+    APIConnectionError,
+)
 import os
 from tqdm import tqdm
 import json
@@ -17,6 +22,8 @@ from split_words import Splitter
 
 from prompt_template import PROMPT_TEMPLATES
 from utils import *
+
+# fmt: off
 
 def main():
     parser = argparse.ArgumentParser()
@@ -36,6 +43,8 @@ def main():
     parser.add_argument("--debug", type=bool, help="Keep only one sentence per job offer / course to debug", default=False)
     parser.add_argument("--detailed", type=bool, help="Generate detailed output", default=False)
     
+    # fmt: on
+
     args = parser.parse_args()
     if args.datapath.split('/')[-1]=='vacancies':
         args.data_type = 'job'
