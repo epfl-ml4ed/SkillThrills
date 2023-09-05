@@ -1,3 +1,4 @@
+# %%
 import pandas as pd
 import argparse
 import openai
@@ -24,13 +25,14 @@ from prompt_template import PROMPT_TEMPLATES
 from utils import *
 
 # fmt: off
+#%%
 
 def main():
     parser = argparse.ArgumentParser()
     # parser.add_argument("--datapath", type=str, help="Path to source data", default = "platform_data/vacancies")
-    parser.add_argument("--datapath", type=str, help="Path to source data", default = "../../data/raw/vacancies.json")
+    parser.add_argument("--datapath", type=str, help="Path to source data", default = "../data/raw/vacancies.json")
     # parser.add_argument("--taxonomy", type=str, help="Path to taxonomy file in csv format", default = "taxonomy_files/taxonomy_V4.csv")
-    parser.add_argument("--taxonomy", type=str, help="Path to taxonomy file in csv format", default = "../../data/taxonomy/taxonomy_V4.csv")
+    parser.add_argument("--taxonomy", type=str, help="Path to taxonomy file in csv format", default = "../data/taxonomy/taxonomy_V4.csv")
     parser.add_argument("--openai_key", type=str, help="openai keys", default = API_KEY)
     parser.add_argument("--model", type=str, help="Model to use for generation", default="gpt-3.5-turbo")
     parser.add_argument("--temperature", type=float, help="Temperature for generation", default=0.3)
@@ -38,7 +40,7 @@ def main():
     parser.add_argument("--top_p", type=float, help="Top p for generation", default=1)
     parser.add_argument("--frequency_penalty", type=float, help="Frequency penalty for generation", default=0)
     parser.add_argument("--presence_penalty", type=float, help="Presence penalty for generation", default=0)
-    parser.add_argument("--output_path", type=str, help="Output for evaluation results", default="../results/")
+    parser.add_argument("--output_path", type=str, help="Output for evaluation results", default="results/")
     parser.add_argument("--num-samples", type=int, help="Last N elements to evaluate (the new ones)", default=0)
     parser.add_argument("--do-extraction", action="store_true", help="Wether to do the extraction or directly the matching")
     parser.add_argument("--do-matching", action="store_true", help="Wether to do the matching or not")
@@ -153,9 +155,9 @@ def main():
             # TODO output only level 2 or rather skill id?
 
         # Do exact match with technologies, languages, certifications
-        tech_certif_lang = pd.read_csv('../../data/taxonomy/tech_certif_lang.csv')
-        tech_alternative_names = pd.read_csv('../../data/taxonomy/technologies_alternative_names.csv', sep='\t')
-        certification_alternative_names = pd.read_csv('../../data/taxonomy/certifications_alternative_names.csv', sep='\t')
+        tech_certif_lang = pd.read_csv('../data/taxonomy/tech_certif_lang.csv')
+        tech_alternative_names = pd.read_csv('../data/taxonomy/technologies_alternative_names.csv', sep='\t')
+        certification_alternative_names = pd.read_csv('../data/taxonomy/certifications_alternative_names.csv', sep='\t')
         sentences_res_list = exact_match(sentences_res_list, tech_certif_lang, tech_alternative_names, certification_alternative_names)
         # TODO find a way to correctly identify even common strings (eg 'R')!
         # Idem for finding C on top of C# and C++

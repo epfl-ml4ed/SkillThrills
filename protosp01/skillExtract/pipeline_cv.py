@@ -1,3 +1,4 @@
+#%%
 import pandas as pd
 import argparse
 import openai
@@ -23,12 +24,13 @@ from prompt_template import PROMPT_TEMPLATES
 from utils import *
 
 # fmt: off
-## skipping blackformatting for argparse
+## skipping black formatting for argparse
 
+#%%
 def main():
     parser = argparse.ArgumentParser()
     # parser.add_argument("--datapath", type=str, help="Path to source data", default = "CVTest_final.csv")
-    parser.add_argument("--datapath", type=str, help="Path to source data", default = "../data/raw/CVTest_final.csv") #TODO: AD where should this file be?
+    parser.add_argument("--datapath", type=str, help="Path to source data", default = "../data/annotated/CVTest_final.csv")
     # parser.add_argument("--taxonomy", type=str, help="Path to taxonomy file in csv format", default = "taxonomy_files/taxonomy_V3.csv")
     parser.add_argument("--taxonomy", type=str, help="Path to taxonomy file in csv format", default = "../data/taxonomy/taxonomy_V4.csv")
     parser.add_argument("--openai_key", type=str, help="openai keys", default = API_KEY)
@@ -45,9 +47,10 @@ def main():
     
     args = parser.parse_args()
     # fmt: on
+    data_type = 'cv'
 
     args.api_key = API_KEY #args.openai_key
-    args.output_path = args.output_path + args.datapath + '_' + args.model + '.json'
+    args.output_path = args.output_path + data_type + '_' + args.model + '.json'
     print("Output path", args.output_path)
 
     # Load data
@@ -76,6 +79,8 @@ def main():
         api.do_prediction("extraction")
         write_json(api.data, args.output_path)
     # TODO evaluate skills: api.data
+
+    # TODO: AD update boolean argument regarding do extraction or do matching
 
     # load taxonomy
     taxonomy, skill_names, skill_definitions = load_taxonomy(args)
