@@ -28,9 +28,9 @@ from utils import *
 def main():
     parser = argparse.ArgumentParser()
     # parser.add_argument("--datapath", type=str, help="Path to source data", default = "platform_data/vacancies")
-    parser.add_argument("--datapath", type=str, help="Path to source data", default = "../data/raw/vacancies.json")
+    parser.add_argument("--datapath", type=str, help="Path to source data", default = "../../data/raw/vacancies.json")
     # parser.add_argument("--taxonomy", type=str, help="Path to taxonomy file in csv format", default = "taxonomy_files/taxonomy_V4.csv")
-    parser.add_argument("--taxonomy", type=str, help="Path to taxonomy file in csv format", default = "../data/taxonomy/taxonomy_V4.csv")
+    parser.add_argument("--taxonomy", type=str, help="Path to taxonomy file in csv format", default = "../../data/taxonomy/taxonomy_V4.csv")
     parser.add_argument("--openai_key", type=str, help="openai keys", default = API_KEY)
     parser.add_argument("--model", type=str, help="Model to use for generation", default="gpt-3.5-turbo")
     parser.add_argument("--temperature", type=float, help="Temperature for generation", default=0.3)
@@ -38,20 +38,21 @@ def main():
     parser.add_argument("--top_p", type=float, help="Top p for generation", default=1)
     parser.add_argument("--frequency_penalty", type=float, help="Frequency penalty for generation", default=0)
     parser.add_argument("--presence_penalty", type=float, help="Presence penalty for generation", default=0)
-    parser.add_argument("--output_path", type=str, help="Output for evaluation results", default="results/")
-    parser.add_argument("--num-samples", type=int, help="Last N elements to evaluate (the new ones)", default=10)
-    parser.add_argument("--do-extraction", type=bool, help="Wether to do the extraction or directly the matching", default=False)
-    parser.add_argument("--do-matching", type=bool, help="Wether to do the matching or not", default=False)
-    parser.add_argument("--debug", type=bool, help="Keep only one sentence per job offer / course to debug", default=False)
-    parser.add_argument("--detailed", type=bool, help="Generate detailed output", default=False)
+    parser.add_argument("--output_path", type=str, help="Output for evaluation results", default="../results/")
+    parser.add_argument("--num-samples", type=int, help="Last N elements to evaluate (the new ones)", default=0)
+    parser.add_argument("--do-extraction", action="store_true", help="Wether to do the extraction or directly the matching")
+    parser.add_argument("--do-matching", action="store_true", help="Wether to do the matching or not")
+    parser.add_argument("--debug", action="store_true", help="Keep only one sentence per job offer / course to debug")
+    parser.add_argument("--detailed", action="store_true", help="Generate detailed output")
+    parser.add_argument("--ids", type=str, help="Path to a file with specific ids to evaluate", default=None)
     
     # fmt: on
 
 
     args = parser.parse_args()
-    if args.datapath.split('/')[-1]=='vacancies':
+    if args.datapath.split('/')[-1]=='vacancies.json':
         args.data_type = 'job'
-    elif args.datapath.split('/')[-1]=='learning_opportunities':
+    elif args.datapath.split('/')[-1]=='learning_opportunities.json':
         args.data_type = 'course'
     else:
         print('Error: Data source unknown')
@@ -60,14 +61,25 @@ def main():
     args.output_path = args.output_path + args.data_type + '_' + args.model + '.json'
     print("Output path", args.output_path)
 
+    if args.ids is not None:
+        with open(args.ids, 'r') as f:
+            ids = f.read().splitlines()
+        if 'vacancies' in ids[0]:
+            args.data_type = 'job'
+        elif 'learning_opportunities' in ids[0]:
+            args.data_type = 'course'
+        ids = [int(id.split('/')[-1]) for id in ids]
+        print("Evaluating only ids:", ids)
+        args.output_path = args.output_path.replace('.json', '_ids.json')
+
     # Load data
     if args.num_samples > 0:
         data = read_json(args.datapath, lastN=args.num_samples)
         data = data[0][-args.num_samples:]
     else:
         data = read_json(args.datapath)[0]
-
-    data = pd.DataFrame(data)
+    
+    data = pd.DataFrame.from_records(data)
     if args.data_type == 'job':
         data['fulltext'] = data['name'] + ".\n" + data['description']
     elif args.data_type == 'course':
@@ -80,14 +92,18 @@ def main():
     # get number of words in each description
     # data['desc_len'] = data['description'].apply(lambda x: len(x.split()))
 
-
-    # apply language detection
-    data['language'] = data['fulltext'].apply(detect_language)
-    print(data['language'].value_counts())
-    data = data[data['language']=='de']
+    if args.ids is not None:
+        data = data[data['id'].isin(ids)]
+    else:
+        # apply language detection
+        data['language'] = data['fulltext'].apply(detect_language)
+        print(data['language'].value_counts())
+        data = data[data['language']=='de']
 
     print("loaded data:", len(data), "elements")
     data = data.to_dict('records')
+
+    
 
     # We create two files:
     # 1. results_detailed.json: contains a list of jobs/courses ids
@@ -137,9 +153,9 @@ def main():
             # TODO output only level 2 or rather skill id?
 
         # Do exact match with technologies, languages, certifications
-        tech_certif_lang = pd.read_csv('../data/taxonomy/tech_certif_lang.csv')
-        tech_alternative_names = pd.read_csv('../data/taxonomy/technologies_alternative_names.csv', sep='\t')
-        certification_alternative_names = pd.read_csv('../data/taxonomy/certifications_alternative_names.csv', sep='\t')
+        tech_certif_lang = pd.read_csv('../../data/taxonomy/tech_certif_lang.csv')
+        tech_alternative_names = pd.read_csv('../../data/taxonomy/technologies_alternative_names.csv', sep='\t')
+        certification_alternative_names = pd.read_csv('../../data/taxonomy/certifications_alternative_names.csv', sep='\t')
         sentences_res_list = exact_match(sentences_res_list, tech_certif_lang, tech_alternative_names, certification_alternative_names)
         # TODO find a way to correctly identify even common strings (eg 'R')!
         # Idem for finding C on top of C# and C++
