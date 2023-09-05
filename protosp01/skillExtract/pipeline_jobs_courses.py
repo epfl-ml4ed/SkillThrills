@@ -28,9 +28,9 @@ from utils import *
 def main():
     parser = argparse.ArgumentParser()
     # parser.add_argument("--datapath", type=str, help="Path to source data", default = "platform_data/vacancies")
-    parser.add_argument("--datapath", type=str, help="Path to source data", default = "../../data/raw/vacancies.json")
+    parser.add_argument("--datapath", type=str, help="Path to source data", default = "../data/raw/vacancies.json")
     # parser.add_argument("--taxonomy", type=str, help="Path to taxonomy file in csv format", default = "taxonomy_files/taxonomy_V4.csv")
-    parser.add_argument("--taxonomy", type=str, help="Path to taxonomy file in csv format", default = "../../data/taxonomy/taxonomy_V4.csv")
+    parser.add_argument("--taxonomy", type=str, help="Path to taxonomy file in csv format", default = "../data/taxonomy/taxonomy_V4.csv")
     parser.add_argument("--openai_key", type=str, help="openai keys", default = API_KEY)
     parser.add_argument("--model", type=str, help="Model to use for generation", default="gpt-3.5-turbo")
     parser.add_argument("--temperature", type=float, help="Temperature for generation", default=0.3)
@@ -86,8 +86,7 @@ def main():
         data = data[data['active']==True]
         data['fulltext'] = data['learning_targets_description'].fillna('') + data['name'] +data['key_benefits'].fillna('') + data['intro'].fillna('')
     # TODO select best columns for each data type
-    # TODO filter the ones with too small descriptions
-    # TODO merge sentences if they are too short
+    # TODO filter the ones with too small descriptions (eg less than 4 sentences?)
 
     # get number of words in each description
     # data['desc_len'] = data['description'].apply(lambda x: len(x.split()))
@@ -115,6 +114,8 @@ def main():
     detailed_results_dict = {}
     for i, item in tqdm(enumerate(data)): # item is job or course in dictionary format
         sentences = split_sentences(item['fulltext'])
+        # TODO here, split by sentences and aggregate 4 sentences together? Do several api consecutive "messages"? Split into sentences but provide the whole paragraph as context?
+        # TODO either way, remove too small sentences / paragraphs
         if args.debug:
             #sentences = [sent for sent in sentences if len(sent.split())<80]
             #if len(sentences)==0:
@@ -148,22 +149,15 @@ def main():
             api = OPENAI(args, sentences_res_list)
             sentences_res_list, cost = api.do_prediction("matching")
             matching_cost += cost
-            # TODO remove "None"
-            # TODO remove duplicates
-            # TODO output only level 2 or rather skill id?
 
         # Do exact match with technologies, languages, certifications
-        tech_certif_lang = pd.read_csv('../../data/taxonomy/tech_certif_lang.csv')
-        tech_alternative_names = pd.read_csv('../../data/taxonomy/technologies_alternative_names.csv', sep='\t')
-        certification_alternative_names = pd.read_csv('../../data/taxonomy/certifications_alternative_names.csv', sep='\t')
+        tech_certif_lang = pd.read_csv('../data/taxonomy/tech_certif_lang.csv')
+        tech_alternative_names = pd.read_csv('../data/taxonomy/technologies_alternative_names.csv', sep='\t')
+        certification_alternative_names = pd.read_csv('../data/taxonomy/certifications_alternative_names.csv', sep='\t')
         sentences_res_list = exact_match(sentences_res_list, tech_certif_lang, tech_alternative_names, certification_alternative_names)
         # TODO find a way to correctly identify even common strings (eg 'R')!
         # Idem for finding C on top of C# and C++
-        # Also issue with .Net not found (because it's written Microsoft .NET Framework)
-        # and SQL not found (because it's written SQL Server)
-        # one thing to do: find the element only if there's a space before or after or both
-        # + propose alternative names for all technologies
-        # same for "Microsoft Azure software" --> Azure not found
+        # TODO update alternative names generation to get also shortest names (eg .Net, SQL etc)
         
         detailed_results_dict[item['id']] = sentences_res_list
     
@@ -185,7 +179,8 @@ def main():
                 if 'matched_skills' in sample:
                     for skill in sample['matched_skills']:
                         clean_output['skills'].append(sample['matched_skills'][skill])
-                        # TODO output Level 2 or id!
+                        # TODO output Level 2 or id! To do so, re-do id generation on the taxonomy to give IDs only to Level 2 elements!
+                        # TODO deduplicate and remove "None"
             clean_output_dict[item_id] = clean_output
         write_json(clean_output_dict, args.output_path.replace('.json', '_clean.json'))
     print("Done")

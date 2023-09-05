@@ -49,11 +49,13 @@ look for low-level TODOs in the code.
 
 Classify skills as beginner - intermediate - expert for job postings!
 
+Make the pipeline for courses and job postings work for CVs as well (anything in docx format)
+
 We need to know how important each skill is for each job posting. binary: key VS optional.
 
 TODO can we do the extraction-matching as part as one conversation with GPT? Just as additional messages for each paragraph.
 
-Skill extraction and matching: what we want to output is Level 2! !!!!
+Skill extraction and matching: what we want to output is Level 2 !!!
 
 Alex 3 suggestions:
 skill id + level

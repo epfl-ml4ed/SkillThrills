@@ -169,7 +169,7 @@ class OPENAI:
                 + "\n"
                 + PROMPT_TEMPLATES["extraction"]["6shots"]
             )
-            # TODO nb of shots as argument
+            # TODO nb of shots as argument ? For later experiments
             input += "\nSentence: " + sample["sentence"] + "\nAnswer:"
             max_tokens = self.args.max_tokens
 
@@ -197,7 +197,7 @@ class OPENAI:
                     + "\n"
                     + PROMPT_TEMPLATES["matching"]["1shot"]
                 )
-                # TODO having definition or not in the list of candidates
+                # TODO having definition or not in the list of candidates ? Here we only prove the name and an example. Yes, should try, but maybe not if there are 10 candidates...
                 options_dict = {
                     letter.upper(): candidate["name+example"]
                     for letter, candidate in zip(
@@ -216,7 +216,7 @@ class OPENAI:
                 prediction = self.run_gpt_sample(input, max_tokens=5).lower().strip()
 
                 chosen_letter = prediction[0].upper()
-                # TODO match this with the list of candidates, in case no letter was generated
+                # TODO match this with the list of candidates, in case no letter was generated! Here the best way is just to change the prompt and ask the model to always output the same template, to make the extraction of the choen option easier.
                 chosen_option = (
                     options_dict[chosen_letter]
                     if chosen_letter in options_dict
@@ -302,7 +302,7 @@ def select_candidates_from_taxonomy(
     if len(sample["extracted_skills"]) > 0:
         # look for each extracted skill in the taxonomy
         for extracted_skill in sample["extracted_skills"]:
-            # TODO apply rules one by one
+            # TODO apply rules one by one (make this more computationally efficient, don't perform all filterings beforehand)
             # 1) look for all taxonomy skill name with exact match of extracted skill name inside
             rule1 = list(
                 filter(lambda item: extracted_skill in item[1], enumerate(skill_names))
@@ -323,15 +323,14 @@ def select_candidates_from_taxonomy(
                 if len(matching_elements) > 0:
                     break
             matching_rows = taxonomy.iloc[[item[0] for item in matching_elements]]
-            # todo first look for it in the skill name. If not found, look for it in skill definition.
             if len(matching_rows) > 10:
                 print("More than 10 candidates found for skill", extracted_skill)
                 matching_rows = matching_rows.sample(
                     max_candidates
-                )  # TODO what to do with more than N extracted skills ?
+                )  # TODO what to do with more than N extracted skills ? Find a way to make a coherent selection.
             elif (
                 len(matching_rows) == 0
-            ):  # TODO update now that ew don't have type level 3 anymore
+            ):  # TODO update now that we don't have type level 3 anymore
                 matching_elements = difflib.get_close_matches(
                     extracted_skill,
                     taxonomy["name+example"],
@@ -369,7 +368,6 @@ def exact_match(
         for alt_name in alternative_names:
             synonym_to_certif_mapping[alt_name] = row["Level 2"]
 
-    # TODO save which alternative name was matched, for each tech found.
     categs = set(tech_certif_lang["Level 1"])
     word_sets = [
         set(tech_certif_lang[tech_certif_lang["Level 1"] == categ]["Level 2"])
@@ -378,7 +376,7 @@ def exact_match(
     for sample in data:
         sentence = sample["sentence"]
         for category, word_set in zip(categs, word_sets):
-            # TODO need to exclude the "#" character from being treated as a word boundary in the regular expression pattern!
+            # TODO need to exclude the "#" character from being treated as a word boundary in the regular expression pattern! (for C#, same for C++?)
             matching_words = re.findall(
                 r"\b(?:"
                 + "|".join(re.escape(word) for word in word_set).replace(r"\#", "#")
