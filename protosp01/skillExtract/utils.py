@@ -445,5 +445,7 @@ def clean_skills_list(skill_name, alternative_names):
     alternative_names = [
         skill for skill in alternative_names if len(skill.split()) < 10
     ]
+    # remove duplicates
+    alternative_names = list(set(alternative_names))
     alternative_names = ", ".join(alternative_names)
     return alternative_names

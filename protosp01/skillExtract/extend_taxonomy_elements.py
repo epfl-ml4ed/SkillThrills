@@ -24,7 +24,6 @@ generator_models = {
     "gpt-4": "gpt-4",
 }
 
-
 splitter = Splitter()
 
 
@@ -89,6 +88,7 @@ class Generator:
         output_text = response["choices"][0]["message"]["content"]
         return output_text
 
+    # added function to be able to apply to the dataframe instead of the column
     def get_alt_names(self, row):
         alt_name = self.generate(row["Level 1"].lower(), row["Level 2"])
         return alt_name
@@ -101,15 +101,27 @@ tech_certif_lang = pd.read_csv("tech_certif_lang.csv")
 certif = (
     tech_certif_lang[tech_certif_lang["Level 1"] == "Certifications"]
     .copy()
-    .reset_index()
+    .reset_index(drop=True)
+)  # making a copy to avoid working on splices and reseting index to avoid problems
+
+tech = (
+    tech_certif_lang[tech_certif_lang["Level 1"] == "Technologies"]
+    .copy()
+    .reset_index(drop=True)
 )
 
 # %%
-print("generating alternative names for certifications")
-certif["alternative_names"] = certif.apply(generator.get_alt_names, axis=1)
+try:
+    certif = pd.read_csv("certifications_alternative_names_raw.csv")
+    print("loaded raw certification alternative names file")
+except:
+    print("raw file not found, generating alternative names for certifications")
+    certif["alternative_names"] = certif.apply(generator.get_alt_names, axis=1)
+    certif.to_csv(
+        "certifications_alternative_names_raw.csv",
+        index=False,
+    )
 
-
-# to_save = certif[["Level 2", "alternative_names_clean"]]
 # %%
 # adding smaller names to alternative names clean
 pattern = r"\((.*?)\)"
@@ -126,8 +138,6 @@ def get_name(certif):
 smaller_name = [get_name(name) for name in list(certif["Level 1.5"])]
 smaller_name2 = [get_name(name) for name in list(certif["Level 2"])]
 
-# %%
-# append strings from smaller name and smaller names2 to alternative names
 certif["alternative_names"] = (
     certif["alternative_names"] + ", " + smaller_name + ", " + smaller_name2
 )
@@ -137,8 +147,47 @@ print("cleaning alternative names for certifications")
 certif["alternative_names_clean"] = certif.apply(
     lambda row: clean_skills_list(row["Level 2"], row["alternative_names"]), axis=1
 )
+# %%
+
+certif = certif[["unique_id", "Level 2", "alternative_names_clean"]]
+# splitting alternative names clean into separate columns by comma
+certif = certif.join(
+    certif["alternative_names_clean"].str.split(",", expand=True).add_prefix("alt_")
+).drop(columns=["alternative_names_clean"])
 
 # %%
-certif.to_csv("certifications_alternative_names.csv", index=False, sep="\t")
+certif.to_csv(
+    "certifications_alternative_names.csv",
+    index=False,
+)
+print("saved certifications")
 
+# %%
+try:
+    tech = pd.read_csv("technologies_alternative_names_raw.csv")
+    print("loaded raw technologies alternative names file")
+except:
+    print("raw file not found, generating alternative names for technologies")
+    tech["alternative_names"] = tech.apply(generator.get_alt_names, axis=1)
+    tech.to_csv(
+        "technologies_alternative_names_raw.csv",
+        index=False,
+    )
+# %%
+print("cleaning alternative names for technologies")
+tech["alternative_names_clean"] = tech.apply(
+    lambda row: clean_skills_list(row["Level 2"], row["alternative_names"]), axis=1
+)
+
+tech = tech[["unique_id", "Level 2", "alternative_names_clean"]]
+# splitting alternative names clean into separate columns by comma
+tech = tech.join(
+    tech["alternative_names_clean"].str.split(",", expand=True).add_prefix("alt_")
+).drop(columns=["alternative_names_clean"])
+
+tech.to_csv(
+    "technologies_alternative_names.csv",
+    index=False,
+)
+print("saved technologies")
 # %%
