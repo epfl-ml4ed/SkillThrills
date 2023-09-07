@@ -1,4 +1,4 @@
-#%%
+# %%
 import pandas as pd
 import argparse
 import openai
@@ -30,11 +30,7 @@ from utils import *
 def main():
     parser = argparse.ArgumentParser()
     # parser.add_argument("--datapath", type=str, help="Path to source data", default = "CVTest_final.csv")
-<<<<<<< HEAD
     parser.add_argument("--datapath", type=str, help="Path to source data", default = "../data/annotated/CVTest_final.csv")
-=======
-    parser.add_argument("--datapath", type=str, help="Path to source data", default = "../data/raw/CVTest_final.csv")
->>>>>>> 50f4a739ef0b44cb4e3b2ac7ae0eb3a56e04f232
     # parser.add_argument("--taxonomy", type=str, help="Path to taxonomy file in csv format", default = "taxonomy_files/taxonomy_V3.csv")
     parser.add_argument("--taxonomy", type=str, help="Path to taxonomy file in csv format", default = "../data/taxonomy/taxonomy_V4.csv")
     parser.add_argument("--openai_key", type=str, help="openai keys", default = API_KEY)

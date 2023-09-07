@@ -21,11 +21,13 @@ import tiktoken
 import difflib
 from split_words import Splitter
 
+# %%
+
 from prompt_template import PROMPT_TEMPLATES
 from utils import *
 
 # fmt: off
-#%%
+# %%
 
 def main():
     parser = argparse.ArgumentParser()
@@ -196,3 +198,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# %%
