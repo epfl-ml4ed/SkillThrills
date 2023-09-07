@@ -41,13 +41,16 @@ This will create the following files:
 
 #### 2.2 Extending
 
-We then extend the taxonomy with alternative names for skills, using the. From the current **protosp01** directory, run:
+We then extend the taxonomy with alternative names for skills using OpenAI. From the current **protosp01** directory, run:
 
+```shell
+python skillExtract/extend_taxonomy_elements.py
+```
 
-* technologies_alternative_names.csv and certifications_alternative_names.csv: alternative names for technical skills and certifications.
+This will create the following files, which contain the alternative names for technologies and certifications:
 
-
-They are created using notebooks/taxonomy_datasets_processing.ipynb.
+* technologies_alternative_names.csv
+* certifications_alternative_names.csv
 
 ## Running
 
