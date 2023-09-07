@@ -2,9 +2,9 @@
 
 Prototype of the SubProject 01 for the SCESC Innosuisse Project.
 
-## Input
+## Data Input
 
-### 1. Skills Retrieval
+### 1. Skills Data
 
 We extract skills from 3 sources:
 
@@ -12,25 +12,40 @@ We extract skills from 3 sources:
 * job description (="vacancy")
 * courses (= "learning opportunity")
 
-These files should be stored in the folder data/raw/. 
-Jobs and courses are downloaded and updated regularly from EvrLearn platform, using the script [protosp01/update_platform_data.sh](protosp01/update_platform_data.sh).
-
-From the current **protosp01** directory, run:
+These files should be stored in the folder `data/raw/`. 
+Jobs and courses are downloaded and updated regularly from EvrLearn platform, using the script [protosp01/update_platform_data.sh](protosp01/update_platform_data.sh). From the current **protosp01** directory, run:
 
 ```bash
 bash update_platform_data.sh
 ```
 
-### 2. Taxonomy Retrieval
+### 2. Taxonomy Data
 
-We match extracted skills using an existing taxonomy of skills. All the taxonomy files are saved in the folder data/taxonomy/. They are updated regularly from [SP2's online Excel sheet](https://universitaetstgallen.sharepoint.com/:x:/r/sites/O365-PRJ-IWI-Research/_layouts/15/doc2.aspx?sourcedoc=%7BC9BB110D-819F-4469-9127-054ABB53EF09%7D&file=KompetenzmodellKodierbuch.xlsx&action=default&mobileredirect=true&cid=34b78d05-ea86-4ef7-b348-18d57854d510).
+We match extracted skills using an existing taxonomy of skills. All the taxonomy files are saved in the folder `data/taxonomy/`. They are updated regularly from [SP2's online Excel sheet](https://universitaetstgallen.sharepoint.com/:x:/r/sites/O365-PRJ-IWI-Research/_layouts/15/doc2.aspx?sourcedoc=%7BC9BB110D-819F-4469-9127-054ABB53EF09%7D&file=KompetenzmodellKodierbuch.xlsx&action=default&mobileredirect=true&cid=34b78d05-ea86-4ef7-b348-18d57854d510).
 (*access required*)
 
 These files should be stored in the folder data/taxonomy/.
 
+#### 2.1 Pre-processing
+
+From these files, we first pre-process (i.e. drop empty and assign unique ids) by running from the current **protosp01** directory:
+
+```shell
+python skillExtract/get_taxonomy_elements.py
+```
+
+This will create the following files:
+
 * taxonomy_V4.csv: skill names, desciptions, examples, divided into levels.
 * tech_certif_lang.csv: list of technical skills, certifications and languages.
+
+#### 2.2 Extending
+
+We then extend the taxonomy with alternative names for skills, using the. From the current **protosp01** directory, run:
+
+
 * technologies_alternative_names.csv and certifications_alternative_names.csv: alternative names for technical skills and certifications.
+
 
 They are created using notebooks/taxonomy_datasets_processing.ipynb.
 
@@ -46,14 +61,27 @@ python protosp01/skillExtract/pipeline_jobs_courses.py
 high-level TODOs
 look for low-level TODOs in the code.
 
+<!-- (extraction -> candidate generation -> matching) -->
+<!-- we are only doing on job postings for now -->
+<!-- We are doing this for matched skills on the extracted version (after matching but on the extracted naming) -->
 
-Classify skills as beginner - intermediate - expert for job postings!
+
+- Classify skills as beginner - intermediate - expert for job postings!
+<!-- - * try a few functions to try it out first (ex. have extract skills ) -->
+
+- Make the pipeline for courses and job postings work for CVs as well (anything in docx format)
+<!-- - * make pipeline_cv to be able to load CVs (txt or docx or csv formats) -->
+
+- Make evaluation code (Output metrics)
+  1. BIO evaluation (see README in evaluation folder)
+  2. SP2 annotated data - comparing strings between what was extracted in pipeline and what is in annotated data (like CVtest final)
+    
 
 We need to know how important each skill is for each job posting. binary: key VS optional.
 
 TODO can we do the extraction-matching as part as one conversation with GPT? Just as additional messages for each paragraph.
 
-Skill extraction and matching: what we want to output is Level 2! !!!!
+Skill extraction and matching: what we want to output is Level 2 !!!
 
 Alex 3 suggestions:
 skill id + level

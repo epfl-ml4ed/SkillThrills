@@ -58,7 +58,7 @@ def read_json(path, lastN=None):
         else:
             lines = f.readlines()[
                 -lastN:
-            ]  # TODO fix, doesn't wrk because it's single line json)
+            ]  # TODO fix, doesn't wrk because it's single line json) AD: check how to read last N lines of a JSON (related to num_samples argument)
     for line in lines:
         element = json.loads(line)
         loaded_lines.append(element)
@@ -79,7 +79,7 @@ def detect_language(text):
 
 def split_sentences(text):
     # sentences = re.split(r'(?<=[.!?]) +', text)
-    sentences = text.split("\n\n")
+    sentences = text.split("\n\n")  # TODO: AD test number of sentences here
     return sentences
 
 
@@ -164,23 +164,23 @@ class OPENAI:
                 if "vacancies" in self.args.datapath
                 else "instruction"
             )
-            input = (
+            input_ = (
                 PROMPT_TEMPLATES["extraction"][instruction_field]
                 + "\n"
                 + PROMPT_TEMPLATES["extraction"]["6shots"]
             )
-            # TODO nb of shots as argument
-            input += "\nSentence: " + sample["sentence"] + "\nAnswer:"
+            # TODO 2. nb of shots as argument ? For later experiments
+            input_ += "\nSentence: " + sample["sentence"] + "\nAnswer:"
             max_tokens = self.args.max_tokens
 
             prediction = (
-                self.run_gpt_sample(input, max_tokens=max_tokens).lower().strip()
+                self.run_gpt_sample(input_, max_tokens=max_tokens).lower().strip()
             )
             extracted_skills = re.findall(pattern, prediction)
             sample["extracted_skills"] = extracted_skills
             self.data[i] = sample
 
-            cost = compute_cost(input, prediction, self.args.model)
+            cost = compute_cost(input_, prediction, self.args.model)
             costs += cost
         return costs
 
@@ -192,12 +192,13 @@ class OPENAI:
         for i, sample in enumerate(tqdm(self.data)):
             sample["matched_skills"] = {}
             for extracted_skill in sample["extracted_skills"]:
-                input = (
+                input_ = (
                     PROMPT_TEMPLATES["matching"][instruction_field]
                     + "\n"
                     + PROMPT_TEMPLATES["matching"]["1shot"]
                 )
-                # TODO having definition or not in the list of candidates
+                # TODO 1.5 having definition or not in the list of candidates ? Here we only prove the name and an example. Yes, should try, but maybe not if there are 10 candidates...
+                # update as an argument - like give def or not when doing the matching then ask Marco if it helps or decreases performance
                 options_dict = {
                     letter.upper(): candidate["name+example"]
                     for letter, candidate in zip(
@@ -211,12 +212,15 @@ class OPENAI:
                     letter + ": " + description
                     for letter, description in options_dict.items()
                 )
-                input += f"\nSentence: {sample['sentence']} \nSkill: {extracted_skill} \nOptions: {options_string}.\nAnswer: "
+                input_ += f"\nSentence: {sample['sentence']} \nSkill: {extracted_skill} \nOptions: {options_string}.\nAnswer: "
 
-                prediction = self.run_gpt_sample(input, max_tokens=5).lower().strip()
+                prediction = self.run_gpt_sample(input_, max_tokens=5).lower().strip()
 
                 chosen_letter = prediction[0].upper()
-                # TODO match this with the list of candidates, in case no letter was generated
+                # TODO match this with the list of candidates, in case no letter was generated! (AD: try to ask it to output first line like "Answer is _")
+                # Here the best way is just to change the prompt and ask the model to always output the same template, to make the extraction of the chosen option easier.
+                # AD: maybe try JSON or "Answer in _ format" or with specific tags
+                # AD: maybe experiment with different params (temperature)
                 chosen_option = (
                     options_dict[chosen_letter]
                     if chosen_letter in options_dict
@@ -226,7 +230,7 @@ class OPENAI:
                 sample["matched_skills"][extracted_skill] = chosen_option
                 self.data[i] = sample
 
-                cost = compute_cost(input, prediction, self.args.model)
+                cost = compute_cost(input_, prediction, self.args.model)
                 costs += cost
         return costs
 
@@ -302,7 +306,8 @@ def select_candidates_from_taxonomy(
     if len(sample["extracted_skills"]) > 0:
         # look for each extracted skill in the taxonomy
         for extracted_skill in sample["extracted_skills"]:
-            # TODO apply rules one by one
+            # TODO: (Maybe try with this logic but also try embeddings (JobBERT))
+            # TODO apply rules one by one (make this more computationally efficient, don't perform all filterings beforehand)
             # 1) look for all taxonomy skill name with exact match of extracted skill name inside
             rule1 = list(
                 filter(lambda item: extracted_skill in item[1], enumerate(skill_names))
@@ -323,15 +328,14 @@ def select_candidates_from_taxonomy(
                 if len(matching_elements) > 0:
                     break
             matching_rows = taxonomy.iloc[[item[0] for item in matching_elements]]
-            # todo first look for it in the skill name. If not found, look for it in skill definition.
             if len(matching_rows) > 10:
                 print("More than 10 candidates found for skill", extracted_skill)
                 matching_rows = matching_rows.sample(
                     max_candidates
-                )  # TODO what to do with more than N extracted skills ?
+                )  # TODO what to do with more than N extracted skills ? Find a way to make a coherent selection.
             elif (
                 len(matching_rows) == 0
-            ):  # TODO update now that ew don't have type level 3 anymore
+            ):  # TODO update now that we don't have type level 3 anymore
                 matching_elements = difflib.get_close_matches(
                     extracted_skill,
                     taxonomy["name+example"],
@@ -369,7 +373,6 @@ def exact_match(
         for alt_name in alternative_names:
             synonym_to_certif_mapping[alt_name] = row["Level 2"]
 
-    # TODO save which alternative name was matched, for each tech found.
     categs = set(tech_certif_lang["Level 1"])
     word_sets = [
         set(tech_certif_lang[tech_certif_lang["Level 1"] == categ]["Level 2"])
@@ -378,7 +381,8 @@ def exact_match(
     for sample in data:
         sentence = sample["sentence"]
         for category, word_set in zip(categs, word_sets):
-            # TODO need to exclude the "#" character from being treated as a word boundary in the regular expression pattern!
+            # TODO need to exclude the "#" character from being treated as a word boundary in the regular expression pattern! (for C#, same for C++?
+            # AD: perhaps list out most common use cases and make an exception for them) -> look in tech_certif_lang.csv
             matching_words = re.findall(
                 r"\b(?:"
                 + "|".join(re.escape(word) for word in word_set).replace(r"\#", "#")
@@ -411,3 +415,35 @@ def exact_match(
         sample["Certifications"] = list(set(sample["Certifications"]))
         sample["Certification_alternative_names"] = list(set(matching_synonyms))
     return data
+
+
+def get_lowest_level(row):
+    """
+    Returns the lowest level of the taxonomy that is not NaN in each
+    """
+    for level in ["Type Level 4", "Type Level 3", "Type Level 2", "Type Level 1"]:
+        value = row[level]
+        if not pd.isna(value):
+            return value + "_" + level
+            # appending level also just in case different levels have the same name
+
+
+# write something like below that does not work with splice:
+def clean_skills_list(skill_name, alternative_names):
+    alternative_names = alternative_names.replace("\n", ", ")
+    alternative_names = (
+        alternative_names.split(":")[1]
+        if ":" in alternative_names
+        else alternative_names
+    )
+    alternative_names = re.sub(r"\d+\. ", "", alternative_names)
+    alternative_names = alternative_names.split(", ")
+    alternative_names = [
+        skill for skill in alternative_names if skill != "" and skill_name not in skill
+    ]
+    # remove if each skill is too long (longer than 10 words)
+    alternative_names = [
+        skill for skill in alternative_names if len(skill.split()) < 10
+    ]
+    alternative_names = ", ".join(alternative_names)
+    return alternative_names

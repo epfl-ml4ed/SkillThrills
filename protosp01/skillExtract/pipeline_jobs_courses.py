@@ -87,12 +87,11 @@ def main():
     elif args.data_type == 'course':
         data = data[data['active']==True]
         data['fulltext'] = data['learning_targets_description'].fillna('') + data['name'] +data['key_benefits'].fillna('') + data['intro'].fillna('')
-    # TODO select best columns for each data type
-    # TODO filter the ones with too small descriptions
-    # TODO merge sentences if they are too short
+    # TODO 2. select best columns for each data type
+    # TODO filter the ones with too small descriptions (eg less than 4 sentences?)
 
     # get number of words in each description
-    # data['desc_len'] = data['description'].apply(lambda x: len(x.split()))
+    # data['desc_len'] = data['fulltext'].apply(lambda x: len(x.split())) #50 words maybe
 
     if args.ids is not None:
         data = data[data['id'].isin(ids)]
@@ -105,7 +104,7 @@ def main():
     print("loaded data:", len(data), "elements")
     data = data.to_dict('records')
 
-    
+    #TODO AD think about logic and add to README extraction vs matching
 
     # We create two files:
     # 1. results_detailed.json: contains a list of jobs/courses ids
@@ -117,6 +116,8 @@ def main():
     detailed_results_dict = {}
     for i, item in tqdm(enumerate(data)): # item is job or course in dictionary format
         sentences = split_sentences(item['fulltext'])
+        # TODO here, split by sentences and aggregate 4 sentences together? Do several api consecutive "messages"? Split into sentences but provide the whole paragraph as context?
+        # TODO either way, remove too small sentences / paragraphs
         if args.debug:
             #sentences = [sent for sent in sentences if len(sent.split())<80]
             #if len(sentences)==0:
@@ -150,22 +151,15 @@ def main():
             api = OPENAI(args, sentences_res_list)
             sentences_res_list, cost = api.do_prediction("matching")
             matching_cost += cost
-            # TODO remove "None"
-            # TODO remove duplicates
-            # TODO output only level 2 or rather skill id?
 
         # Do exact match with technologies, languages, certifications
         tech_certif_lang = pd.read_csv('../data/taxonomy/tech_certif_lang.csv')
         tech_alternative_names = pd.read_csv('../data/taxonomy/technologies_alternative_names.csv', sep='\t')
         certification_alternative_names = pd.read_csv('../data/taxonomy/certifications_alternative_names.csv', sep='\t')
         sentences_res_list = exact_match(sentences_res_list, tech_certif_lang, tech_alternative_names, certification_alternative_names)
-        # TODO find a way to correctly identify even common strings (eg 'R')!
-        # Idem for finding C on top of C# and C++
-        # Also issue with .Net not found (because it's written Microsoft .NET Framework)
-        # and SQL not found (because it's written SQL Server)
-        # one thing to do: find the element only if there's a space before or after or both
-        # + propose alternative names for all technologies
-        # same for "Microsoft Azure software" --> Azure not found
+        # TODO find a way to correctly identify even common strings (eg 'R')! (AD: look in utils exact_match)
+        # Idem for finding C on top of C# and C++ 
+        # TODO update alternative names generation to get also shortest names (eg .Net, SQL etc) (Syrielle)
         
         detailed_results_dict[item['id']] = sentences_res_list
     
@@ -187,7 +181,8 @@ def main():
                 if 'matched_skills' in sample:
                     for skill in sample['matched_skills']:
                         clean_output['skills'].append(sample['matched_skills'][skill])
-                        # TODO output Level 2 or id!
+                        # TODO 1. output Level 2 or id! To do so, re-do id generation on the taxonomy to give IDs only to Level 2 elements! (refer to taxonomy v4 as well as ipynb)
+                        # TODO deduplicate and remove "None"
             clean_output_dict[item_id] = clean_output
         write_json(clean_output_dict, args.output_path.replace('.json', '_clean.json'))
     print("Done")

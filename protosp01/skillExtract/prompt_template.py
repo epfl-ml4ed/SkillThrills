@@ -10,4 +10,14 @@ PROMPT_TEMPLATES = {
         "instruction": "You are an expert human resource. From a given German sentence from a CV, and a skill extracted from this sentence, choose from the options one or several items that best match the skill in the context. Answer with the associated letter(s).\n",
         "1shot": 'Sentence: Grundlegende Bestimmungen von Urheberrecht und Datenschutz verstehen. \nSkill: Datenschutz. \nOptions: \nA: "Grundsätze des Datenschutzes respektieren" \nB: "Datenschutz verstehen" \nC: "Datenschutz im Luftfahrtbetrieb sicherstellen" \nD: "Datenschutz". \nAnswer: "Datenschutz verstehen", "Datenschutz".\n',
     },
+    # "extend_taxonomy_tech": {
+    #     "instruction": "I am looking for occurrences of the <SKILL_TYPE> '<NAME>' in a document. However, the author doesn't always refer to this <SKILL_TYPE> using the full name. Generate only a list of 10 other names that I could look for, separated by commas.\n",
+    #     "1shot": "Skill: Microsoft Excel \n Answer: Excel, MS Excel, Microsoft Excel, Spreadsheet software by Microsoft, Microsoft's spreadsheet application, Excel program, Excel software, Microsoft's data analysis tool, Microsoft's workbook software, Spreadsheet program by Microsoft\n",
+    # },
+    # "extend_taxonomy_certif": {
+    #     "instruction": "I am looking for occurrences of the <SKILL_TYPE> '<NAME>' in a document. However, the author doesn't always refer to this <SKILL_TYPE> using the full name. Generate only a list of 10 other names that I could look for, separated by commas.\n",
+    #     "1shot": "Certification: AWS DevOps Engineer \n Answer: AWS, AWS DevOps Specialist, Amazon DevOps Engineer, AWS DevOps Practitioner, Certified AWS DevOps Professional, AWS DevOps Architect, Amazon Web Services DevOps Expert, AWS DevOps Solutions Engineer, AWS Cloud DevOps Engineer, AWS DevOps Deployment Specialist, AWS DevOps Integration Engineer\n",
+    # },
 }
+
+## TODO: Think about incorporating the above used in "extend_taxonomy_elements.py" into the Generator

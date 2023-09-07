@@ -23,9 +23,12 @@ With and without exact string matching
 Skillspan: https://github.com/kris927b/SkillSpan/tree/main/data/json
 Green: https://github.com/acp19tag/skill-extraction-dataset/tree/main/preprocessed_data
 gnehm (huge, in German, for the Swiss job market): https://aclanthology.org/2022.nlpcss-1.2.pdf?
+Where is the data?
 
---> evaluation pipeline:
-https://huggingface.co/spaces/evaluate-metric/seqeval/blob/main/seqeval.py
+--> evaluation **pipeline**: Using the "evaluate" package.
+https://huggingface.co/spaces/evaluate-metric/seqeval
+
+
 
 2) skill matching (using ESCO as taxonomy)
 Synthetic:
