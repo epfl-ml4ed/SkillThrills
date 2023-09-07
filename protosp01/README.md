@@ -52,10 +52,12 @@ This will create the following files, which contain the alternative names for te
 * technologies_alternative_names.csv
 * certifications_alternative_names.csv
 
-## Running
+## Running the Prototype
+
+From the current **protosp01** directory, run:
 
 ```shell script
-python protosp01/skillExtract/pipeline_jobs_courses.py
+python skillExtract/pipeline_jobs_courses.py
 ```
 
 

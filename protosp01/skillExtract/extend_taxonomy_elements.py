@@ -1,11 +1,11 @@
 # %%
 import os, re
+import argparse
 import pandas as pd
 import openai
 import os
 import pandas as pd
 import re
-from tqdm import tqdm
 from split_words import Splitter
 
 # %%
@@ -18,6 +18,14 @@ from api_key import *
 os.chdir("../data/taxonomy/")
 assert os.getcwd().split("/")[-1] == "taxonomy", "check path"
 # %%
+
+# fmt: off
+parser = argparse.ArgumentParser()
+parser.add_argument("--generate_new", action="store_true", help="Whether to generate new alternative names or not")
+parser.add_argument("--no_inter", action="store_true", help="Whether to not save intermediate raw files")
+
+args = parser.parse_args()
+# fmt: on
 
 generator_models = {
     "chatgpt": "gpt-3.5-turbo",
@@ -111,16 +119,40 @@ tech = (
 )
 
 # %%
-try:
-    certif = pd.read_csv("certifications_alternative_names_raw.csv")
-    print("loaded raw certification alternative names file")
-except:
-    print("raw file not found, generating alternative names for certifications")
-    certif["alternative_names"] = certif.apply(generator.get_alt_names, axis=1)
-    certif.to_csv(
-        "certifications_alternative_names_raw.csv",
-        index=False,
-    )
+
+
+def generate_alt_names(df, skill_type):
+    print(f"generating alternative names for {skill_type}")
+    df["alternative_names"] = df.apply(generator.get_alt_names, axis=1)
+    if not args.no_inter:
+        df.to_csv(
+            f"{skill_type}_alternative_names_raw.csv",
+            index=False,
+        )
+    return df
+
+
+def load_alt_names(df, skill_type):
+    try:
+        df = pd.read_csv(f"{skill_type}_alternative_names_raw.csv")
+        print(f"loaded raw {skill_type} alternative names file")
+    except:
+        print(f"raw file not found, generating alternative names for {skill_type}")
+        df["alternative_names"] = df.apply(generator.get_alt_names, axis=1)
+        if not args.no_inter:
+            df.to_csv(
+                f"{skill_type}_alternative_names_raw.csv",
+                index=False,
+            )
+    return df
+
+
+if args.generate_new:
+    certif = generate_alt_names(certif, "certifications")
+    tech = generate_alt_names(tech, "technologies")
+else:
+    certif = load_alt_names(certif, "certifications")
+    tech = load_alt_names(tech, "technologies")
 
 # %%
 # adding smaller names to alternative names clean
@@ -162,17 +194,7 @@ certif.to_csv(
 )
 print("saved certifications")
 
-# %%
-try:
-    tech = pd.read_csv("technologies_alternative_names_raw.csv")
-    print("loaded raw technologies alternative names file")
-except:
-    print("raw file not found, generating alternative names for technologies")
-    tech["alternative_names"] = tech.apply(generator.get_alt_names, axis=1)
-    tech.to_csv(
-        "technologies_alternative_names_raw.csv",
-        index=False,
-    )
+
 # %%
 print("cleaning alternative names for technologies")
 tech["alternative_names_clean"] = tech.apply(

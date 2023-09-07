@@ -29,9 +29,7 @@ from utils import *
 
 def main():
     parser = argparse.ArgumentParser()
-    # parser.add_argument("--datapath", type=str, help="Path to source data", default = "platform_data/vacancies")
     parser.add_argument("--datapath", type=str, help="Path to source data", default = "../data/raw/vacancies.json")
-    # parser.add_argument("--taxonomy", type=str, help="Path to taxonomy file in csv format", default = "taxonomy_files/taxonomy_V4.csv")
     parser.add_argument("--taxonomy", type=str, help="Path to taxonomy file in csv format", default = "../data/taxonomy/taxonomy_V4.csv")
     parser.add_argument("--openai_key", type=str, help="openai keys", default = API_KEY)
     parser.add_argument("--model", type=str, help="Model to use for generation", default="gpt-3.5-turbo")
@@ -42,8 +40,8 @@ def main():
     parser.add_argument("--presence_penalty", type=float, help="Presence penalty for generation", default=0)
     parser.add_argument("--output_path", type=str, help="Output for evaluation results", default="results/")
     parser.add_argument("--num-samples", type=int, help="Last N elements to evaluate (the new ones)", default=0)
-    parser.add_argument("--do-extraction", action="store_true", help="Wether to do the extraction or directly the matching")
-    parser.add_argument("--do-matching", action="store_true", help="Wether to do the matching or not")
+    parser.add_argument("--do-extraction", action="store_true", help="Whether to do the extraction or directly the matching")
+    parser.add_argument("--do-matching", action="store_true", help="Whether to do the matching or not")
     parser.add_argument("--debug", action="store_true", help="Keep only one sentence per job offer / course to debug")
     parser.add_argument("--detailed", action="store_true", help="Generate detailed output")
     parser.add_argument("--ids", type=str, help="Path to a file with specific ids to evaluate", default=None)
