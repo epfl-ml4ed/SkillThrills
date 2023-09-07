@@ -137,7 +137,7 @@ def text_completion(
 class OPENAI:
     def __init__(self, args, data):
         """
-        data is a list of dictionaries, each consiting of one sentence and extracted skills
+        data is a list of dictionaries, each consisting of one sentence and extracted skills
         """
         openai.api_key = args.api_key
         self.args = args

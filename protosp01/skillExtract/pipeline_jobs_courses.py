@@ -33,7 +33,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--datapath", type=str, help="Path to source data", default = "../data/raw/vacancies.json")
     parser.add_argument("--taxonomy", type=str, help="Path to taxonomy file in csv format", default = "../data/taxonomy/taxonomy_V4.csv")
-    parser.add_argument("--openai_key", type=str, help="openai keys", default = API_KEY)
+    parser.add_argument("--api_key", type=str, help="openai keys", default = API_KEY)
     parser.add_argument("--model", type=str, help="Model to use for generation", default="gpt-3.5-turbo")
     parser.add_argument("--temperature", type=float, help="Temperature for generation", default=0.3)
     parser.add_argument("--max_tokens", type=int, help="Max tokens for generation", default=40)
@@ -88,10 +88,12 @@ def main():
         data = data[data['active']==True]
         data['fulltext'] = data['learning_targets_description'].fillna('') + data['name'] +data['key_benefits'].fillna('') + data['intro'].fillna('')
     # TODO 2. select best columns for each data type
-    # TODO filter the ones with too small descriptions (eg less than 4 sentences?)
+    # TODO filter the ones with too small descriptions (eg less than 4 sentences?) 
 
     # get number of words in each description
-    # data['desc_len'] = data['fulltext'].apply(lambda x: len(x.split())) #50 words maybe
+    data['text_num_words'] = data['fulltext'].apply(lambda x: len(x.split()))
+    data = data[data['text_num_words']>100].drop(columns=['text_num_words']) # 100 words
+
 
     if args.ids is not None:
         data = data[data['id'].isin(ids)]
@@ -102,6 +104,7 @@ def main():
         data = data[data['language']=='de']
 
     print("loaded data:", len(data), "elements")
+
     data = data.to_dict('records')
 
     #TODO AD think about logic and add to README extraction vs matching
@@ -114,7 +117,7 @@ def main():
     extraction_cost = 0
     matching_cost = 0
     detailed_results_dict = {}
-    for i, item in tqdm(enumerate(data)): # item is job or course in dictionary format
+    for idx, item in tqdm(enumerate(data)): # item is job or course in dictionary format
         sentences = split_sentences(item['fulltext'])
         # TODO here, split by sentences and aggregate 4 sentences together? Do several api consecutive "messages"? Split into sentences but provide the whole paragraph as context?
         # TODO either way, remove too small sentences / paragraphs
@@ -141,9 +144,9 @@ def main():
         if 'extracted_skills' in sentences_res_list[0]:
             splitter = Splitter()
             max_candidates = 10
-            for i, sample in enumerate(sentences_res_list):
+            for idxx, sample in enumerate(sentences_res_list):
                 sample = select_candidates_from_taxonomy(sample, taxonomy, skill_names, skill_definitions, splitter, max_candidates)
-                sentences_res_list[i] = sample
+                sentences_res_list[idxx] = sample
 
         # match skills with taxonomy
         if args.do_matching and 'skill_candidates' in sentences_res_list[0]:
@@ -175,7 +178,7 @@ def main():
         for item_id, detailed_res in detailed_results_dict.items():
             clean_output = {categ: [] for categ in categs}
             clean_output['skills'] = []
-            for i, sample in enumerate(detailed_res):
+            for ii, sample in enumerate(detailed_res):
                 for cat in categs:
                     clean_output[cat].extend(sample[cat])
                 if 'matched_skills' in sample:
