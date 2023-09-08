@@ -17,6 +17,7 @@ def get_taxonomy():
     print("num taxonomy rows:", len(taxonomy))
     taxonomy = taxonomy.dropna(subset=["Type Level 1", "Type Level 2", "Definition"])
     print("num taxonomy rows after dropping empty Level 1 and 2:", len(taxonomy))
+    taxonomy = taxonomy.dropna(axis=1, how="all")
     tech = pd.read_excel("KompetenzmodellKodierbuch.xlsx", sheet_name="Technologies")
     print("num tech rows:", len(tech))
     certif = pd.read_excel(

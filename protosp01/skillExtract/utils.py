@@ -358,7 +358,7 @@ def exact_match(
 ):
     # Create a dictionary to map alternative names to their corresponding Level 2 values
     synonym_to_tech_mapping = {}
-    for index, row in tech_alternative_names.iterrows():
+    for _, row in tech_alternative_names.iterrows():
         alternative_names = []
         if not pd.isna(row["alternative_names_clean"]):
             alternative_names = row["alternative_names_clean"].split(", ")
@@ -366,7 +366,7 @@ def exact_match(
             synonym_to_tech_mapping[alt_name] = row["Level 2"]
 
     synonym_to_certif_mapping = {}
-    for index, row in certification_alternative_names.iterrows():
+    for _, row in certification_alternative_names.iterrows():
         alternative_names = []
         if not pd.isna(row["alternative_names_clean"]):
             alternative_names = row["alternative_names_clean"].split(", ")

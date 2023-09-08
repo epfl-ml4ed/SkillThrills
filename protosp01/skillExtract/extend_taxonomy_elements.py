@@ -35,7 +35,7 @@ def extend_taxomony():
         "gpt-4": "gpt-4",
     }
 
-    splitter = Splitter()
+    # splitter = Splitter()
 
     openai.api_key = API_KEY
 
@@ -179,16 +179,7 @@ def extend_taxomony():
     # %%
 
     certif = certif[["unique_id", "Level 2", "alternative_names_clean"]]
-    # splitting alternative names clean into separate columns by comma
-    certif = certif.join(
-        certif["alternative_names_clean"].str.split(",", expand=True).add_prefix("alt_")
-    ).drop(columns=["alternative_names_clean"])
-
-    # %%
-    certif.to_csv(
-        "certifications_alternative_names.csv",
-        index=False,
-    )
+    certif.to_csv("certifications_alternative_names.csv", index=False, sep="\t")
     print("saved certifications")
 
     # %%
@@ -198,15 +189,7 @@ def extend_taxomony():
     )
 
     tech = tech[["unique_id", "Level 2", "alternative_names_clean"]]
-    # splitting alternative names clean into separate columns by comma
-    tech = tech.join(
-        tech["alternative_names_clean"].str.split(",", expand=True).add_prefix("alt_")
-    ).drop(columns=["alternative_names_clean"])
-
-    tech.to_csv(
-        "technologies_alternative_names.csv",
-        index=False,
-    )
+    tech.to_csv("technologies_alternative_names.csv", index=False, sep="\t")
     print("saved technologies")
 
 
