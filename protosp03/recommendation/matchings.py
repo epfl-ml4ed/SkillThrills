@@ -1,7 +1,25 @@
 from collections import Counter, defaultdict
 
 
-def profile_job_match(profile, job):
+def profile_job_matching(profile, job):
+    """Computes a profile job matching score based on the proportion of skills that the user possesses
+
+    Args:
+        profile (dict): dictionnary of skills that the profile has
+        job (dict): dictionnary of skills required for the job
+
+    Returns:
+        float: matching score
+    """
+    matching = 0
+    for skill in job:
+        if skill in profile:
+            matching += 1
+    matching = 100 * matching / len(job)
+    return matching
+
+
+def profile_job_matching_with_level(profile, job):
     """Computes a profile job matching score based on the proportion of skills that the user possesses
 
     Args:
@@ -17,20 +35,6 @@ def profile_job_match(profile, job):
             sim = min(profile[skill], job[skill]) / job[skill]
             matching += sim
     matching = 100 * matching / len(job)
-    return matching
-
-
-def profile_job_match_with_level(profile, job, skills, levels):
-    """Computes a profile job matching score for each level in the hierarchy.
-
-    Args:
-        profile (set): set of skills that the profile has
-        job (set): set of skills required for the job
-
-    Returns:
-        float: matching score
-    """
-    matching = 0
     return matching
 
 
