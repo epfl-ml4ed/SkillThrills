@@ -21,6 +21,7 @@ import tiktoken
 import difflib
 from split_words import Splitter
 
+
 # %%
 
 from prompt_template import PROMPT_TEMPLATES
@@ -145,7 +146,8 @@ def main():
             splitter = Splitter()
             max_candidates = 10
             for idxx, sample in enumerate(sentences_res_list):
-                sample = select_candidates_from_taxonomy(sample, taxonomy, skill_names, skill_definitions, splitter, max_candidates)
+                # sample = select_candidates_from_taxonomy(sample, taxonomy, skill_names, skill_definitions, splitter, max_candidates)
+                sample = select_candidates_from_taxonomy(sample, taxonomy, splitter, max_candidates)
                 sentences_res_list[idxx] = sample
 
         # match skills with taxonomy

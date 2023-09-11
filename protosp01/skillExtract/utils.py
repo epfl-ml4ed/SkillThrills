@@ -18,10 +18,14 @@ import re
 import tiktoken
 import difflib
 from split_words import Splitter
+from sentence_splitter import SentenceSplitter, split_text_into_sentences
 from spacy_langdetect import LanguageDetector
 import spacy
 from spacy.language import Language
 from spacy_language_detection import LanguageDetector
+import torch
+from transformers import AutoModel, AutoTokenizer
+import torch.nn.functional as F
 
 
 def get_lang_detector(nlp, name):
@@ -79,7 +83,10 @@ def detect_language(text):
 
 def split_sentences(text):
     # sentences = re.split(r'(?<=[.!?]) +', text)
-    sentences = text.split("\n\n")  # TODO: AD test number of sentences here
+    # sentences = text.split("\n\n")  # TODO: AD test number of sentences here
+    splitter = SentenceSplitter(language="de")
+    sentences = splitter.split(text)
+
     return sentences
 
 
@@ -177,7 +184,9 @@ class OPENAI:
                 self.run_gpt_sample(input_, max_tokens=max_tokens).lower().strip()
             )
             extracted_skills = re.findall(pattern, prediction)
-            sample["extracted_skills"] = extracted_skills
+            sample["extracted_skills"] = list(
+                set(extracted_skills)
+            )  # AD: removed duplicates
             self.data[i] = sample
 
             cost = compute_cost(input_, prediction, self.args.model)
@@ -275,18 +284,19 @@ def concatenate_cols_skillname(row):
     return output
 
 
-def filter_subwords(extracted_skill, skill_names, splitter):
+# def filter_subwords(extracted_skill, skill_names, splitter):
+def filter_subwords(extracted_skill, splitter):
     subwords = []
     for word in extracted_skill.split():
         subwords.extend(list(splitter.split_compound(word)[0][1:]))
     subwords = list(set(subwords))
     subwords = [word for word in subwords if len(word) > 2]
-    matched_elements = []
-    for subword in subwords:
-        matched_elements.extend(
-            filter(lambda item: subword in item[1], enumerate(skill_names))
-        )
-    return matched_elements
+    # matched_elements = []
+    # for subword in subwords:
+    #     matched_elements.extend(
+    #         filter(lambda item: subword in item[1], enumerate(skill_names))
+    #     )
+    return subwords  # matched_elements
 
 
 def load_taxonomy(args):
@@ -296,60 +306,157 @@ def load_taxonomy(args):
     # taxonomy["unique_id"] = list(range(len(taxonomy)))
     skill_definitions = list(taxonomy["Definition"].apply(lambda x: x.lower()))
     skill_names = list(taxonomy["name+example"].apply(lambda x: x.lower()))
+
+    keep_cols = [
+        "unique_id",
+        "ElementID",
+        "Dimension",
+        "Type Level 1",
+        "Type Level 2",
+        "Type Level 3",
+        "Type Level 4",
+        "Example",
+        "Definition",
+        "name+example",
+    ]
+    taxonomy = taxonomy[keep_cols]
     return taxonomy, skill_names, skill_definitions
 
 
+def get_embeddings(text, model_name="agne/jobBERT-de"):  # alt: "agne/jobGBERT"
+    model_name = model_name
+    model = AutoModel.from_pretrained(model_name)
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True)
+    with torch.no_grad():
+        word_outputs = model(**inputs)
+        embeddings = word_outputs.last_hidden_state.mean(
+            dim=1
+        )  # Average pooling over tokens
+    return embeddings
+
+
+def get_top_vec_similarity(
+    extracted_skill,
+    taxonomy,
+    max_candidates=10,
+    emb_model="agne/jobBERT-de",
+):
+    skill_vec = get_embeddings(extracted_skill, emb_model)
+    taxonomy["embeddings"] = taxonomy["name+example"].apply(get_embeddings)
+    taxonomy["similarity"] = taxonomy["embeddings"].apply(
+        lambda emb: F.cosine_similarity(skill_vec, emb, dim=1).item()
+    )
+    cut_off_score = taxonomy.sort_values(by="similarity", ascending=False).iloc[
+        max_candidates
+    ]["similarity"]
+    taxonomy["results"] = taxonomy["similarity"].apply(
+        lambda x: True if x >= cut_off_score else False
+    )
+    taxonomy.drop(columns=["embeddings", "similarity"], inplace=True)
+
+    return taxonomy
+
+
+# def select_candidates_from_taxonomy(
+#     sample, taxonomy, skill_names, skill_definitions, splitter, max_candidates
+# ):
 def select_candidates_from_taxonomy(
-    sample, taxonomy, skill_names, skill_definitions, splitter, max_candidates
+    sample,
+    taxonomy,
+    splitter,
+    max_candidates=10,
+    emb_model="agne/jobBERT-de",
 ):
     sample["skill_candidates"] = {}
     if len(sample["extracted_skills"]) > 0:
         # look for each extracted skill in the taxonomy
         for extracted_skill in sample["extracted_skills"]:
-            # TODO: (Maybe try with this logic but also try embeddings (JobBERT))
-            # TODO apply rules one by one (make this more computationally efficient, don't perform all filterings beforehand)
-            # 1) look for all taxonomy skill name with exact match of extracted skill name inside
-            rule1 = list(
-                filter(lambda item: extracted_skill in item[1], enumerate(skill_names))
+            print("extracted skill:", extracted_skill)
+            # First we check for matches in name+example
+            print("checking for matches in name+example")
+            taxonomy["results"] = taxonomy["name+example"].str.contains(
+                extracted_skill, case=False, regex=False
             )
-            # 2) look for all taxonomy skill definitions with exact match of extracted skill name inside
-            rule2 = list(
-                filter(
-                    lambda item: extracted_skill in item[1],
-                    enumerate(skill_definitions),
-                )
+        if taxonomy[taxonomy["results"]].empty:
+            # print("... none found")
+            print("checking for matches in definition")
+            # If no match, we check for matches in definitions
+            taxonomy["results"] = taxonomy["Definition"].str.contains(
+                extracted_skill, case=False, regex=False
             )
-            # 3)look for all taxonomy skill name with a subword of extracted skill name inside
-            rule3 = filter_subwords(extracted_skill, skill_names, splitter)
-            instructions = [rule1, rule2, rule3]
+        if taxonomy[taxonomy["results"]].empty:
+            # print("... none found")
+            print("checking for matches in subwords")
+            # If still no match, we check if subwords are present in name+example
+            taxonomy["results"] = False
+            for subword in filter_subwords(extracted_skill, splitter):
+                # if there is a match subwresults column + 1
+                taxonomy["results"] = taxonomy["results"] + taxonomy[
+                    "name+example"
+                ].str.contains(subword, case=False, regex=False)
+        if taxonomy[taxonomy["results"]].empty:
+            # print("... none found")
+            print("checking for highest embedding similarity")
+            taxonomy = get_top_vec_similarity(extracted_skill, taxonomy)
 
-            for instruction in instructions:
-                matching_elements = instruction
-                if len(matching_elements) > 0:
-                    break
-            matching_rows = taxonomy.iloc[[item[0] for item in matching_elements]]
-            if len(matching_rows) > 10:
-                print("More than 10 candidates found for skill", extracted_skill)
-                matching_rows = matching_rows.sample(
-                    max_candidates
-                )  # TODO what to do with more than N extracted skills ? Find a way to make a coherent selection.
-            elif (
-                len(matching_rows) == 0
-            ):  # TODO update now that we don't have type level 3 anymore
-                matching_elements = difflib.get_close_matches(
-                    extracted_skill,
-                    taxonomy["name+example"],
-                    cutoff=0.4,
-                    n=max_candidates,
-                )
-                matching_rows = taxonomy[
-                    taxonomy["name+example"].isin(matching_elements)
-                ]
-            if len(matching_rows) == 0:
-                print("No candidates found for skill", extracted_skill)
-            sample["skill_candidates"][extracted_skill] = matching_rows[
-                ["unique_id", "name+example"]
-            ].to_dict("records")
+        # matching_df is results = True and only keep unique id, Type Level 2 and name+example, Definition columns
+        keep_cols = [
+            "unique_id",
+            "Type Level 2",
+            "name+example",
+        ]
+        matching_df = taxonomy[taxonomy["results"]][keep_cols]
+
+        if len(matching_df) > max_candidates:
+            matching_df = matching_df.sample(n=max_candidates)
+
+        sample["skill_candidates"][extracted_skill] = matching_df.to_dict("records")
+
+        # # TODO: (Maybe try with this logic but also try embeddings (JobBERT))
+        # # TODO apply rules one by one (make this more computationally efficient, don't perform all filterings beforehand)
+        # # 1) look for all taxonomy skill name with exact match of extracted skill name inside
+        # rule1 = list(
+        #     filter(lambda item: extracted_skill in item[1], enumerate(skill_names))
+        # )
+        # # 2) look for all taxonomy skill definitions with exact match of extracted skill name inside
+        # rule2 = list(
+        #     filter(
+        #         lambda item: extracted_skill in item[1],
+        #         enumerate(skill_definitions),
+        #     )
+        # )
+        # # 3)look for all taxonomy skill name with a subword of extracted skill name inside
+        # rule3 = filter_subwords(extracted_skill, skill_names, splitter)
+        # instructions = [rule1, rule2, rule3]
+
+        # for instruction in instructions:
+        #     matching_elements = instruction
+        #     if len(matching_elements) > 0:
+        #         break
+        # matching_rows = taxonomy.iloc[[item[0] for item in matching_elements]]
+        # if len(matching_rows) > 10:
+        #     print("More than 10 candidates found for skill", extracted_skill)
+        #     matching_rows = matching_rows.sample(
+        #         max_candidates
+        #     )  # TODO what to do with more than N extracted skills ? Find a way to make a coherent selection.
+        # elif (
+        #     len(matching_rows) == 0
+        # ):  # TODO update now that we don't have type level 3 anymore
+        #     matching_elements = difflib.get_close_matches(
+        #         extracted_skill,
+        #         taxonomy["name+example"],
+        #         cutoff=0.4,
+        #         n=max_candidates,
+        #     )
+        #     matching_rows = taxonomy[
+        #         taxonomy["name+example"].isin(matching_elements)
+        #     ]
+        # if len(matching_rows) == 0:
+        #     print("No candidates found for skill", extracted_skill)
+        # sample["skill_candidates"][extracted_skill] = matching_rows[
+        #     ["unique_id", "name+example"]
+        # ].to_dict("records")
     return sample
 
 
