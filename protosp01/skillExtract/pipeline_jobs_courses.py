@@ -42,9 +42,11 @@ def main():
     parser.add_argument("--frequency_penalty", type=float, help="Frequency penalty for generation", default=0)
     parser.add_argument("--presence_penalty", type=float, help="Presence penalty for generation", default=0)
     parser.add_argument("--output_path", type=str, help="Output for evaluation results", default="results/")
-    parser.add_argument("--num-samples", type=int, help="Last N elements to evaluate (the new ones)", default=0)
+    parser.add_argument("--num-samples", type=int, help="Last N elements to evaluate (the new ones)", default=10)
+    parser.add_argument("--num-sentences", type=int, help="by how many sentences to split the corpus", default=4)
     parser.add_argument("--do-extraction", action="store_true", help="Whether to do the extraction or directly the matching")
     parser.add_argument("--do-matching", action="store_true", help="Whether to do the matching or not")
+    parser.add_argument("--word-emb-model", type=str, help="Word embedding model to use", default="agne/jobBERT-de")
     parser.add_argument("--debug", action="store_true", help="Keep only one sentence per job offer / course to debug")
     parser.add_argument("--detailed", action="store_true", help="Generate detailed output")
     parser.add_argument("--ids", type=str, help="Path to a file with specific ids to evaluate", default=None)
@@ -108,6 +110,12 @@ def main():
 
     data = data.to_dict('records')
 
+    # Intitialize pretrained word embeddings
+    word_emb = args.word_emb_model
+    word_emb_model = AutoModel.from_pretrained(word_emb)
+    word_emb_tokenizer = AutoTokenizer.from_pretrained(word_emb)
+
+
     #TODO AD think about logic and add to README extraction vs matching
 
     # We create two files:
@@ -120,14 +128,21 @@ def main():
     detailed_results_dict = {}
     for idx, item in tqdm(enumerate(data)): # item is job or course in dictionary format
         sentences = split_sentences(item['fulltext'])
-        # TODO here, split by sentences and aggregate 4 sentences together? Do several api consecutive "messages"? Split into sentences but provide the whole paragraph as context?
-        # TODO either way, remove too small sentences / paragraphs
+
         if args.debug:
             #sentences = [sent for sent in sentences if len(sent.split())<80]
             #if len(sentences)==0:
             #    continue
             sentences = [random.choice(sentences)]
-        sentences_res_list = [{"sentence": sentence} for sentence in sentences]
+        sentences_res_list = []
+
+        for ii in range(0, len(sentences), args.num_sentences):
+            sentences_res_list.append(
+                    {
+                        "sentence": ". ".join(sentences[ii : ii + args.num_sentences]),
+                    }
+                )        
+
         if len(sentences_res_list)==0:
             continue
         
@@ -147,7 +162,7 @@ def main():
             max_candidates = 10
             for idxx, sample in enumerate(sentences_res_list):
                 # sample = select_candidates_from_taxonomy(sample, taxonomy, skill_names, skill_definitions, splitter, max_candidates)
-                sample = select_candidates_from_taxonomy(sample, taxonomy, splitter, max_candidates)
+                sample = select_candidates_from_taxonomy(sample, taxonomy, splitter, word_emb_model, word_emb_tokenizer, max_candidates)
                 sentences_res_list[idxx] = sample
 
         # match skills with taxonomy
@@ -165,12 +180,14 @@ def main():
         # TODO find a way to correctly identify even common strings (eg 'R')! (AD: look in utils exact_match)
         # Idem for finding C on top of C# and C++ 
         # TODO update alternative names generation to get also shortest names (eg .Net, SQL etc) (Syrielle)
-        
         detailed_results_dict[item['id']] = sentences_res_list
     
     if args.debug:
         args.output_path = args.output_path.replace('.json', '_debug.json')
     if args.detailed:
+        # remove "Type Level 2" from detailed results
+        print(detailed_results_dict)
+        # stop here
         write_json(detailed_results_dict, args.output_path.replace('.json', '_detailed.json'))
         
     # Output final
