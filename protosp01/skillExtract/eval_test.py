@@ -48,24 +48,17 @@ data_type = "cv"
 args.output_path = args.output_path + data_type + "_" + args.model + ".json"
 
 # read in the data from csv split by ;
-data = pd.read_csv(args.datapath, sep=";", encoding="utf-8")
+data = pd.read_csv(args.datapath, sep=",", encoding="utf-8")
 print("loaded data:", len(data), "sentences")
 
 # %%
-# clean up each sentence (remove new line, periods, etc)
-# data["Sentence"] = data["Sentence"].apply(clean_text)
-# convert Sentence to string
-data["Sentence"] = data["Sentence"].astype(str)
-data["Sentence"] = data["Sentence"].apply(clean_text)
 
-for sent in data["Sentence"]:
-    print(sent)
+# data["Sentence"] = data["Sentence"].astype(str)
+# data["Sentence"] = data["Sentence"].apply(clean_text)  # IT DOESNT WORKK??
+
+# for sent in data["Sentence"]:
+#     print(sent)
 # %%
-# add all sentences in a column into one full text string
-full_text = ""
-for sentence in data["Sentence"]:
-    full_text += sentence + ". "
-
 
 """# full_text = clean_full_text(full_text)
 # print(full_text)
@@ -99,9 +92,16 @@ for sentence in data["Sentence"]:
 
 # full_text = full_text.to_dict("records")"""
 
-sentences = split_sentences(full_text)
-for sentence in sentences:
-    sentence = clean_text(sentence)
+# add all sentences in a column into one full text string
+# full_text = ""
+# for sentence in data["Sentence"]:
+#     full_text += sentence + ". "
+
+# sentences = split_sentences(full_text)
+# for sentence in sentences:
+#     sentence = clean_text(sentence)
+
+sentences = data["Sentence"].tolist()
 
 word_emb = args.word_emb_model
 word_emb_model = AutoModel.from_pretrained(word_emb)
@@ -121,7 +121,6 @@ for ii in range(0, len(sentences), args.num_sentences):
             "sentence": ". ".join(sentences[ii : ii + args.num_sentences]),
         }
     )
-
 
 # extract skills
 if args.do_extraction:
