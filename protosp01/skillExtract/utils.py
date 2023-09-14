@@ -86,8 +86,9 @@ def split_sentences(text):
     # sentences = text.split("\n\n")  # TODO: AD test number of sentences here
     splitter = SentenceSplitter(language="de")
     sentences = splitter.split(text)
-    # keep only sentences longer than 10 words
-    sentences = [sentence for sentence in sentences if len(sentence.split()) > 5]
+    sentences = [
+        sentence.rstrip(".") for sentence in sentences if len(sentence.split()) > 5
+    ]
     return sentences
 
 
@@ -239,7 +240,11 @@ class OPENAI:
                     else "None"
                 )
 
-                sample["matched_skills"][extracted_skill] = chosen_option
+                for skill_candidate in sample["skill_candidates"][extracted_skill]:
+                    if skill_candidate["name+example"] == chosen_option:
+                        sample["matched_skills"][extracted_skill] = skill_candidate
+                        break  # stop searching once matched
+
                 self.data[idxx] = sample
 
                 cost = compute_cost(input_, prediction, self.args.model)
@@ -422,19 +427,51 @@ def select_candidates_from_taxonomy(
                     extracted_skill, taxonomy, model, tokenizer
                 )  ## AD TODO: take embedding of only the relevant subword in extracted skill
 
-            # matching_df is results = True and only keep unique id, Type Level 2 and name+example, Definition columns
             keep_cols = [
                 "unique_id",
-                # "Type Level 2", #TODO: AD: see if we want to reinclude here
+                # "Type Level 2",
                 "name+example",
             ]
+
             matching_df = taxonomy[taxonomy["results"]][keep_cols]
 
             if len(matching_df) > max_candidates:
-                matching_df = matching_df.sample(n=max_candidates)
+                matching_df = matching_df.sample(n=max_candidates, random_state=42)
 
-            # how to make override previous extracted skill:
             sample["skill_candidates"][extracted_skill] = matching_df.to_dict("records")
+
+            # # matching_df is results = True and only keep unique id, Type Level 2 and name+example, Definition columns
+            # keep_cols_det = [
+            #     "unique_id",
+            #     # "Type Level 2",
+            #     "name+example",
+            # ]
+            # keep_cols_cln = [
+            #     "unique_id",
+            #     "Type Level 2",
+            #     # "name+example",
+            # ]
+            # matching_df_det = taxonomy[taxonomy["results"]][keep_cols_det]
+            # matching_df_cln = taxonomy[taxonomy["results"]][keep_cols_cln]
+
+            # if len(matching_df_det) > max_candidates:
+            #     matching_df_det = matching_df_det.sample(
+            #         n=max_candidates, random_state=42
+            #     )
+
+            # if len(matching_df_cln) > max_candidates:
+            #     matching_df_cln = matching_df_cln.sample(
+            #         n=max_candidates, random_state=42
+            #     )
+
+            # sample_det = sample.copy()
+            # sample_det["skill_candidates"][extracted_skill] = matching_df_det.to_dict(
+            #     "records"
+            # )
+            # sample_cln = sample.copy()
+            # sample_cln["skill_candidates"][extracted_skill] = matching_df_cln.to_dict(
+            #     "records"
+            # )
 
         # # TODO: (Maybe try with this logic but also try embeddings (JobBERT))
         # # TODO apply rules one by one (make this more computationally efficient, don't perform all filterings beforehand)

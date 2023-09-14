@@ -43,7 +43,7 @@ def main():
     parser.add_argument("--presence_penalty", type=float, help="Presence penalty for generation", default=0)
     parser.add_argument("--output_path", type=str, help="Output for evaluation results", default="results/")
     parser.add_argument("--num-samples", type=int, help="Last N elements to evaluate (the new ones)", default=10)
-    parser.add_argument("--num-sentences", type=int, help="by how many sentences to split the corpus", default=4)
+    parser.add_argument("--num-sentences", type=int, help="by how many sentences to split the corpus", default=2)
     parser.add_argument("--do-extraction", action="store_true", help="Whether to do the extraction or directly the matching")
     parser.add_argument("--do-matching", action="store_true", help="Whether to do the matching or not")
     parser.add_argument("--word-emb-model", type=str, help="Word embedding model to use", default="agne/jobBERT-de")
@@ -86,7 +86,7 @@ def main():
     
     data = pd.DataFrame.from_records(data)
     if args.data_type == 'job':
-        data['fulltext'] = data['name'] + ".\n" + data['description']
+        data['fulltext'] = data['name'] + "\n" + data['description']
     elif args.data_type == 'course':
         data = data[data['active']==True]
         data['fulltext'] = data['learning_targets_description'].fillna('') + data['name'] +data['key_benefits'].fillna('') + data['intro'].fillna('')
@@ -170,6 +170,7 @@ def main():
             print("Starting matching")
             api = OPENAI(args, sentences_res_list)
             sentences_res_list, cost = api.do_prediction("matching")
+
             matching_cost += cost
 
         # Do exact match with technologies, languages, certifications
@@ -185,9 +186,7 @@ def main():
     if args.debug:
         args.output_path = args.output_path.replace('.json', '_debug.json')
     if args.detailed:
-        # remove "Type Level 2" from detailed results
-        print(detailed_results_dict)
-        # stop here
+        # TODO: remove "Type Level 2" from detailed results
         write_json(detailed_results_dict, args.output_path.replace('.json', '_detailed.json'))
         
     # Output final
