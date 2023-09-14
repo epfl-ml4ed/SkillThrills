@@ -99,109 +99,109 @@ for sentence in data["Sentence"]:
 
 # full_text = full_text.to_dict("records")"""
 
-# sentences = split_sentences(full_text)
-# for sentence in sentences:
-#     sentence = clean_text(sentence)
+sentences = split_sentences(full_text)
+for sentence in sentences:
+    sentence = clean_text(sentence)
 
-# word_emb = args.word_emb_model
-# word_emb_model = AutoModel.from_pretrained(word_emb)
-# word_emb_tokenizer = AutoTokenizer.from_pretrained(word_emb)
-
-
-# # print(sentences)
-# # %%
-# extraction_cost = 0
-# matching_cost = 0
-# detailed_results_dict = {}
-# sentences_res_list = []
-
-# for ii in range(0, len(sentences), args.num_sentences):
-#     sentences_res_list.append(
-#         {
-#             "sentence": ". ".join(sentences[ii : ii + args.num_sentences]),
-#         }
-#     )
+word_emb = args.word_emb_model
+word_emb_model = AutoModel.from_pretrained(word_emb)
+word_emb_tokenizer = AutoTokenizer.from_pretrained(word_emb)
 
 
-# # extract skills
-# if args.do_extraction:
-#     print("Starting extraction")
-#     api = OPENAI(args, sentences_res_list)
-#     sentences_res_list, cost = api.do_prediction("extraction")
-#     extraction_cost += cost
+# print(sentences)
+# %%
+extraction_cost = 0
+matching_cost = 0
+detailed_results_dict = {}
+sentences_res_list = []
 
-# # load taxonomy
-# taxonomy, skill_names, skill_definitions = load_taxonomy(args)
+for ii in range(0, len(sentences), args.num_sentences):
+    sentences_res_list.append(
+        {
+            "sentence": ". ".join(sentences[ii : ii + args.num_sentences]),
+        }
+    )
 
-# # select candidate skills from taxonomy
-# if "extracted_skills" in sentences_res_list[0]:
-#     splitter = Splitter()
-#     max_candidates = 10
-#     for idxx, sample in enumerate(sentences_res_list):
-#         # sample = select_candidates_from_taxonomy(sample, taxonomy, skill_names, skill_definitions, splitter, max_candidates)
-#         sample = select_candidates_from_taxonomy(
-#             sample,
-#             taxonomy,
-#             splitter,
-#             word_emb_model,
-#             word_emb_tokenizer,
-#             max_candidates,
-#         )
-#         sentences_res_list[idxx] = sample
 
-# # print(sentences_res_list)
+# extract skills
+if args.do_extraction:
+    print("Starting extraction")
+    api = OPENAI(args, sentences_res_list)
+    sentences_res_list, cost = api.do_prediction("extraction")
+    extraction_cost += cost
 
-# # match skills with taxonomy
-# if args.do_matching and "skill_candidates" in sentences_res_list[0]:
-#     print("Starting matching")
-#     api = OPENAI(args, sentences_res_list)
-#     sentences_res_list, cost = api.do_prediction("matching")
+# load taxonomy
+taxonomy, skill_names, skill_definitions = load_taxonomy(args)
 
-#     matching_cost += cost
+# select candidate skills from taxonomy
+if "extracted_skills" in sentences_res_list[0]:
+    splitter = Splitter()
+    max_candidates = 10
+    for idxx, sample in enumerate(sentences_res_list):
+        # sample = select_candidates_from_taxonomy(sample, taxonomy, skill_names, skill_definitions, splitter, max_candidates)
+        sample = select_candidates_from_taxonomy(
+            sample,
+            taxonomy,
+            splitter,
+            word_emb_model,
+            word_emb_tokenizer,
+            max_candidates,
+        )
+        sentences_res_list[idxx] = sample
 
-# # Do exact match with technologies, languages, certifications
-# tech_certif_lang = pd.read_csv("../data/taxonomy/tech_certif_lang.csv")
-# tech_alternative_names = pd.read_csv(
-#     "../data/taxonomy/technologies_alternative_names.csv", sep="\t"
-# )
-# certification_alternative_names = pd.read_csv(
-#     "../data/taxonomy/certifications_alternative_names.csv", sep="\t"
-# )
-# sentences_res_list = exact_match(
-#     sentences_res_list,
-#     tech_certif_lang,
-#     tech_alternative_names,
-#     certification_alternative_names,
-# )
-# # # TODO find a way to correctly identify even common strings (eg 'R')! (AD: look in utils exact_match)
-# # # Idem for finding C on top of C# and C++
-# # # TODO update alternative names generation to get also shortest names (eg .Net, SQL etc) (Syrielle)
-# detailed_results_dict["test_CV"] = sentences_res_list
+# print(sentences_res_list)
 
-# write_json(detailed_results_dict, args.output_path.replace(".json", "_detailed.json"))
-# # Output final
-# categs = [
-#     "Technologies",
-#     "Technologies_alternative_names",
-#     "Certifications",
-#     "Certification_alternative_names",
-#     "Languages",
-# ]
-# clean_output_dict = {}
-# for item_id, detailed_res in detailed_results_dict.items():
-#     clean_output = {categ: [] for categ in categs}
-#     clean_output["skills"] = []
-#     for ii, sample in enumerate(detailed_res):
-#         for cat in categs:
-#             clean_output[cat].extend(sample[cat])
-#         if "matched_skills" in sample:
-#             for skill in sample["matched_skills"]:
-#                 clean_output["skills"].append(sample["matched_skills"][skill])
-#                 # TODO 1. output Level 2 or id! To do so, re-do id generation on the taxonomy to give IDs only to Level 2 elements! (refer to taxonomy v4 as well as ipynb)
-#                 # TODO deduplicate and remove "None"
-#     clean_output_dict[item_id] = clean_output
-# write_json(clean_output_dict, args.output_path.replace(".json", "_clean.json"))
-# print("Done")
-# print("Extraction cost ($):", extraction_cost)
-# print("Matching cost ($):", matching_cost)
-# print("Total cost ($):", extraction_cost + matching_cost)
+# match skills with taxonomy
+if args.do_matching and "skill_candidates" in sentences_res_list[0]:
+    print("Starting matching")
+    api = OPENAI(args, sentences_res_list)
+    sentences_res_list, cost = api.do_prediction("matching")
+
+    matching_cost += cost
+
+# Do exact match with technologies, languages, certifications
+tech_certif_lang = pd.read_csv("../data/taxonomy/tech_certif_lang.csv")
+tech_alternative_names = pd.read_csv(
+    "../data/taxonomy/technologies_alternative_names.csv", sep="\t"
+)
+certification_alternative_names = pd.read_csv(
+    "../data/taxonomy/certifications_alternative_names.csv", sep="\t"
+)
+sentences_res_list = exact_match(
+    sentences_res_list,
+    tech_certif_lang,
+    tech_alternative_names,
+    certification_alternative_names,
+)
+# # TODO find a way to correctly identify even common strings (eg 'R')! (AD: look in utils exact_match)
+# # Idem for finding C on top of C# and C++
+# # TODO update alternative names generation to get also shortest names (eg .Net, SQL etc) (Syrielle)
+detailed_results_dict["test_CV"] = sentences_res_list
+
+write_json(detailed_results_dict, args.output_path.replace(".json", "_detailed.json"))
+# Output final
+categs = [
+    "Technologies",
+    "Technologies_alternative_names",
+    "Certifications",
+    "Certification_alternative_names",
+    "Languages",
+]
+clean_output_dict = {}
+for item_id, detailed_res in detailed_results_dict.items():
+    clean_output = {categ: [] for categ in categs}
+    clean_output["skills"] = []
+    for ii, sample in enumerate(detailed_res):
+        for cat in categs:
+            clean_output[cat].extend(sample[cat])
+        if "matched_skills" in sample:
+            for skill in sample["matched_skills"]:
+                clean_output["skills"].append(sample["matched_skills"][skill])
+                # TODO 1. output Level 2 or id! To do so, re-do id generation on the taxonomy to give IDs only to Level 2 elements! (refer to taxonomy v4 as well as ipynb)
+                # TODO deduplicate and remove "None"
+    clean_output_dict[item_id] = clean_output
+write_json(clean_output_dict, args.output_path.replace(".json", "_clean.json"))
+print("Done")
+print("Extraction cost ($):", extraction_cost)
+print("Matching cost ($):", matching_cost)
+print("Total cost ($):", extraction_cost + matching_cost)
