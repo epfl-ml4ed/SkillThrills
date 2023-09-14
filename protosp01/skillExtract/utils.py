@@ -616,3 +616,8 @@ def clean_skills_list(skill_name, alternative_names):
     alternative_names = list(set(alternative_names))
     alternative_names = ", ".join(alternative_names)
     return alternative_names
+
+
+def clean_text(text):
+    text = text.replace("\n", " ")
+    return text
