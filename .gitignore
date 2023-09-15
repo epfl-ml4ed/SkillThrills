@@ -175,3 +175,4 @@ data/raw/job_skills.json
 data/raw/learning_opportunities.json
 data/raw/vacancies.json
 protosp01/results/*
+.DS_Store
