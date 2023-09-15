@@ -21,7 +21,7 @@ from utils import *
 # fmt: off
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--datapath", type=str, help="Path to source data", default = "../data/annotated/CVTest_final.csv")
+parser.add_argument("--datapath", type=str, help="Path to source data", default = "../data/annotated/CVTest_V4.csv")
 parser.add_argument("--taxonomy", type=str, help="Path to taxonomy file in csv format", default = "../data/taxonomy/taxonomy_V4.csv")
 parser.add_argument("--api_key", type=str, help="openai keys", default = API_KEY)
 parser.add_argument("--model", type=str, help="Model to use for generation", default="gpt-3.5-turbo")
@@ -48,16 +48,19 @@ data_type = "cv"
 args.output_path = args.output_path + data_type + "_" + args.model + ".json"
 
 # read in the data from csv split by ;
-data = pd.read_csv(args.datapath, sep=",", encoding="utf-8")
+data = pd.read_csv(args.datapath, sep=";", encoding="utf-8")
 print("loaded data:", len(data), "sentences")
 
 # %%
 
 # data["Sentence"] = data["Sentence"].astype(str)
-# data["Sentence"] = data["Sentence"].apply(clean_text)  # IT DOESNT WORKK??
+data["Sentence"] = data["Sentence"].apply(clean_text)  # IT DOESNT WORKK??
 
-# for sent in data["Sentence"]:
-#     print(sent)
+
+for sent in data["Sentence"]:
+    print(sent)
+
+breakpoint()
 # %%
 
 """# full_text = clean_full_text(full_text)
