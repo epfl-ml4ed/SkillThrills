@@ -128,7 +128,6 @@ def main():
     detailed_results_dict = {}
     for idx, item in tqdm(enumerate(data)): # item is job or course in dictionary format
         sentences = split_sentences(item['fulltext'])
-
         if args.debug:
             #sentences = [sent for sent in sentences if len(sent.split())<80]
             #if len(sentences)==0:

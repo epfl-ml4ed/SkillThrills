@@ -226,7 +226,6 @@ class OPENAI:
                     for letter, description in options_dict.items()
                 )
                 input_ += f"\nSentence: {sample['sentence']} \nSkill: {extracted_skill} \nOptions: {options_string}.\nAnswer: "
-
                 prediction = self.run_gpt_sample(input_, max_tokens=5).lower().strip()
 
                 chosen_letter = prediction[0].upper()
@@ -619,5 +618,7 @@ def clean_skills_list(skill_name, alternative_names):
 
 
 def clean_text(text):
-    text = text.replace("\n", " ")
+    text = text.replace("\\n", ". ")
+    text = text.strip()
+    text = text.replace("..", ".")
     return text

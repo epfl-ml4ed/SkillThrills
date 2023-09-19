@@ -25,7 +25,7 @@ parser.add_argument("--datapath", type=str, help="Path to source data", default 
 parser.add_argument("--taxonomy", type=str, help="Path to taxonomy file in csv format", default = "../data/taxonomy/taxonomy_V4.csv")
 parser.add_argument("--api_key", type=str, help="openai keys", default = API_KEY)
 parser.add_argument("--model", type=str, help="Model to use for generation", default="gpt-3.5-turbo")
-parser.add_argument("--temperature", type=float, help="Temperature for generation", default=0.3)
+parser.add_argument("--temperature", type=float, help="Temperature for generation", default=0)
 parser.add_argument("--max_tokens", type=int, help="Max tokens for generation", default=40)
 parser.add_argument("--top_p", type=float, help="Top p for generation", default=1)
 parser.add_argument("--frequency_penalty", type=float, help="Frequency penalty for generation", default=0)
@@ -47,83 +47,111 @@ args = parser.parse_args()
 data_type = "cv"
 args.output_path = args.output_path + data_type + "_" + args.model + ".json"
 
-# read in the data from csv split by ;
-data = pd.read_csv(args.datapath, sep=";", encoding="utf-8")
+taxonomy, _, _ = load_taxonomy(args)
+data = pd.read_csv(args.datapath, sep=";", encoding="iso-8859-1")
 print("loaded data:", len(data), "sentences")
 
-# %%
 
-# data["Sentence"] = data["Sentence"].astype(str)
-data["Sentence"] = data["Sentence"].apply(clean_text)  # IT DOESNT WORKK??
+data["Sentence"] = data["Sentence"].apply(clean_text)
 
-
-for sent in data["Sentence"]:
-    print(sent)
-
-breakpoint()
-# %%
-
-"""# full_text = clean_full_text(full_text)
-# print(full_text)
-
-# cv = pd.read_csv(args.datapath, sep=";", encoding="utf-8")
-# print("loaded data:", len(cv), "sentences")
-# if args.num_samples > 0:
-#     cv = cv.sample(args.num_samples)
-#     print("sampled data:", len(cv), "sentences")
-
-# cv_json = []
-# for row in cv.iterrows():
-#     row_dict = {}
-#     row_dict["sentence"] = row[1]["Sentence"]
-#     row_dict["groundtruth_skills"] = []
-#     extracted_elements = [
-#         row[1]["Extracted Element 1"],
-#         row[1]["Extracted Element 2"],
-#         row[1]["Extracted Element 3"],
-#     ]
-#     matched_elements = [
-#         row[1]["Associated Element 1"],
-#         row[1]["Associated Element 2"],
-#         row[1]["Associated Element 3"],
-#     ]
-#     for skill, matched_skill in zip(extracted_elements, matched_elements):
-#         if skill not in ["None", "NaN"] and skill != np.nan:
-#             row_dict["groundtruth_skills"].append({skill: matched_skill})
-#     cv_json.append(row_dict)
+sentences_col = data["Sentence"]
+sentences_col = sentences_col[sentences_col.apply(lambda x: len(x.split()) > 5)]
 
 
-# full_text = full_text.to_dict("records")"""
+def combine_nonempty(row, type):
+    elements = [
+        value
+        for key, value in row.items()
+        if type in key and value not in ["None", np.nan]
+    ]
+    return elements if elements else None
 
-# add all sentences in a column into one full text string
-# full_text = ""
-# for sentence in data["Sentence"]:
-#     full_text += sentence + ". "
 
-# sentences = split_sentences(full_text)
-# for sentence in sentences:
-#     sentence = clean_text(sentence)
+data["groundtruth_extracted"] = data.apply(
+    combine_nonempty, axis=1, args=("Extracted Element",)
+)
+data["groundtruth_associated"] = data.apply(
+    combine_nonempty, axis=1, args=("Associated Element",)
+)
 
-sentences = data["Sentence"].tolist()
+# for each Associated Element in groundtruth_associated, get the corresponding Type Level 2 and unique_id from taxonomy
+# we have to check from the lowest level onwards (Type Level 4 -> Type Level 3 -> Type Level 2)
+# if we find a match, we stop and assign the corresponding unique_id
+# if we don't find a match, we assign "CHECK"
+
+
+def get_id_and_level2(row, get_which):
+    if row["groundtruth_associated"] is None:
+        return None
+    else:
+        for element in row["groundtruth_associated"]:
+            for level in ["Type Level 4", "Type Level 3", "Type Level 2"]:
+                if element in taxonomy[level].values:
+                    if get_which == "id":
+                        return taxonomy[taxonomy[level] == element]["unique_id"].values[
+                            0
+                        ]
+                    elif get_which == "level2":
+                        return taxonomy[taxonomy[level] == element][
+                            "Type Level 2"
+                        ].values[0]
+            return "ENCODING ISSUE"
+
+
+data["groundtruth_unique_id"] = data.apply(get_id_and_level2, axis=1, args=("id",))
+data["groundtruth_level2"] = data.apply(get_id_and_level2, axis=1, args=("level2",))
+
+
+extracted_col = data["groundtruth_extracted"]
+# associated col should be dictionary with unique_id and level2 and the associated element
+associated_col = data.apply(
+    lambda row: {
+        "unique_id": row["groundtruth_unique_id"],
+        "Type Level 2": row["groundtruth_level2"],
+        "groundtruth_associated": row["groundtruth_associated"],
+    }
+    if row["groundtruth_associated"] is not None
+    else None,
+    axis=1,
+)
 
 word_emb = args.word_emb_model
 word_emb_model = AutoModel.from_pretrained(word_emb)
 word_emb_tokenizer = AutoTokenizer.from_pretrained(word_emb)
 
 
-# print(sentences)
+def process_chunk(ii):
+    extracted_el = [
+        elem
+        for sublist in extracted_col[ii : ii + args.num_sentences]
+        if sublist is not None
+        for elem in sublist
+    ]
+    associated_el = [
+        elem
+        # for sublist in # but my col is a dictionary, so I need to get the value of the key "groundtruth_associated"
+        for sublist in associated_col[ii : ii + args.num_sentences]
+        if sublist is not None
+        for elem in sublist["groundtruth_associated"]
+    ]
+    return {
+        "sentence": ". ".join(sentences_col[ii : ii + args.num_sentences]),
+        "groundtruth_extracted": extracted_el,
+        "groundtruth_associated": associated_el,
+    }
+
+
+num_chunks = len(data) // args.num_sentences
+sentences_res_list = [
+    process_chunk(ii) for ii in range(0, len(data), args.num_sentences)
+]
+
+
 # %%
 extraction_cost = 0
 matching_cost = 0
 detailed_results_dict = {}
-sentences_res_list = []
 
-for ii in range(0, len(sentences), args.num_sentences):
-    sentences_res_list.append(
-        {
-            "sentence": ". ".join(sentences[ii : ii + args.num_sentences]),
-        }
-    )
 
 # extract skills
 if args.do_extraction:
