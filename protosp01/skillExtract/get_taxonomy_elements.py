@@ -26,6 +26,18 @@ def get_taxonomy():
     print("num certification rows:", len(certif))
     lang = pd.read_excel("KompetenzmodellKodierbuch.xlsx", sheet_name="Languages")
     print("num language rows:", len(lang))
+    mastery = pd.read_excel(  # keep only 2nd column onwards
+        "KompetenzmodellKodierbuch.xlsx", sheet_name="Expert Levels", usecols="B:C"
+    )
+
+    # clean mastery df
+    mastery = mastery.dropna(how="all")
+    mastery["Level 2"] = mastery["Level 2"].fillna(method="ffill")
+    mastery["Level 3"] = mastery["Level 3"].str.strip()
+    mastery["Level 3"] = mastery["Level 3"].str.replace("Kennntnisse", "Kenntnisse")
+    mastery = pd.concat(
+        [mastery, mastery[mastery["Level 3"].str.contains(r"\(|/")]]
+    ).sort_values(by=["Level 2", "Level 3"])
 
     # this joins three sheets vertically into one df
     tech_certif_lang = pd.concat([tech, certif, lang], ignore_index=True)
@@ -60,6 +72,7 @@ def get_taxonomy():
     # Exporting processed data
     taxonomy.to_csv("taxonomy_V4.csv", index=False)
     tech_certif_lang.to_csv("tech_certif_lang.csv", index=False)
+    mastery.to_csv("mastery_to_edit.csv", index=False)
 
 
 if __name__ == "__main__":

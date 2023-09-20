@@ -339,7 +339,6 @@ def get_embeddings(text, model, tokenizer):
         )  # Average pooling over tokens
     return embeddings
 
-
 def get_top_vec_similarity(
     extracted_skill,
     taxonomy,
@@ -544,6 +543,7 @@ def exact_match(
         set(tech_certif_lang[tech_certif_lang["Level 1"] == categ]["Level 2"])
         for categ in categs
     ]
+    # TODO: add separate language processing piece
     for sample in data:
         sentence = sample["sentence"]
         for category, word_set in zip(categs, word_sets):
