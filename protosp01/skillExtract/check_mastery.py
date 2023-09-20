@@ -100,3 +100,18 @@ for unique_id, result in results_dict.items():
 agg_results_df = pd.DataFrame.from_dict(agg_results_dict, orient="index")
 agg_results_df.to_csv("taxonomy/check_mastery_per_job.csv")
 # %%
+
+agg_results_df["total_flags"] = agg_results_df[
+    ["num_beginner", "num_intermediate", "num_experte"]
+].sum(axis=1)
+
+# get distribution of total flags
+agg_results_df["pct_flagged"] = (
+    agg_results_df["total_flags"] / agg_results_df["num_sentences"]
+)
+
+# %%
+print("======= percentage of sentences flagged =======")
+print(agg_results_df["pct_flagged"].describe())
+
+# %%
