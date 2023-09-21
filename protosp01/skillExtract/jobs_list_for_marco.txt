@@ -1,0 +1,2 @@
+https://evrlearn-staging.herokuapp.com/admin/vacancies/8820
+https://evrlearn-staging.herokuapp.com/admin/vacancies/7946
