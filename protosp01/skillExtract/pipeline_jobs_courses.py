@@ -36,11 +36,13 @@ def main():
     parser.add_argument("--taxonomy", type=str, help="Path to taxonomy file in csv format", default = "../data/taxonomy/taxonomy_V4.csv")
     parser.add_argument("--api_key", type=str, help="openai keys", default = API_KEY)
     parser.add_argument("--model", type=str, help="Model to use for generation", default="gpt-3.5-turbo")
-    parser.add_argument("--temperature", type=float, help="Temperature for generation", default=0.3)
+    parser.add_argument("--temperature", type=float, help="Temperature for generation", default=0)
     parser.add_argument("--max_tokens", type=int, help="Max tokens for generation", default=40)
+    parser.add_argument("--shots", type=int, help="Number of demonstrations, max = 5", default=5)
     parser.add_argument("--top_p", type=float, help="Top p for generation", default=1)
     parser.add_argument("--frequency_penalty", type=float, help="Frequency penalty for generation", default=0)
     parser.add_argument("--presence_penalty", type=float, help="Presence penalty for generation", default=0)
+    parser.add_argument("--candidates_method", type=str, help="How to select candidates: rules, mixed or embeddings. Default is rules", default="rules")
     parser.add_argument("--output_path", type=str, help="Output for evaluation results", default="results/")
     parser.add_argument("--num-samples", type=int, help="Last N elements to evaluate (the new ones)", default=10)
     parser.add_argument("--num-sentences", type=int, help="by how many sentences to split the corpus", default=2)
@@ -67,6 +69,7 @@ def main():
     print("Output path", args.output_path)
 
     if args.ids is not None:
+        args.num_samples = 0
         with open(args.ids, 'r') as f:
             ids = f.read().splitlines()
         if 'vacancies' in ids[0]:
@@ -100,6 +103,11 @@ def main():
 
     if args.ids is not None:
         data = data[data['id'].isin(ids)]
+        data_to_save = data.copy()
+        data_to_save.drop(columns=['fulltext'], inplace=True)
+        # save the content of the ids in a separate file
+        ids_content = data_to_save.to_dict('records')
+        write_json(ids_content, args.output_path.replace('.json', '_content.json'))
     else:
         # apply language detection
         data['language'] = data['fulltext'].apply(detect_language)
@@ -160,8 +168,8 @@ def main():
             splitter = Splitter()
             max_candidates = 10
             for idxx, sample in enumerate(sentences_res_list):
-                # sample = select_candidates_from_taxonomy(sample, taxonomy, skill_names, skill_definitions, splitter, max_candidates)
-                sample = select_candidates_from_taxonomy(sample, taxonomy, splitter, word_emb_model, word_emb_tokenizer, max_candidates)
+                #sample = select_candidates_from_taxonomy(sample, taxonomy, skill_names, skill_definitions, splitter, max_candidates)
+                sample = select_candidates_from_taxonomy(sample, taxonomy, splitter, word_emb_model, word_emb_tokenizer, max_candidates, method=args.candidates_method)
                 sentences_res_list[idxx] = sample
 
         # match skills with taxonomy

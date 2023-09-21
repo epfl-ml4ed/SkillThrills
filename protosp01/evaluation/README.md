@@ -1,3 +1,17 @@
+# Code
+
+```
+python main.py --dataset_name gnehm --download
+python main.py --dataset_name gnehm --run
+
+```
+
+
+
+
+
+
+
 # Recent papers
 
 https://arxiv.org/pdf/2307.03539.pdf
@@ -18,14 +32,17 @@ With and without exact string matching
 # Evaluation data
 
 1) skill extraction
-2/3 high quality datasets
-(with B I O tagging --> evaluate using Span-F1, exact span matching, around 60-65%)
-Skillspan: https://github.com/kris927b/SkillSpan/tree/main/data/json
-Green: https://github.com/acp19tag/skill-extraction-dataset/tree/main/preprocessed_data
-gnehm (huge, in German, for the Swiss job market): https://aclanthology.org/2022.nlpcss-1.2.pdf?
-Where is the data?
+Eval: 6 datasets
+Fijo: French job offers, 500 examples, insurance domain, soft skills.
+Gnehm: German job offers, IT domain, 25k examples
+Green: English job offers, 10k examples, skills + other elements (domain, occupation, qualification, experience)
+Sayfullina: English but already split into sentences, 7000 exampes, soft skills
+Kompetencer: Danish job offers, 1200 examples, skills and knowledge
+SkillSpan: English, IT and house domain, 12k examples, not so high quality, skills and knowledge.
 
---> evaluation **pipeline**: Using the "evaluate" package.
+(with B I O tagging --> evaluate using Span-F1, exact span matching, around 60-65%)
+
+--> evaluation: Using the "evaluate" package.
 https://huggingface.co/spaces/evaluate-metric/seqeval
 
 

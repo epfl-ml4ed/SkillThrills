@@ -176,9 +176,9 @@ class OPENAI:
             input_ = (
                 PROMPT_TEMPLATES["extraction"][instruction_field]
                 + "\n"
-                + PROMPT_TEMPLATES["extraction"]["6shots"]
+                + "\n".join(PROMPT_TEMPLATES["extraction"]["shots"][:self.args.shots])
             )
-            # TODO 2. nb of shots as argument ? For later experiments
+            # TODO 2. nb of shots as argument -- DONE
             input_ += "\nSentence: " + sample["sentence"] + "\nAnswer:"
             max_tokens = self.args.max_tokens
 
@@ -208,7 +208,7 @@ class OPENAI:
                 input_ = (
                     PROMPT_TEMPLATES["matching"][instruction_field]
                     + "\n"
-                    + PROMPT_TEMPLATES["matching"]["1shot"]
+                    + PROMPT_TEMPLATES["matching"]["shots"][0]
                 )
                 # TODO 1.5 having definition or not in the list of candidates ? Here we only prove the name and an example. Yes, should try, but maybe not if there are 10 candidates...
                 # update as an argument - like give def or not when doing the matching then ask Marco if it helps or decreases performance
