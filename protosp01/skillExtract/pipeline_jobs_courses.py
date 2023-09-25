@@ -85,7 +85,7 @@ def main():
         data = read_json(args.datapath, lastN=args.num_samples)
         data = data[0][-args.num_samples:]
     else:
-        data = read_json(args.datapath)[0]
+        data = read_json(args.datapath)[0]    
     
     data = pd.DataFrame.from_records(data)
     if args.data_type == 'job':
