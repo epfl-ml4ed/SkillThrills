@@ -44,6 +44,7 @@ def main():
     parser.add_argument("--presence_penalty", type=float, help="Presence penalty for generation", default=0)
     parser.add_argument("--candidates_method", type=str, help="How to select candidates: rules, mixed or embeddings. Default is rules", default="rules")
     parser.add_argument("--output_path", type=str, help="Output for evaluation results", default="results/")
+    parser.add_argument("--prompt_type", type=str, help="Prompt type, from the prompt_template.py file. For now, only \"detailed\". default is empty.", default="")
     parser.add_argument("--num-samples", type=int, help="Last N elements to evaluate (the new ones)", default=10)
     parser.add_argument("--num-sentences", type=int, help="by how many sentences to split the corpus", default=2)
     parser.add_argument("--do-extraction", action="store_true", help="Whether to do the extraction or directly the matching")
