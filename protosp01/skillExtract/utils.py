@@ -335,44 +335,64 @@ def load_taxonomy(args):
     return taxonomy, skill_names, skill_definitions
 
 
-def tokenize_for_emb(text, tokenizer):
+def get_emb_inputs(text, tokenizer):
     tokens = tokenizer(text, return_tensors="pt", padding=True, truncation=True)
     return tokens
 
 
-def get_embeddings(tokens, model, type="mean"):
-    if type == "mean":
+def get_token_idx(sentence, skill, tokenizer):
+    sentence_tokens = tokenizer.tokenize(sentence)
+    skill_tokens = tokenizer.tokenize(skill)
+
+    start_idx = sentence_tokens.index(skill_tokens[0])
+    end_idx = start_idx + len(skill_tokens)
+
+    return start_idx, end_idx
+
+
+def get_embeddings(tokens, model, sentence, skill, tokenizer, type="context"):
+    if type == "context":
+        start_idx, end_idx = get_token_idx(sentence, skill, tokenizer)
         with torch.no_grad():
             word_outputs = model(**tokens)
-            embeddings = word_outputs.last_hidden_state.mean(dim=1)
+            embeddings = word_outputs.last_hidden_state[:, start_idx:end_idx, :]
     if type == "cls":
         with torch.no_grad():
             word_outputs = model(**tokens)
             embeddings = word_outputs.last_hidden_state[:, 0, :]
-    if type != "mean" and type != "cls":
-        raise ValueError("Type must be either 'mean' or 'cls'")
+    if type != "context" and type != "cls":
+        raise ValueError("Type must be either 'context' or 'cls'")
     return embeddings
+
+
+# TODO: update to save taxonomy with embedding as a pickle file
+# add criteria to run new if not found
+# tokenize full sentence + extact last hidden state for range of the extract skill
 
 
 def embed_taxonomy(taxonomy, model, tokenizer):
     taxonomy["embeddings"] = taxonomy["name+definition"].apply(
-        lambda x: get_embeddings(tokenize_for_emb(x, tokenizer), model, type="cls")
+        lambda x: get_embeddings(get_emb_inputs(x, tokenizer), model, type="cls")
     )
-    return taxonomy
+    keep_cols = ["unique_id", "name+definition", "embeddings"]
+    embedded_taxonomy = taxonomy[keep_cols]
+
+    return embedded_taxonomy
 
 
 def get_top_vec_similarity(
     extracted_skill,
+    context,
     taxonomy,
     model,
     tokenizer,
     max_candidates=10,
 ):
-    skill_vec = get_embeddings(tokenize_for_emb(extracted_skill, tokenizer), model)
-    # assert that taxonomy has "embeddings" column or raise error
+    context_vec = get_embeddings(get_emb_inputs(context, tokenizer), model)
+    start_idx, end_idx = get_token_idx(context, extracted_skill, tokenizer)
 
     taxonomy["similarity"] = taxonomy["embeddings"].apply(
-        lambda x: F.cosine_similarity(skill_vec, x, dim=1).item()
+        lambda x: F.cosine_similarity(context_vec, x, dim=1).item()
     )
     cut_off_score = taxonomy.sort_values(by="similarity", ascending=False).iloc[
         max_candidates
@@ -380,8 +400,6 @@ def get_top_vec_similarity(
     taxonomy["results"] = taxonomy["similarity"].apply(
         lambda x: True if x >= cut_off_score else False
     )
-    # taxonomy.drop(columns=["embeddings", "similarity"], inplace=True)
-
     return taxonomy
 
 
@@ -393,33 +411,29 @@ def select_candidates_from_taxonomy(
 ):
     sample["skill_candidates"] = {}
     if len(sample["extracted_skills"]) > 0:
-        # if method == "rules" or == "mixed" or == "embeddings" below
         for extracted_skill in sample["extracted_skills"]:
             print("extracted skill:", extracted_skill)
-            # look for each extracted skill in the taxonomy
+
             if method == "rules" or method == "mixed":
-                # First we check for matches in name+definition
                 print("checking for matches in name+definition")
                 taxonomy["results"] = taxonomy["name+definition"].str.contains(
                     extracted_skill, case=False, regex=False
                 )
+
                 if not taxonomy["results"].any():
-                    # print("... none found")
                     print("checking for matches in example")
-                    # If no match, we check for matches in examples
                     taxonomy["results"] = taxonomy["Example"].str.contains(
                         extracted_skill, case=False, regex=False
                     )
+
                 if not taxonomy["results"].any():
-                    # print("... none found")
                     print("checking for matches in subwords")
-                    # If still no match, we check if subwords are present in name+definition
                     taxonomy["results"] = False
                     for subword in filter_subwords(extracted_skill, splitter):
-                        # if there is a match subwresults column + 1
                         taxonomy["results"] = taxonomy["results"] + taxonomy[
                             "name+definition"
                         ].str.contains(subword, case=False, regex=False)
+
                 if not taxonomy["results"].any():
                     if method == "rules":
                         print("checking for matches in difflib")
@@ -432,13 +446,19 @@ def select_candidates_from_taxonomy(
                         taxonomy["results"] = taxonomy["name+definition"].isin(
                             matching_elements
                         )
-                        if not taxonomy["results"].any():
-                            print("No candidates found for: ", extracted_skill)
+
+                if not taxonomy["results"].any():
+                    print("No candidates found for: ", extracted_skill)
 
             if method == "embeddings" or method == "mixed":
                 print("checking for highest embedding similarity")
                 taxonomy = get_top_vec_similarity(
-                    extracted_skill, taxonomy, model, tokenizer
+                    extracted_skill,
+                    sample["sentence"],
+                    taxonomy,
+                    model,
+                    tokenizer,
+                    max_candidates=10 if method == "embeddings" else 5,
                 )
 
             keep_cols = [

@@ -20,6 +20,7 @@ import re
 import tiktoken
 import difflib
 from split_words import Splitter
+import pickle
 
 
 # %%
@@ -134,9 +135,20 @@ def main():
     taxonomy, skill_names, skill_definitions = load_taxonomy(args)
 
     if args.candidates_method == "embeddings" or args.candidates_method == "mixed":
-        print("generating embeddings for taxonomy")
-        taxonomy = embed_taxonomy(taxonomy, word_emb_model, word_emb_tokenizer)
-        print("done generating embeddings for taxonomy")
+        if word_emb == "agne/jobBERT-de":
+            emb_sh = "jBd"
+        elif word_emb == "agne/jobGBERT":
+            emb_sh = "jGB"
+
+        try:
+            print(f"Loading embedded taxonomy for {word_emb}")
+            with open(f"../data/taxonomy/taxonomy_embeddings_{emb_sh}.pkl", "rb") as f:
+                emb_tax = pickle.load(f)
+        except:
+            print(f"Loading failed, generating embedded taxonomy for {word_emb}")
+            emb_tax = embed_taxonomy(taxonomy, word_emb_model, word_emb_tokenizer)
+            with open(f"../data/taxonomy/taxonomy_embeddings_{emb_sh}.pkl", "wb") as f:
+                pickle.dump(emb_tax, f)
 
     # We create two files:
     # 1. results_detailed.json: contains a list of jobs/courses ids
@@ -146,9 +158,7 @@ def main():
     extraction_cost = 0
     matching_cost = 0
     detailed_results_dict = {}
-    for idx, item in tqdm(
-        enumerate(data)
-    ):  # item is job or course in dictionary format
+    for _, item in tqdm(enumerate(data)):  # item is job or course in dictionary format
         sentences = split_sentences(item["fulltext"])
         if args.debug:
             # sentences = [sent for sent in sentences if len(sent.split())<80]
