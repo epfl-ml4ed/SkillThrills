@@ -197,6 +197,7 @@ def main():
                     word_emb_tokenizer,
                     max_candidates,
                     method=args.candidates_method,
+                    emb_tax=emb_tax,
                 )
                 sentences_res_list[idxx] = sample
 

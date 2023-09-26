@@ -341,6 +341,7 @@ def get_emb_inputs(text, tokenizer):
 
 
 def get_token_idx(sentence, skill, tokenizer):
+    sentence = sentence.lower().strip()
     sentence_tokens = tokenizer.tokenize(sentence)
     skill_tokens = tokenizer.tokenize(skill)
 
@@ -350,18 +351,10 @@ def get_token_idx(sentence, skill, tokenizer):
     return start_idx, end_idx
 
 
-def get_embeddings(tokens, model, sentence, skill, tokenizer, type="context"):
-    if type == "context":
-        start_idx, end_idx = get_token_idx(sentence, skill, tokenizer)
-        with torch.no_grad():
-            word_outputs = model(**tokens)
-            embeddings = word_outputs.last_hidden_state[:, start_idx:end_idx, :]
-    if type == "cls":
-        with torch.no_grad():
-            word_outputs = model(**tokens)
-            embeddings = word_outputs.last_hidden_state[:, 0, :]
-    if type != "context" and type != "cls":
-        raise ValueError("Type must be either 'context' or 'cls'")
+def get_embeddings(input_tokens, model):
+    with torch.no_grad():
+        word_outputs = model(**input_tokens)
+        embeddings = word_outputs.last_hidden_state
     return embeddings
 
 
@@ -372,7 +365,9 @@ def get_embeddings(tokens, model, sentence, skill, tokenizer, type="context"):
 
 def embed_taxonomy(taxonomy, model, tokenizer):
     taxonomy["embeddings"] = taxonomy["name+definition"].apply(
-        lambda x: get_embeddings(get_emb_inputs(x, tokenizer), model, type="cls")
+        lambda x: get_embeddings(get_emb_inputs(x, tokenizer), model)[
+            :, 0, :
+        ]  # get the CLS token
     )
     keep_cols = ["unique_id", "name+definition", "embeddings"]
     embedded_taxonomy = taxonomy[keep_cols]
@@ -383,31 +378,39 @@ def embed_taxonomy(taxonomy, model, tokenizer):
 def get_top_vec_similarity(
     extracted_skill,
     context,
-    taxonomy,
+    emb_tax,
     model,
     tokenizer,
     max_candidates=10,
 ):
-    context_vec = get_embeddings(get_emb_inputs(context, tokenizer), model)
     start_idx, end_idx = get_token_idx(context, extracted_skill, tokenizer)
+    skill_vec = get_embeddings(get_emb_inputs(context, tokenizer), model)[
+        :, start_idx:end_idx, :
+    ]
+    print(skill_vec.size())  # get the contextualized token of skill
 
-    taxonomy["similarity"] = taxonomy["embeddings"].apply(
-        lambda x: F.cosine_similarity(context_vec, x, dim=1).item()
+    emb_tax["similarity"] = emb_tax["embeddings"].apply(
+        lambda x: F.cosine_similarity(x, skill_vec, dim=1).mean().item()
     )
-    cut_off_score = taxonomy.sort_values(by="similarity", ascending=False).iloc[
+
+    cut_off_score = emb_tax.sort_values(by="similarity", ascending=False).iloc[
         max_candidates
     ]["similarity"]
-    taxonomy["results"] = taxonomy["similarity"].apply(
+    emb_tax["results"] = emb_tax["similarity"].apply(
         lambda x: True if x >= cut_off_score else False
     )
-    return taxonomy
+    return emb_tax
 
 
-# def select_candidates_from_taxonomy(
-#     sample, taxonomy, skill_names, skill_definitions, splitter, max_candidates
-# ):
 def select_candidates_from_taxonomy(
-    sample, taxonomy, splitter, model, tokenizer, max_candidates=10, method="rules"
+    sample,
+    taxonomy,
+    splitter,
+    model,
+    tokenizer,
+    max_candidates=10,
+    method="rules",
+    emb_tax=None,
 ):
     sample["skill_candidates"] = {}
     if len(sample["extracted_skills"]) > 0:
@@ -452,14 +455,15 @@ def select_candidates_from_taxonomy(
 
             if method == "embeddings" or method == "mixed":
                 print("checking for highest embedding similarity")
-                taxonomy = get_top_vec_similarity(
+                emb_tax = get_top_vec_similarity(
                     extracted_skill,
                     sample["sentence"],
-                    taxonomy,
+                    emb_tax,
                     model,
                     tokenizer,
                     max_candidates=10 if method == "embeddings" else 5,
                 )
+                taxonomy["results"] = emb_tax["results"]
 
             keep_cols = [
                 "unique_id",
