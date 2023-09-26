@@ -134,6 +134,7 @@ def main():
 
     taxonomy, skill_names, skill_definitions = load_taxonomy(args)
 
+    emb_tax = None
     if args.candidates_method == "embeddings" or args.candidates_method == "mixed":
         if word_emb == "agne/jobBERT-de":
             emb_sh = "jBd"
