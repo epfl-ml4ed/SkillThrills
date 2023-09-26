@@ -176,6 +176,8 @@ class OPENAI:
                 if "vacancies" in self.args.datapath
                 else "instruction"
             )
+            if self.args.prompt_type == "detailed":
+                instruction_field += "_detailed"
             input_ = (
                 PROMPT_TEMPLATES["extraction"][instruction_field]
                 + "\n"
