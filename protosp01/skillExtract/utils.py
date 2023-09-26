@@ -86,9 +86,13 @@ def split_sentences(text):
     # sentences = text.split("\n\n")  # TODO: AD test number of sentences here
     splitter = SentenceSplitter(language="de")
     sentences = splitter.split(text)
-    sentences = [
-        sentence.rstrip(".") for sentence in sentences if len(sentence.split()) > 5
-    ]
+    sentences = [sentence.rstrip(".") for sentence in sentences]
+    # if sentences shorter than 5 words, merge with next sentence
+    for idx, sentence in enumerate(sentences):
+        if len(sentence.split()) < 5 and idx < len(sentences) - 1:
+            sentences[idx + 1] = sentence + " " + sentences[idx + 1]
+            sentences[idx] = ""
+    sentences = [sentence for sentence in sentences if sentence != ""]
     return sentences
 
 
@@ -166,7 +170,6 @@ class OPENAI:
     def run_gpt_df_extraction(self):
         costs = 0
         pattern = r"@@(.*?)##"
-
         for idx, sample in enumerate(tqdm(self.data)):
             instruction_field = (
                 "instruction_job"
@@ -176,7 +179,7 @@ class OPENAI:
             input_ = (
                 PROMPT_TEMPLATES["extraction"][instruction_field]
                 + "\n"
-                + "\n".join(PROMPT_TEMPLATES["extraction"]["shots"][:self.args.shots])
+                + "\n".join(PROMPT_TEMPLATES["extraction"]["shots"][: self.args.shots])
             )
             # TODO 2. nb of shots as argument -- DONE
             input_ += "\nSentence: " + sample["sentence"] + "\nAnswer:"
@@ -213,7 +216,7 @@ class OPENAI:
                 # TODO 1.5 having definition or not in the list of candidates ? Here we only prove the name and an example. Yes, should try, but maybe not if there are 10 candidates...
                 # update as an argument - like give def or not when doing the matching then ask Marco if it helps or decreases performance
                 options_dict = {
-                    letter.upper(): candidate["name+example"]
+                    letter.upper(): candidate["name+definition"]
                     for letter, candidate in zip(
                         list("abcdefghijklmnopqrstuvwxyz")[
                             : len(sample["skill_candidates"][extracted_skill])
@@ -240,7 +243,7 @@ class OPENAI:
                 )
 
                 for skill_candidate in sample["skill_candidates"][extracted_skill]:
-                    if skill_candidate["name+example"] == chosen_option:
+                    if skill_candidate["name+definition"] == chosen_option:
                         sample["matched_skills"][extracted_skill] = skill_candidate
                         break  # stop searching once matched
 
@@ -287,7 +290,7 @@ def concatenate_cols_skillname(row):
     output = row["Type Level 2"]
     output += f": {row['Type Level 3']}" if not pd.isna(row["Type Level 3"]) else ""
     output += f": {row['Type Level 4']}" if not pd.isna(row["Type Level 4"]) else ""
-    output += f": {row['Example']}" if not pd.isna(row["Example"]) else ""
+    output += f": {row['Definition']}" if not pd.isna(row["Definition"]) else ""
     return output
 
 
@@ -309,10 +312,10 @@ def filter_subwords(extracted_skill, splitter):
 def load_taxonomy(args):
     taxonomy = pd.read_csv(args.taxonomy, sep=",")
     taxonomy = taxonomy.dropna(subset=["Definition", "Type Level 2"])
-    taxonomy["name+example"] = taxonomy.apply(concatenate_cols_skillname, axis=1)
+    taxonomy["name+definition"] = taxonomy.apply(concatenate_cols_skillname, axis=1)
     # taxonomy["unique_id"] = list(range(len(taxonomy)))
     skill_definitions = list(taxonomy["Definition"].apply(lambda x: x.lower()))
-    skill_names = list(taxonomy["name+example"].apply(lambda x: x.lower()))
+    skill_names = list(taxonomy["name+definition"].apply(lambda x: x.lower()))
 
     keep_cols = [
         "unique_id",
@@ -324,20 +327,37 @@ def load_taxonomy(args):
         "Type Level 4",
         "Example",
         "Definition",
-        "name+example",
+        "name+definition",
     ]
     taxonomy = taxonomy[keep_cols]
     return taxonomy, skill_names, skill_definitions
 
 
-def get_embeddings(text, model, tokenizer):
-    inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True)
-    with torch.no_grad():
-        word_outputs = model(**inputs)
-        embeddings = word_outputs.last_hidden_state.mean(
-            dim=1
-        )  # Average pooling over tokens
+def tokenize_for_emb(text, tokenizer):
+    tokens = tokenizer(text, return_tensors="pt", padding=True, truncation=True)
+    return tokens
+
+
+def get_embeddings(tokens, model, type="mean"):
+    if type == "mean":
+        with torch.no_grad():
+            word_outputs = model(**tokens)
+            embeddings = word_outputs.last_hidden_state.mean(dim=1)
+    if type == "cls":
+        with torch.no_grad():
+            word_outputs = model(**tokens)
+            embeddings = word_outputs.last_hidden_state[:, 0, :]
+    if type != "mean" and type != "cls":
+        raise ValueError("Type must be either 'mean' or 'cls'")
     return embeddings
+
+
+def embed_taxonomy(taxonomy, model, tokenizer):
+    taxonomy["embeddings"] = taxonomy["name+definition"].apply(
+        lambda x: get_embeddings(tokenize_for_emb(x, tokenizer), model, type="cls")
+    )
+    return taxonomy
+
 
 def get_top_vec_similarity(
     extracted_skill,
@@ -347,9 +367,7 @@ def get_top_vec_similarity(
     max_candidates=10,
 ):
     skill_vec = get_embeddings(extracted_skill, model, tokenizer)
-    taxonomy["embeddings"] = taxonomy["name+example"].apply(
-        lambda x: get_embeddings(x, model, tokenizer)
-    )
+
     taxonomy["similarity"] = taxonomy["embeddings"].apply(
         lambda x: F.cosine_similarity(skill_vec, x, dim=1).item()
     )
@@ -377,58 +395,57 @@ def select_candidates_from_taxonomy(
             print("extracted skill:", extracted_skill)
             # look for each extracted skill in the taxonomy
             if method == "rules" or method == "mixed":
-                # First we check for matches in name+example
-                print("checking for matches in name+example")
-                taxonomy["results"] = taxonomy["name+example"].str.contains(
+                # First we check for matches in name+definition
+                print("checking for matches in name+definition")
+                taxonomy["results"] = taxonomy["name+definition"].str.contains(
                     extracted_skill, case=False, regex=False
                 )
-                if taxonomy[taxonomy["results"]].empty:
+                if not taxonomy["results"].any():
                     # print("... none found")
-                    print("checking for matches in definition")
-                    # If no match, we check for matches in definitions
-                    taxonomy["results"] = taxonomy["Definition"].str.contains(
+                    print("checking for matches in example")
+                    # If no match, we check for matches in examples
+                    taxonomy["results"] = taxonomy["Example"].str.contains(
                         extracted_skill, case=False, regex=False
                     )
-                if taxonomy[taxonomy["results"]].empty:
+                if not taxonomy["results"].any():
                     # print("... none found")
                     print("checking for matches in subwords")
-                    # If still no match, we check if subwords are present in name+example
+                    # If still no match, we check if subwords are present in name+definition
                     taxonomy["results"] = False
                     for subword in filter_subwords(extracted_skill, splitter):
                         # if there is a match subwresults column + 1
                         taxonomy["results"] = taxonomy["results"] + taxonomy[
-                            "name+example"
+                            "name+definition"
                         ].str.contains(subword, case=False, regex=False)
-                if taxonomy[taxonomy["results"]].empty:
+                if not taxonomy["results"].any():
                     if method == "rules":
                         print("checking for matches in difflib")
                         matching_elements = difflib.get_close_matches(
                             extracted_skill,
-                            taxonomy["name+example"],
+                            taxonomy["name+definition"],
                             cutoff=0.4,
                             n=max_candidates,
                         )
-                        taxonomy["results"] = taxonomy["name+example"].isin(
+                        taxonomy["results"] = taxonomy["name+definition"].isin(
                             matching_elements
                         )
-                        if taxonomy[taxonomy["results"]].empty:
+                        if not taxonomy["results"].any():
                             print("No candidates found for: ", extracted_skill)
                     else:
                         print("checking for highest embedding similarity")
                         taxonomy = get_top_vec_similarity(
                             extracted_skill, taxonomy, model, tokenizer
                         )
-            if method == "embeddings":
-                taxonomy["results"] = False
+            if method == "embeddings" or method == "mixed":
                 print("checking for highest embedding similarity")
                 taxonomy = get_top_vec_similarity(
                     extracted_skill, taxonomy, model, tokenizer
-                )  ## AD TODO: take embedding of only the relevant subword in extracted skill
+                )
 
             keep_cols = [
                 "unique_id",
-                # "Type Level 2",
-                "name+example",
+                "Type Level 2",
+                "name+definition",
             ]
 
             matching_df = taxonomy[taxonomy["results"]][keep_cols]
@@ -438,16 +455,16 @@ def select_candidates_from_taxonomy(
 
             sample["skill_candidates"][extracted_skill] = matching_df.to_dict("records")
 
-            # # matching_df is results = True and only keep unique id, Type Level 2 and name+example, Definition columns
+            # # matching_df is results = True and only keep unique id, Type Level 2 and name+definition, Definition columns
             # keep_cols_det = [
             #     "unique_id",
             #     # "Type Level 2",
-            #     "name+example",
+            #     "name+definition",
             # ]
             # keep_cols_cln = [
             #     "unique_id",
             #     "Type Level 2",
-            #     # "name+example",
+            #     # "name+definition",
             # ]
             # matching_df_det = taxonomy[taxonomy["results"]][keep_cols_det]
             # matching_df_cln = taxonomy[taxonomy["results"]][keep_cols_cln]
@@ -503,17 +520,17 @@ def select_candidates_from_taxonomy(
         # ):  # TODO update now that we don't have type level 3 anymore
         #     matching_elements = difflib.get_close_matches(
         #         extracted_skill,
-        #         taxonomy["name+example"],
+        #         taxonomy["name+definition"],
         #         cutoff=0.4,
         #         n=max_candidates,
         #     )
         #     matching_rows = taxonomy[
-        #         taxonomy["name+example"].isin(matching_elements)
+        #         taxonomy["name+definition"].isin(matching_elements)
         #     ]
         # if len(matching_rows) == 0:
         #     print("No candidates found for skill", extracted_skill)
         # sample["skill_candidates"][extracted_skill] = matching_rows[
-        #     ["unique_id", "name+example"]
+        #     ["unique_id", "name+definition"]
         # ].to_dict("records")
     return sample
 
@@ -622,3 +639,35 @@ def clean_text(text):
     text = text.strip()
     text = text.replace("..", ".")
     return text
+
+
+def anonymize_text(text):
+    name_pattern = re.compile(r"\b[A-Z][a-z]*\s[A-Z][a-z]*\b")
+    phone_pattern = re.compile(r"\b\d{10,12}\b")
+    email_pattern = re.compile(r"\b[\w\.-]+@[\w\.-]+\.\w+\b")
+
+    text = name_pattern.sub("REDACTED_NAME", text)
+    text = phone_pattern.sub("REDACTED_PHONE", text)
+    text = email_pattern.sub("REDACTED_EMAIL", text)
+
+    url_pattern = re.compile(r"https?://\S+|www\.\S+")
+
+    return text
+
+
+def remove_level_2(dic):
+    if isinstance(dic, dict):
+        return {k: remove_level_2(v) for k, v in dic.items() if k != "Type Level 2"}
+    elif isinstance(dic, list):
+        return [remove_level_2(item) for item in dic]
+    else:
+        return dic
+
+
+def remove_namedef(dic):
+    if isinstance(dic, dict):
+        return {k: remove_namedef(v) for k, v in dic.items() if k != "name+definition"}
+    elif isinstance(dic, list):
+        return [remove_namedef(item) for item in dic]
+    else:
+        return dic

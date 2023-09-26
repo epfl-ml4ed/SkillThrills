@@ -146,7 +146,6 @@ sentences_res_list = [
     process_chunk(ii) for ii in range(0, len(data), args.num_sentences)
 ]
 
-
 # %%
 extraction_cost = 0
 matching_cost = 0
