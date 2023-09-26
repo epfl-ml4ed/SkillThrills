@@ -87,8 +87,8 @@ def main():
         data = read_json(args.datapath, lastN=args.num_samples)
         data = data[0][-args.num_samples :]
     else:
-        data = read_json(args.datapath)[0]    
-    
+        data = read_json(args.datapath)[0]
+
     data = pd.DataFrame.from_records(data)
     if args.data_type == "job":
         data["fulltext"] = data["name"] + "\n" + data["description"]
@@ -136,6 +136,7 @@ def main():
     if args.candidates_method == "embeddings" or args.candidates_method == "mixed":
         print("generating embeddings for taxonomy")
         taxonomy = embed_taxonomy(taxonomy, word_emb_model, word_emb_tokenizer)
+        print("done generating embeddings for taxonomy")
 
     # We create two files:
     # 1. results_detailed.json: contains a list of jobs/courses ids
@@ -178,7 +179,6 @@ def main():
             splitter = Splitter()
             max_candidates = 10
             for idxx, sample in enumerate(sentences_res_list):
-                # sample = select_candidates_from_taxonomy(sample, taxonomy, skill_names, skill_definitions, splitter, max_candidates)
                 sample = select_candidates_from_taxonomy(
                     sample,
                     taxonomy,

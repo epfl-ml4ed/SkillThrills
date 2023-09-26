@@ -368,7 +368,8 @@ def get_top_vec_similarity(
     tokenizer,
     max_candidates=10,
 ):
-    skill_vec = get_embeddings(extracted_skill, model, tokenizer)
+    skill_vec = get_embeddings(tokenize_for_emb(extracted_skill, tokenizer), model)
+    # assert that taxonomy has "embeddings" column or raise error
 
     taxonomy["similarity"] = taxonomy["embeddings"].apply(
         lambda x: F.cosine_similarity(skill_vec, x, dim=1).item()
@@ -379,7 +380,7 @@ def get_top_vec_similarity(
     taxonomy["results"] = taxonomy["similarity"].apply(
         lambda x: True if x >= cut_off_score else False
     )
-    taxonomy.drop(columns=["embeddings", "similarity"], inplace=True)
+    # taxonomy.drop(columns=["embeddings", "similarity"], inplace=True)
 
     return taxonomy
 
@@ -433,11 +434,7 @@ def select_candidates_from_taxonomy(
                         )
                         if not taxonomy["results"].any():
                             print("No candidates found for: ", extracted_skill)
-                    else:
-                        print("checking for highest embedding similarity")
-                        taxonomy = get_top_vec_similarity(
-                            extracted_skill, taxonomy, model, tokenizer
-                        )
+
             if method == "embeddings" or method == "mixed":
                 print("checking for highest embedding similarity")
                 taxonomy = get_top_vec_similarity(
@@ -457,83 +454,6 @@ def select_candidates_from_taxonomy(
 
             sample["skill_candidates"][extracted_skill] = matching_df.to_dict("records")
 
-            # # matching_df is results = True and only keep unique id, Type Level 2 and name+definition, Definition columns
-            # keep_cols_det = [
-            #     "unique_id",
-            #     # "Type Level 2",
-            #     "name+definition",
-            # ]
-            # keep_cols_cln = [
-            #     "unique_id",
-            #     "Type Level 2",
-            #     # "name+definition",
-            # ]
-            # matching_df_det = taxonomy[taxonomy["results"]][keep_cols_det]
-            # matching_df_cln = taxonomy[taxonomy["results"]][keep_cols_cln]
-
-            # if len(matching_df_det) > max_candidates:
-            #     matching_df_det = matching_df_det.sample(
-            #         n=max_candidates, random_state=42
-            #     )
-
-            # if len(matching_df_cln) > max_candidates:
-            #     matching_df_cln = matching_df_cln.sample(
-            #         n=max_candidates, random_state=42
-            #     )
-
-            # sample_det = sample.copy()
-            # sample_det["skill_candidates"][extracted_skill] = matching_df_det.to_dict(
-            #     "records"
-            # )
-            # sample_cln = sample.copy()
-            # sample_cln["skill_candidates"][extracted_skill] = matching_df_cln.to_dict(
-            #     "records"
-            # )
-
-        # # TODO: (Maybe try with this logic but also try embeddings (JobBERT))
-        # # TODO apply rules one by one (make this more computationally efficient, don't perform all filterings beforehand)
-        # # 1) look for all taxonomy skill name with exact match of extracted skill name inside
-        # rule1 = list(
-        #     filter(lambda item: extracted_skill in item[1], enumerate(skill_names))
-        # )
-        # # 2) look for all taxonomy skill definitions with exact match of extracted skill name inside
-        # rule2 = list(
-        #     filter(
-        #         lambda item: extracted_skill in item[1],
-        #         enumerate(skill_definitions),
-        #     )
-        # )
-        # # 3)look for all taxonomy skill name with a subword of extracted skill name inside
-        # rule3 = filter_subwords(extracted_skill, skill_names, splitter)
-        # instructions = [rule1, rule2, rule3]
-
-        # for instruction in instructions:
-        #     matching_elements = instruction
-        #     if len(matching_elements) > 0:
-        #         break
-        # matching_rows = taxonomy.iloc[[item[0] for item in matching_elements]]
-        # if len(matching_rows) > 10:
-        #     print("More than 10 candidates found for skill", extracted_skill)
-        #     matching_rows = matching_rows.sample(
-        #         max_candidates
-        #     )  # TODO what to do with more than N extracted skills ? Find a way to make a coherent selection.
-        # elif (
-        #     len(matching_rows) == 0
-        # ):  # TODO update now that we don't have type level 3 anymore
-        #     matching_elements = difflib.get_close_matches(
-        #         extracted_skill,
-        #         taxonomy["name+definition"],
-        #         cutoff=0.4,
-        #         n=max_candidates,
-        #     )
-        #     matching_rows = taxonomy[
-        #         taxonomy["name+definition"].isin(matching_elements)
-        #     ]
-        # if len(matching_rows) == 0:
-        #     print("No candidates found for skill", extracted_skill)
-        # sample["skill_candidates"][extracted_skill] = matching_rows[
-        #     ["unique_id", "name+definition"]
-        # ].to_dict("records")
     return sample
 
 
