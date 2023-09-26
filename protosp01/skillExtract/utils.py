@@ -386,11 +386,12 @@ def get_top_vec_similarity(
     start_idx, end_idx = get_token_idx(context, extracted_skill, tokenizer)
     skill_vec = get_embeddings(get_emb_inputs(context, tokenizer), model)[
         :, start_idx:end_idx, :
-    ]
-    print(skill_vec.size())  # get the contextualized token of skill
+    ].mean(
+        dim=1
+    )  # get the contextualized token of skill
 
     emb_tax["similarity"] = emb_tax["embeddings"].apply(
-        lambda x: F.cosine_similarity(x, skill_vec, dim=1).mean().item()
+        lambda x: F.cosine_similarity(x, skill_vec).item()
     )
 
     cut_off_score = emb_tax.sort_values(by="similarity", ascending=False).iloc[
