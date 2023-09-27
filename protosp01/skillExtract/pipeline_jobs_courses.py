@@ -81,7 +81,9 @@ def main():
             args.data_type = "course"
         ids = [int(id.split("/")[-1]) for id in ids]
         print("Evaluating only ids:", ids)
-        args.output_path = args.output_path.replace(".json", "_ids.json")
+        args.output_path = args.output_path.replace(
+            ".json", f"{nsent}{emb_sh}_ids.json"
+        )
 
     # Load data
     if args.num_samples > 0:
@@ -116,7 +118,10 @@ def main():
         data_to_save.drop(columns=["fulltext"], inplace=True)
         # save the content of the ids in a separate file
         ids_content = data_to_save.to_dict("records")
-        write_json(ids_content, args.output_path.replace(".json", "_content.json"))
+        write_json(
+            ids_content,
+            args.output_path.replace(".json", f"{nsent}{emb_sh}_content.json"),
+        )
     else:
         # apply language detection
         data["language"] = data["fulltext"].apply(detect_language)
@@ -134,20 +139,21 @@ def main():
 
     taxonomy, skill_names, skill_definitions = load_taxonomy(args)
 
+    emb_sh = "_rules"
     if args.candidates_method == "embeddings" or args.candidates_method == "mixed":
         if word_emb == "agne/jobBERT-de":
-            emb_sh = "jBd"
+            emb_sh = "_jBd"
         elif word_emb == "agne/jobGBERT":
-            emb_sh = "jGB"
+            emb_sh = "_jGB"
 
         try:
             print(f"Loading embedded taxonomy for {word_emb}")
-            with open(f"../data/taxonomy/taxonomy_embeddings_{emb_sh}.pkl", "rb") as f:
+            with open(f"../data/taxonomy/taxonomy_embeddings{emb_sh}.pkl", "rb") as f:
                 emb_tax = pickle.load(f)
         except:
             print(f"Loading failed, generating embedded taxonomy for {word_emb}")
             emb_tax = embed_taxonomy(taxonomy, word_emb_model, word_emb_tokenizer)
-            with open(f"../data/taxonomy/taxonomy_embeddings_{emb_sh}.pkl", "wb") as f:
+            with open(f"../data/taxonomy/taxonomy_embeddings{emb_sh}.pkl", "wb") as f:
                 pickle.dump(emb_tax, f)
 
     # We create two files:
@@ -197,7 +203,7 @@ def main():
                     word_emb_tokenizer,
                     max_candidates,
                     method=args.candidates_method,
-                    emb_tax=emb_tax,
+                    emb_tax=None if args.candidates_method == "rules" else emb_tax,
                 )
                 sentences_res_list[idxx] = sample
 
@@ -228,8 +234,12 @@ def main():
         # TODO update alternative names generation to get also shortest names (eg .Net, SQL etc) (Syrielle)
         detailed_results_dict[item["id"]] = sentences_res_list
 
+    nsent = f"_{args.num_sentences}sent"
+
     if args.debug:
-        args.output_path = args.output_path.replace(".json", "_debug.json")
+        args.output_path = args.output_path.replace(
+            ".json", f"{nsent}{emb_sh}_debug.json"
+        )
     if args.detailed:
         # TODO: remove "Type Level 2" from detailed results - DONE
         detailed_results_dict_output = {
@@ -237,7 +247,7 @@ def main():
         }
         write_json(
             detailed_results_dict_output,
-            args.output_path.replace(".json", "_detailed.json"),
+            args.output_path.replace(".json", f"{nsent}{emb_sh}_detailed.json"),
         )
 
     # Output final
@@ -268,7 +278,10 @@ def main():
             clean_output_dict = {
                 key: remove_namedef(value) for key, value in clean_output_dict.items()
             }
-        write_json(clean_output_dict, args.output_path.replace(".json", "_clean.json"))
+        write_json(
+            clean_output_dict,
+            args.output_path.replace(".json", f"{nsent}{emb_sh}_clean.json"),
+        )
     print("Done")
     print("Extraction cost ($):", extraction_cost)
     print("Matching cost ($):", matching_cost)
@@ -277,9 +290,12 @@ def main():
     if args.detailed:
         print(
             "Saved detailed results in",
-            args.output_path.replace(".json", "_detailed.json"),
+            args.output_path.replace(".json", f"{nsent}{emb_sh}_detailed.json"),
         )
-    print("Saved clean results in", args.output_path.replace(".json", "_clean.json"))
+    print(
+        "Saved clean results in",
+        args.output_path.replace(".json", f"{nsent}{emb_sh}_clean.json"),
+    )
 
 
 if __name__ == "__main__":

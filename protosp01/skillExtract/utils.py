@@ -358,9 +358,9 @@ def get_embeddings(input_tokens, model):
     return embeddings
 
 
-# TODO: update to save taxonomy with embedding as a pickle file
-# add criteria to run new if not found
-# tokenize full sentence + extact last hidden state for range of the extract skill
+# TODO: update to save taxonomy with embedding as a pickle file -  DONE
+# TODO: add criteria to run new if not found - DONE
+# TODO: tokenize full sentence + extact last hidden state for range of the extract skill - DONE
 
 
 def embed_taxonomy(taxonomy, model, tokenizer):
@@ -472,7 +472,7 @@ def select_candidates_from_taxonomy(
                 "name+definition",
             ]
 
-            matching_df = taxonomy[taxonomy["results"]][keep_cols]
+            matching_df = taxonomy[taxonomy["results"].notna()][keep_cols]
 
             if len(matching_df) > max_candidates:
                 matching_df = matching_df.sample(n=max_candidates, random_state=42)
