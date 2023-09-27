@@ -171,11 +171,12 @@ class OPENAI:
         costs = 0
         pattern = r"@@(.*?)##"
         for idx, sample in enumerate(tqdm(self.data)):
-            instruction_field = (
-                "instruction_job"
-                if "vacancies" in self.args.datapath
-                else "instruction"
-            )
+            if "vacancies" in self.args.datapath:
+                instruction_field = "instruction_job"
+            elif "vacancies" in self.args.datapath:
+                instruction_field = "instruction_course"
+            else: 
+                instruction_field = "instruction_CV"
             if self.args.prompt_type == "detailed":
                 instruction_field += "_detailed"
             input_ = (

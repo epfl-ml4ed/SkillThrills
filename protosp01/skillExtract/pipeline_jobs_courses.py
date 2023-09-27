@@ -268,12 +268,12 @@ def main():
             for ii, sample in enumerate(detailed_res):
                 for cat in categs:
                     clean_output[cat].extend(sample[cat])
+                    # TODO deduplicate all elements /!\ 
 
                 if "matched_skills" in sample:
                     for skill in sample["matched_skills"]:
                         clean_output["skills"].append(sample["matched_skills"][skill])
-                        # TODO 1. output Level 2 or id! To do so, re-do id generation on the taxonomy to give IDs only to Level 2 elements! (refer to taxonomy v4 as well as ipynb) - DONE
-                        # TODO deduplicate and remove "None" - I see no more
+                        
             clean_output_dict[item_id] = clean_output
             clean_output_dict = {
                 key: remove_namedef(value) for key, value in clean_output_dict.items()

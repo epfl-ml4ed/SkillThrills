@@ -1,9 +1,10 @@
 Level 2,Level 3
 Beginner,A1
 Beginner,A2
-Beginner,Basic
+Beginner,Grundkenntnisse
 Beginner,Grundkenntnisse
 Beginner,Junior
+Beginner,Kenntnisse
 Beginner,Mitarbeit bei
 Beginner,Mitwirken bei
 Beginner,Unterstützung bei
@@ -11,23 +12,33 @@ Beginner,erste Erfahrung
 Beginner,gering
 Beginner,in Berührung gekommen
 Experte,Breites Know-how in
+Experte,C1
+Experte,C2
 Experte,Expert*in sein
-Experte,Expertise
-Experte,vertiefte Expertise
+Experte,Expertenkenntnisse
+Experte,Expertise / vertiefte Expertise
+Experte,Expertise / vertiefte Expertise
+Experte,Fliessend
 Experte,Führen von
-Experte,Hohe Kenntnisse
-Experte,Hohe Wissen
-Experte,Langjährige Erfahrung
-Experte,Führungserfahrung
+Experte,Hohe Kenntnisse (Wissen)
+Experte,Hohe Kenntnisse (Wissen)
+Experte,Langjährige Erfahrung (z.B. Führungserfahrung)
+Experte,Langjährige Erfahrung (z.B. Führungserfahrung)
 Experte,Leiten von
+Experte,Muttersprache
+Experte,Stilsicher
+Experte,Verhandlungssicher
 Experte,ausgeprägt
-Experte,ausgezeichnet Kenntnisse
-Experte,ausgezeichnet Wissen
+Experte,ausgewiesene
+Experte,ausgezeichnet (Kenntnisse / Wissen)
+Experte,ausgezeichnet (Kenntnisse / Wissen)
 Experte,eigeninitiativ sein
-Experte,fortgeschrittene Kenntnisse
-Experte,fortgeschrittene Wissen
-Experte,fundierte Kenntnisse
-Experte,fundierte Wissen
+Experte,fortgeschrittene Kenntnisse (Wissen)
+Experte,fortgeschrittene Kenntnisse (Wissen)
+Experte,fundierte Kenntnisse / Wissen
+Experte,fundierte Kenntnisse / Wissen
+Experte,fundierte Kenntnisse / Wissen
+Experte,fundierte Kenntnisse / Wissen
 Experte,gewohnt sen
 Experte,geübt sein in
 Experte,hochqualifiziert
@@ -39,20 +50,25 @@ Experte,sehr hoch
 Experte,sehr kompetent sein
 Experte,sehr selbstständig sein
 Experte,senior
+Experte,tiefgreifendes Verständnis
+Experte,umfangreiches technisches Fachwissen
 Experte,umfassende Kenntnisse (Wissen)
 Experte,umfassende Kenntnisse (Wissen)
 Experte,verhandlungssicher sein  / Verhandlungsgeschick
 Experte,verhandlungssicher sein  / Verhandlungsgeschick
+Experte,versiert
 Experte,über ein Netzwerk verfügen
+Intermediate,B1
+Intermediate,B2
+Intermediate,Basic
 Intermediate,Fachfrau / Fachmann
 Intermediate,Fachfrau / Fachmann
+Intermediate,Gute Kenntnisse
 Intermediate,Know-How haben in
 Intermediate,Verantwortung übernehmen
 Intermediate,erhöht
 Intermediate,erweitert
 Intermediate,fachkundig sein in
-Intermediate,fundierte Kenntnisse / Wissen
-Intermediate,fundierte Kenntnisse / Wissen
 Intermediate,gut (Kenntnisse / Wissen)
 Intermediate,gut (Kenntnisse / Wissen)
 Intermediate,hoch
