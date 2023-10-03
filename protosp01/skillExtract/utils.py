@@ -32,6 +32,9 @@ def get_lang_detector(nlp, name):
     return LanguageDetector(seed=42)  # We use the seed 42
 
 
+np.random.seed(42)
+
+
 nlp_model = spacy.load("en_core_web_sm")
 Language.factory("language_detector", func=get_lang_detector)
 nlp_model.add_pipe("language_detector", last=True)
@@ -359,11 +362,6 @@ def get_embeddings(input_tokens, model):
     return embeddings
 
 
-# TODO: update to save taxonomy with embedding as a pickle file -  DONE
-# TODO: add criteria to run new if not found - DONE
-# TODO: tokenize full sentence + extact last hidden state for range of the extract skill - DONE
-
-
 def embed_taxonomy(taxonomy, model, tokenizer):
     taxonomy["embeddings"] = taxonomy["name+definition"].apply(
         lambda x: get_embeddings(get_emb_inputs(x, tokenizer), model)[
@@ -456,6 +454,12 @@ def select_candidates_from_taxonomy(
                 if not taxonomy["results"].any():
                     print("No candidates found for: ", extracted_skill)
 
+                if taxonomy["results"].sum() > 10:
+                    true_indices = taxonomy.index[taxonomy["results"]].tolist()
+                    selected_indices = np.random.choice(true_indices, 10, replace=False)
+                    taxonomy["results"] = False
+                    taxonomy.loc[selected_indices, "results"] = True
+
             if method == "embeddings" or method == "mixed":
                 print("checking for highest embedding similarity")
                 emb_tax = get_top_vec_similarity(
@@ -464,10 +468,12 @@ def select_candidates_from_taxonomy(
                     emb_tax,
                     model,
                     tokenizer,
-                    max_candidates=10 if method == "embeddings" else 5,
+                    max_candidates,
                 )
-                taxonomy["results"] = emb_tax["results"]
-
+                if method == "embeddings":
+                    taxonomy["results"] = emb_tax["results"]
+                else:
+                    taxonomy["results"] = taxonomy["results"] | emb_tax["results"]
             # if taxonomy["results"].sum() > 0:
             #     breakpoint()
 
@@ -477,10 +483,7 @@ def select_candidates_from_taxonomy(
                 "name+definition",
             ]
 
-            matching_df = taxonomy[taxonomy["results"].isin([True])][keep_cols]
-
-            if len(matching_df) > max_candidates:
-                matching_df = matching_df.sample(n=max_candidates, random_state=42)
+            matching_df = taxonomy[taxonomy["results"] == True][keep_cols]
 
             sample["skill_candidates"][extracted_skill] = matching_df.to_dict("records")
 

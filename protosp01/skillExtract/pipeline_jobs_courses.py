@@ -82,7 +82,7 @@ def main():
         ids = [int(id.split("/")[-1]) for id in ids]
         print("Evaluating only ids:", ids)
         args.output_path = args.output_path.replace(
-            ".json", f"{nsent}{emb_sh}_ids.json"
+            ".json", f"{nsent}{nsamp}{emb_sh}_ids.json"
         )
 
     # Load data
@@ -155,6 +155,9 @@ def main():
             emb_tax = embed_taxonomy(taxonomy, word_emb_model, word_emb_tokenizer)
             with open(f"../data/taxonomy/taxonomy_embeddings{emb_sh}.pkl", "wb") as f:
                 pickle.dump(emb_tax, f)
+
+    if args.candidates_method == "mixed":
+        emb_sh = "_mixed"
 
     # We create two files:
     # 1. results_detailed.json: contains a list of jobs/courses ids
@@ -235,10 +238,11 @@ def main():
         detailed_results_dict[item["id"]] = sentences_res_list
 
     nsent = f"_{args.num_sentences}sent"
+    nsamp = f"_n{args.num_samples}"
 
     if args.debug:
         args.output_path = args.output_path.replace(
-            ".json", f"{nsent}{emb_sh}_debug.json"
+            ".json", f"{nsent}{nsamp}{emb_sh}_debug.json"
         )
     if args.detailed:
         # TODO: remove "Type Level 2" from detailed results - DONE
@@ -247,7 +251,7 @@ def main():
         }
         write_json(
             detailed_results_dict_output,
-            args.output_path.replace(".json", f"{nsent}{emb_sh}_detailed.json"),
+            args.output_path.replace(".json", f"{nsent}{nsamp}{emb_sh}_detailed.json"),
         )
 
     # Output final
@@ -280,7 +284,7 @@ def main():
             }
         write_json(
             clean_output_dict,
-            args.output_path.replace(".json", f"{nsent}{emb_sh}_clean.json"),
+            args.output_path.replace(".json", f"{nsent}{nsamp}{emb_sh}_clean.json"),
         )
     print("Done")
     print("Extraction cost ($):", extraction_cost)
@@ -290,11 +294,11 @@ def main():
     if args.detailed:
         print(
             "Saved detailed results in",
-            args.output_path.replace(".json", f"{nsent}{emb_sh}_detailed.json"),
+            args.output_path.replace(".json", f"{nsent}{nsamp}{emb_sh}_detailed.json"),
         )
     print(
         "Saved clean results in",
-        args.output_path.replace(".json", f"{nsent}{emb_sh}_clean.json"),
+        args.output_path.replace(".json", f"{nsent}{nsamp}{emb_sh}_clean.json"),
     )
 
 
