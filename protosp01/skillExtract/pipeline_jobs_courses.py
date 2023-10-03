@@ -140,7 +140,7 @@ def main():
     taxonomy, skill_names, skill_definitions = load_taxonomy(args)
 
     emb_sh = "_rules"
-    if args.candidates_method == "embeddings" or args.candidates_method == "mixed":
+    if args.candidates_method != "rules":
         if word_emb == "agne/jobBERT-de":
             emb_sh = "_jBd"
         elif word_emb == "agne/jobGBERT":
@@ -268,12 +268,12 @@ def main():
             for ii, sample in enumerate(detailed_res):
                 for cat in categs:
                     clean_output[cat].extend(sample[cat])
-                    # TODO deduplicate all elements /!\ 
+                    # TODO deduplicate all elements /!\
 
                 if "matched_skills" in sample:
                     for skill in sample["matched_skills"]:
                         clean_output["skills"].append(sample["matched_skills"][skill])
-                        
+
             clean_output_dict[item_id] = clean_output
             clean_output_dict = {
                 key: remove_namedef(value) for key, value in clean_output_dict.items()

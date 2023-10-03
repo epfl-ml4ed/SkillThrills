@@ -175,7 +175,7 @@ class OPENAI:
                 instruction_field = "instruction_job"
             elif "vacancies" in self.args.datapath:
                 instruction_field = "instruction_course"
-            else: 
+            else:
                 instruction_field = "instruction_CV"
             if self.args.prompt_type == "detailed":
                 instruction_field += "_detailed"
@@ -414,6 +414,7 @@ def select_candidates_from_taxonomy(
     method="rules",
     emb_tax=None,
 ):
+    assert method in ["rules", "embeddings", "mixed"]
     sample["skill_candidates"] = {}
     if len(sample["extracted_skills"]) > 0:
         for extracted_skill in sample["extracted_skills"]:
@@ -467,13 +468,16 @@ def select_candidates_from_taxonomy(
                 )
                 taxonomy["results"] = emb_tax["results"]
 
+            # if taxonomy["results"].sum() > 0:
+            #     breakpoint()
+
             keep_cols = [
                 "unique_id",
                 "Type Level 2",
                 "name+definition",
             ]
 
-            matching_df = taxonomy[taxonomy["results"].notna()][keep_cols]
+            matching_df = taxonomy[taxonomy["results"].isin([True])][keep_cols]
 
             if len(matching_df) > max_candidates:
                 matching_df = matching_df.sample(n=max_candidates, random_state=42)
