@@ -626,3 +626,15 @@ def remove_namedef(dic):
         return [remove_namedef(item) for item in dic]
     else:
         return dic
+
+
+def remove_duplicates(dic):
+    for key, value in dic.items():
+        if isinstance(value, list):
+            unique_values = []
+            for item in value:
+                if item not in unique_values:
+                    unique_values.append(item)
+            dic[key] = unique_values
+        elif isinstance(value, dict):
+            remove_duplicates(value)

@@ -1,8 +1,8 @@
 PROMPT_TEMPLATES = {
     "extraction": {
-        "instruction_job": "You are an expert human resource. You are given a sentence from a job description in German. Highlight all the skills and competencies that are required from the candidate, by surrounding them with tags '@@' and '##'.\n",
-        "instruction_job_detailed": "You are an expert human resource. You are given an extract from a job description in German. Highlight all the skills, competencies and tasks that are required from the candidate applying for the job, by surrounding them with tags '@@' and '##'. Make sure you don't highlight job titles, nor elements related to the company and not to the job itself.\n",
-        "instruction_CV": "You are an expert human resource. Extract candidates skills in German from the following German sentence, taken from a CV.\n",
+        "instruction_job": "You are an expert human resource manager. You are given a sentence from a job description in German. Highlight all the skills and competencies that are required from the candidate, by surrounding them with tags '@@' and '##'.\n",
+        "instruction_job_detailed": "You are an expert human resource manager. You are given an extract from a job description in German. Highlight all the skills, competencies and tasks that are required from the candidate applying for the job, by surrounding them with tags '@@' and '##'. Make sure you don't highlight job titles, nor elements related to the company and not to the job itself.\n",
+        "instruction_CV": "You are an expert human resource manager. Extract candidates skills in German from the following German sentence, taken from a CV.\n",
         # "instruction_course": "You are looking for an online course. Extract skills that are learned when following the course described in the following German sentence.\n",
         "instruction_course": "You are looking for an online course. You are given a sentence from a course description in German. Highlight all the skills and competencies that are learned when following the course described in the sentence, by surrounding them with tags '@@' and '##'.\n",
         "shots": [
@@ -16,8 +16,8 @@ PROMPT_TEMPLATES = {
         ],
     },
     "matching": {
-        "instruction_job": "You are an expert human resource. You are given a sentence from a job description in German, and a skill extracted from this sentence. Choose from the list of options the one that best match the skill in the context. Answer with the associated letter.\n",
-        "instruction": "You are an expert human resource. From a given German sentence from a CV, and a skill extracted from this sentence, choose from the options one or several items that best match the skill in the context. Answer with the associated letter(s).\n",
+        "instruction_job": "You are an expert human resource manager. You are given a sentence from a job description in German, and a skill extracted from this sentence. Choose from the list of options the one that best match the skill in the context. Answer with the associated letter.\n",
+        "instruction": "You are an expert human resource manager. From a given German sentence from a CV, and a skill extracted from this sentence, choose from the options one or several items that best match the skill in the context. Answer with the associated letter(s).\n",
         "shots": [
             'Sentence: Grundlegende Bestimmungen von Urheberrecht und Datenschutz verstehen. \nSkill: Datenschutz. \nOptions: \nA: "Grundsätze des Datenschutzes respektieren" \nB: "Datenschutz verstehen" \nC: "Datenschutz im Luftfahrtbetrieb sicherstellen" \nD: "Datenschutz". \nAnswer: "Datenschutz verstehen", "Datenschutz".\n'
         ],

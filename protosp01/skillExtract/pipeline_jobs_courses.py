@@ -279,9 +279,9 @@ def main():
                         clean_output["skills"].append(sample["matched_skills"][skill])
 
             clean_output_dict[item_id] = clean_output
-            clean_output_dict = {
-                key: remove_namedef(value) for key, value in clean_output_dict.items()
-            }
+            for key, value in clean_output_dict.items():
+                clean_output_dict[key] = remove_namedef(value)
+        
         write_json(
             clean_output_dict,
             args.output_path.replace(".json", f"{nsent}{nsamp}{emb_sh}_clean.json"),
