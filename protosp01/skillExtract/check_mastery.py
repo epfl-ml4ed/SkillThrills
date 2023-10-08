@@ -27,6 +27,7 @@ parser.add_argument("--frequency_penalty", type=float, help="Frequency penalty f
 parser.add_argument("--presence_penalty", type=float, help="Presence penalty for generation", default=0)
 parser.add_argument("--candidates_method", type=str, help="How to select candidates: rules, mixed or embeddings. Default is rules", default="rules")
 parser.add_argument("--output_path", type=str, help="Output for evaluation results", default="results/")
+parser.add_argument("--prompt_type", type=str, help="Prompt type, from the prompt_template.py file. For now, only \"detailed\". default is empty.", default="")
 parser.add_argument("--num-samples", type=int, help="Last N elements to evaluate (the new ones)", default=10)
 parser.add_argument("--num-sentences", type=int, help="by how many sentences to split the corpus", default=2)
 parser.add_argument("--do-extraction", action="store_true", help="Whether to do the extraction or directly the matching")
@@ -63,10 +64,14 @@ job_df = job_df[job_df["text_num_words"] > 100].drop(
     columns=["text_num_words"]
 )  # 100 words
 
+print(len(job_df))
+job_df["language"] = job_df["fulltext"].apply(detect_language)
+print(job_df["language"].value_counts())
+job_df = job_df[job_df["language"] == "de"]
+
 
 keep_cols = ["id", "name", "description", "fulltext"]
 job_df = job_df[keep_cols]
-
 
 breakpoint()
 
@@ -267,9 +272,7 @@ for job_id, sentences in data.items():
         # TODO update alternative names generation to get also shortest names (eg .Net, SQL etc) (Syrielle)
         detailed_results_dict[item["id"]] = sentences_res_list
         print(os.getcwd())
-        # move one directory level up
-        # os.chdir("..")
-        # print(os.getcwd())
+
         print(args.output_path)
 
         results_folder = "results"
@@ -300,8 +303,6 @@ for job_id, sentences in data.items():
                             clean_output["skills"].append(
                                 sample["matched_skills"][skill]
                             )
-                            # TODO 1. output Level 2 or id! To do so, re-do id generation on the taxonomy to give IDs only to Level 2 elements! (refer to taxonomy v4 as well as ipynb)
-                            # TODO deduplicate and remove "None"
                 clean_output_dict[item_id] = clean_output
         write_json(clean_output_dict, args.output_path.replace(".json", "_clean.json"))
     print("Done")
