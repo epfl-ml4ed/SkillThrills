@@ -28,6 +28,29 @@ https://arxiv.org/pdf/2307.10778.pdf
 2 levels: document-level and skill-level.
 (predicted list VS gold list)
 With and without exact string matching
+TODO how to improve?
+
+Double check the code: is it strict or loose
+
+
+# Method
+
+Feedback: identify if the sentence is correctly replicated (ner), if the extracted skills are really in the sentence (extract)
+
+New prompt / improvement ?
+
+    "ner": "You are given a sentence from a job description. Highlight all the skills and competencies that are required from the candidate, by surrounding them with tags '@@' and '##'.\n",
+
+    "extract":"You are given a sentence from a job description. Extract all the skills and competencies that are required from the candidate, printing one per line. Make sure to keep the exact same words as found in the sentence. If the sentence doesn't contain any skill, output \"None\".\n"
+
+Dataset-specific prompt
+
+Example selections: from the train set, as separate messages. Do knn retrieval + sample some "None" examples.
+
+
+https://huggingface.co/Universal-NER/UniNER-7B-all
+https://universal-ner.github.io/
+TODO check list of entities
 
 # Evaluation data
 
@@ -40,7 +63,7 @@ Sayfullina: English but already split into sentences, 7000 exampes, soft skills
 Kompetencer: Danish job offers, 1200 examples, skills and knowledge
 SkillSpan: English, IT and house domain, 12k examples, not so high quality, skills and knowledge.
 
-(with B I O tagging --> evaluate using Span-F1, exact span matching, around 60-65%)
+(with B I O tagging --> evaluate using Span-F1, exact span matching)
 
 --> evaluation: Using the "evaluate" package.
 https://huggingface.co/spaces/evaluate-metric/seqeval
@@ -53,3 +76,6 @@ https://huggingface.co/datasets/jensjorisdecorte/Synthetic-ESCO-skill-sentences
 Annotated:
 https://github.com/jensjorisdecorte/Skill-Extraction-benchmark/tree/main
 
+
+# Limitation: 
+with the ner style, we get extract spans for skills, while sometimes the whole sentence means the skill

@@ -1,6 +1,8 @@
 import openai
 import pandas as pd
 from tqdm import tqdm
+import ast
+import ipdb
 import os
 from numpy import random
 import string
@@ -11,10 +13,19 @@ from api_key import API_KEY
 from prompt_template import PROMPT_TEMPLATES
 openai.api_key = API_KEY
 
+def write_answer_extract(list_skills):
+    # process list of extracted skills to write is as demonstration
+    if len(list_skills) == 0:
+        return "None"
+    answer = ""
+    for skill in list_skills:
+        answer += "\n".join(skill)
+    return answer
 
 def get_prompt(dataset, args, id):
-    # this is only true for gnehm
-    instruction = PROMPT_TEMPLATES[args.dataset_name]['instruction'][args.prompt_type]
+    instruction_field = args.dataset_name if args.dataset_name == 'gnehm' else 'all'
+    
+    instruction = PROMPT_TEMPLATES[instruction_field]['instruction'][args.prompt_type]
     # TODO have a common prompt template for all datasets
     prompt = [{"role": "system", "content": instruction}]
     
@@ -32,22 +43,47 @@ def get_prompt(dataset, args, id):
     for id_example in ids_of_shots:
         row_example_index = dataset[dataset['id'] == id_example].index[0]
         row_example = dataset.iloc[row_example_index]
+        if isinstance(row_example[args.gold_column], list):
+            answer = write_answer_extract(row_example[args.gold_column])
+        else:
+            answer = str(row_example[args.gold_column])
 
         content += "Sentence: " + str(row_example['sentence']) + "\n"
-        content += "Answer: " + str(row_example['sentence_with_tags']) + "\n"
+        content += "Answer: " + str(answer) + "\n"
 
     content += "Sentence: " + row['sentence'] + "\n"
     content += "Answer: "
     # print(content)
     # input('press enter to continue')
     prompt.append({"role": "user", "content": content})
+    # TODO change to user / system with multiple messages
     return prompt, ids_of_shots
 
+def get_list_of_selections(model_output, sentence, prompt_type):
+    if prompt_type == 'ner':
+        return get_list_of_selections_ner(model_output)
+    elif prompt_type == 'extract':
+        return get_list_of_selections_extract(model_output, sentence)
+    else:
+        raise Exception('prompt type not supported')
 
-def get_list_of_selections(model_output, dataset_name):
-    suffix = ''
-    if dataset_name == 'gnehm':
-        suffix = '-ICT'
+def get_list_of_selections_extract(model_output, sentence):
+    # model_output is a list of strings. Sentence is the list of tokens of the original sentence.
+    list_of_selections = ['O']*len(sentence)
+    if "None" in model_output:
+        return list_of_selections
+    for skill in model_output:
+        skill_tokens = skill.split()
+        if skill_tokens[0] not in sentence:
+            print(model_output, sentence)
+            continue
+        skill_index = sentence.index(skill_tokens[0])
+        list_of_selections[skill_index] = 'B'
+        for i in range(1, len(skill_tokens)):
+            list_of_selections[skill_index + i] = 'I'
+    return list_of_selections
+
+def get_list_of_selections_ner(model_output):
     list_of_selections = []
     model_output = model_output.split()
     in_span = False
@@ -55,28 +91,44 @@ def get_list_of_selections(model_output, dataset_name):
         if not in_span:
             if '@@' in token and '##' not in token:
                 in_span = True
-                list_of_selections.append("B" + suffix)
+                list_of_selections.append("B")
                 continue
             elif '@@' in token and '##' in token:
-                list_of_selections.append("B" + suffix)
+                list_of_selections.append("B")
                 continue
             else:  
-                list_of_selections.append("0")
+                list_of_selections.append("O")
                 continue
         
         if in_span:
             if '##' in token:
                 in_span = False
-                list_of_selections.append("I" + suffix)
+                list_of_selections.append("I")
                 continue
             else:
-                list_of_selections.append("I" + suffix)
+                list_of_selections.append("I")
                 continue
 
     return list_of_selections
 
 
-def postprocess(original, generated):
+def postprocess(original, generated, prompt_type):
+    if prompt_type == 'ner':
+        return postprocess_ner_prompt(original, generated)
+    elif prompt_type == 'extract':
+        return postprocess_extract_prompt(generated)
+    else:
+        raise Exception('prompt type not supported')
+
+def postprocess_extract_prompt(generated):
+    # it should be a list of strings. Deal with exceptions and formatting errors.
+    if "None" in generated:
+        return generated
+    generated = [str(item) for item in generated.split('\n')]
+    return generated
+
+def postprocess_ner_prompt(original, generated):
+    # Compare with original and fix any errors in the generated string
     punctuation_list = [',', '.', '/', '|', '?', ')', '(']
     original_fixed = []
     generated_fixed = []
@@ -99,8 +151,6 @@ def postprocess(original, generated):
             if generated_char == "#" or generated_char == "@":
                 generated_fixed.append(generated_char)
                 generated_idx += 1
-
-            # 
 
             elif generated_char in punctuation_list and original_char == ' ' and original[original_idx + 1] == generated_char:
                 generated_fixed.append(' ')
@@ -186,18 +236,13 @@ def run_openai(dataset, args):
             prompt, ids_of_shots = get_prompt(dataset, args, id)
             response = openai.ChatCompletion.create(model=args.model, messages=prompt, temperature=0)
             model_output = response['choices'][0]['message']['content']
-            model_output = postprocess(row['sentence'], model_output)
-            len_original = len(row['sentence'].split())
-            len_output = len(model_output.split())
-            if len_original != len_output:
-                print(row['sentence'])
-                print(model_output)
-
-                print(len_original)
-                print(len_output)
-                continue
+            model_output = postprocess(row['sentence'], model_output, args.prompt_type)
+            # len_original = len(row['sentence'].split())
+            # len_output = len(model_output.split())
+            # if len_original != len_output:
+            #     continue
                 
-            list_of_selections = get_list_of_selections(model_output, args.dataset_name)
+            list_of_selections = get_list_of_selections(model_output, row['tokens'], args.prompt_type)
 
             row_to_save['model'] = args.model
             row_to_save['shots'] = args.shots
@@ -212,6 +257,7 @@ def run_openai(dataset, args):
             df.to_json(args.save_path, orient='records', indent=4, force_ascii=False)
         
         # If the model fails to generate the output correctly, try again up to 5 times
+        # TODO update the prompt as a new message targeting the specific issue!
         except Exception as e:
             text = str(e)
             trys_count += 1
@@ -223,6 +269,8 @@ def run_openai(dataset, args):
                 i += 1
                 trys_count = 0
             continue
+
+
             # if text == 'lengths are not equal':
             #     print('lengths are not equal')
             #     continue
