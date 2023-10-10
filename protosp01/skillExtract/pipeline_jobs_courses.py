@@ -47,7 +47,7 @@ def main():
     parser.add_argument("--presence_penalty", type=float, help="Presence penalty for generation", default=0)
     parser.add_argument("--candidates_method", type=str, help="How to select candidates: rules, mixed or embeddings. Default is rules", default="rules")
     parser.add_argument("--output_path", type=str, help="Output for evaluation results", default="results/")
-    parser.add_argument("--prompt_type", type=str, help="Prompt type, from the prompt_template.py file. For now, only \"detailed\". default is empty.", default="")
+    parser.add_argument("--prompt_type", type=str, help="Prompt type, from the prompt_template.py file. For now, only \"detailed\" and \"level\". default is empty.", default="")
     parser.add_argument("--num-samples", type=int, help="Last N elements to evaluate (the new ones)", default=10)
     parser.add_argument("--num-sentences", type=int, help="by how many sentences to split the corpus", default=2)
     parser.add_argument("--do-extraction", action="store_true", help="Whether to do the extraction or directly the matching")
@@ -56,7 +56,7 @@ def main():
     parser.add_argument("--debug", action="store_true", help="Keep only one sentence per job offer / course to debug")
     parser.add_argument("--detailed", action="store_true", help="Generate detailed output")
     parser.add_argument("--ids", type=str, help="Path to a file with specific ids to evaluate", default=None)
-
+    parser.add_argument("--annotate", action="store_true", help="Whether to annotate the data or not")
     # fmt: on
 
     args = parser.parse_args()
@@ -66,6 +66,9 @@ def main():
         args.data_type = "course"
     else:
         print("Error: Data source unknown")
+
+    nsent = f"_{args.num_sentences}sent"
+    nsamp = f"_n{args.num_samples}"
 
     args.api_key = API_KEY  # args.openai_key
     args.output_path = args.output_path + args.data_type + "_" + args.model + ".json"
@@ -186,6 +189,14 @@ def main():
         if len(sentences_res_list) == 0:
             continue
 
+        if args.annotate:
+            # export to csv
+            df = pd.DataFrame(sentences_res_list)
+            df.to_csv(
+                args.output_path.replace(".json", f"{nsent}{nsamp}_annot.csv"),
+                index=False,
+            )
+
         # extract skills
         if args.do_extraction:
             print("Starting extraction")
@@ -237,9 +248,6 @@ def main():
         # TODO update alternative names generation to get also shortest names (eg .Net, SQL etc) (Syrielle)
         detailed_results_dict[item["id"]] = sentences_res_list
 
-    nsent = f"_{args.num_sentences}sent"
-    nsamp = f"_n{args.num_samples}"
-
     if args.debug:
         args.output_path = args.output_path.replace(
             ".json", f"{nsent}{nsamp}{emb_sh}_debug.json"
@@ -281,7 +289,7 @@ def main():
             clean_output_dict[item_id] = clean_output
             for key, value in clean_output_dict.items():
                 clean_output_dict[key] = remove_namedef(value)
-        
+
         write_json(
             clean_output_dict,
             args.output_path.replace(".json", f"{nsent}{nsamp}{emb_sh}_clean.json"),

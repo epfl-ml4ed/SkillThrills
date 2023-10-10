@@ -26,6 +26,7 @@ from spacy_language_detection import LanguageDetector
 import torch
 from transformers import AutoModel, AutoTokenizer
 import torch.nn.functional as F
+from googletrans import Translator
 
 
 def get_lang_detector(nlp, name):
@@ -102,7 +103,7 @@ def split_sentences(text):
 def num_tokens_from_string(sentence, model):
     encoding_name = ENCODINGS[model]
     encoding = tiktoken.get_encoding(encoding_name)
-    num_tokens = len(encoding.encode(sentence))
+    num_tokens = len(encoding.encode(str(sentence)))
     return num_tokens
 
 
@@ -182,11 +183,19 @@ class OPENAI:
                 instruction_field = "instruction_CV"
             if self.args.prompt_type == "detailed":
                 instruction_field += "_detailed"
+            shots_field = "shots"
+            if self.args.prompt_type == "level":
+                instruction_field += "_level"
+                shots_field = "shots_level"
             input_ = (
                 PROMPT_TEMPLATES["extraction"][instruction_field]
                 + "\n"
-                + "\n".join(PROMPT_TEMPLATES["extraction"]["shots"][: self.args.shots])
+                + "\n".join(
+                    PROMPT_TEMPLATES["extraction"][shots_field][: self.args.shots]
+                )
             )
+            # if prompt_type == "level" add _level to shots:
+
             # TODO 2. nb of shots as argument -- DONE
             input_ += "\nSentence: " + sample["sentence"] + "\nAnswer:"
             max_tokens = self.args.max_tokens
@@ -194,12 +203,23 @@ class OPENAI:
             prediction = (
                 self.run_gpt_sample(input_, max_tokens=max_tokens).lower().strip()
             )
-            extracted_skills = re.findall(pattern, prediction)
-            sample["extracted_skills"] = list(
-                set(extracted_skills)
-            )  # AD: removed duplicates
+            if self.args.prompt_type == "level":
+                # extracted_skills would be the keys and mastery level would be the values
+                # keep only the dictionary
+                prediction = prediction.replace("'", '"')
+                try:
+                    prediction = json.loads(prediction)
+                except:
+                    print("Error parsing json:", prediction)
+                    prediction = {"error": "error"}
+                extracted_skills = list(prediction.keys())
+                levels = list(prediction.values())
+            else:
+                extracted_skills = re.findall(pattern, prediction)
+            sample["extracted_skills"] = extracted_skills  # AD: removed duplicates
+            if self.args.prompt_type == "level":
+                sample["extracted_skills_levels"] = levels
             self.data[idx] = sample
-
             cost = compute_cost(input_, prediction, self.args.model)
             costs += cost
         return costs
@@ -638,3 +658,21 @@ def remove_duplicates(dic):
             dic[key] = unique_values
         elif isinstance(value, dict):
             remove_duplicates(value)
+
+
+def translate_text(text, src_lang="de", dest_lang="en"):
+    """
+    Translates text from one language to another.
+    text (str): Text to be translated.
+    src_lang (str): Source language.
+    dest_lang (str): Target language.
+    """
+    translator = Translator()
+    try:
+        translation = translator.translate(text, src=src_lang, dest=dest_lang)
+    except:
+        print("Time out error. Waiting for 10 seconds...")
+        time.sleep(10)
+        translator = Translator()
+        translation = translator.translate(text, src=src_lang, dest=dest_lang)
+    return translation.text

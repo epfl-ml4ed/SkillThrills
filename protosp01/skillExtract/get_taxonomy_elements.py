@@ -32,12 +32,16 @@ def get_taxonomy():
 
     # clean mastery df
     mastery = mastery.dropna(how="all")
+    # rename column "Unnamed: 1" to "Level 2"
+    mastery = mastery.rename(columns={"Unnamed: 1": "Level 2"})
     mastery["Level 2"] = mastery["Level 2"].fillna(method="ffill")
     mastery["Level 3"] = mastery["Level 3"].str.strip()
     mastery["Level 3"] = mastery["Level 3"].str.replace("Kennntnisse", "Kenntnisse")
+    mastery = mastery.dropna()  # drop again to remove empty rows
     mastery = pd.concat(
         [mastery, mastery[mastery["Level 3"].str.contains(r"\(|/")]]
     ).sort_values(by=["Level 2", "Level 3"])
+    mastery["Level 3"] = mastery["Level 3"].str.lower()
 
     # this joins three sheets vertically into one df
     tech_certif_lang = pd.concat([tech, certif, lang], ignore_index=True)

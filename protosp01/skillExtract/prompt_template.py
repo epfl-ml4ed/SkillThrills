@@ -1,6 +1,7 @@
 PROMPT_TEMPLATES = {
     "extraction": {
         "instruction_job": "You are an expert human resource manager. You are given a sentence from a job description in German. Highlight all the skills and competencies that are required from the candidate, by surrounding them with tags '@@' and '##'.\n",
+        "instruction_job_level": "You are an expert human resource manager. You are given a sentence from a job description in German. Extract all skills, competencies, and tasks that are required from the candidate applying for the job and infer the corresponding mastery skill level (beginner, intermediate, advanced, or unknown). Return the output as a json file with the skill as key and mastery level as value. \n",
         "instruction_job_detailed": "You are an expert human resource manager. You are given an extract from a job description in German. Highlight all the skills, competencies and tasks that are required from the candidate applying for the job, by surrounding them with tags '@@' and '##'. Make sure you don't highlight job titles, nor elements related to the company and not to the job itself.\n",
         "instruction_CV": "You are an expert human resource manager. Extract candidates skills in German from the following German sentence, taken from a CV.\n",
         # "instruction_course": "You are looking for an online course. Extract skills that are learned when following the course described in the following German sentence.\n",
@@ -13,6 +14,11 @@ PROMPT_TEMPLATES = {
             "Sentence: Er ist ein belastbarer Mitarbeiter, der in Zeiten hoher Arbeitsbelastung in der Lage war, richtige Prioritäten zu setzen und Aufgaben durchdacht zu organisieren. \nAnswer: Er ist ein belastbarer Mitarbeiter, der in Zeiten hoher Arbeitsbelastung in der Lage war, @@richtige Prioritäten zu setzen und Aufgaben durchdacht zu organisieren##.",
             "Sentence: Hochqualifizierte, flexible Mitarbeiterinnen und Mitarbeiter aus der Versicherungs- und IT-Branche entwickeln sie weiter. \nAnswer: Hochqualifizierte, flexible Mitarbeiterinnen und Mitarbeiter aus der Versicherungs- und IT-Branche entwickeln sie weiter.",
             "Sentence: Über die letzten Jahre ist es ihm gelungen, sich in einem sich schnell verändernden Umfeld kontinuierlich weiterzuentwickeln. \nAnswer: Über die letzten Jahre ist es ihm gelungen, sich in einem sich schnell verändernden Umfeld @@kontinuierlich weiterzuentwickeln##.\n",
+        ],
+        "shots_level": [
+            "Sentence: Wir suchen einen Teamleiter mit ausgeprägten Kommunikationskompetenzen, um die Zusammenarbeit und den Informationsaustausch innerhalb des Teams zu fördern.\nAnswer: {'Kommunikationskompetenzen': 'advanced'}",
+            "Sentence: Die Fähigkeit zur interdisziplinären Zusammenarbeit ist ein Schlüsselkriterium für diese Position. \n Answer: {'Fähigkeit zur interdisziplinären Zusammenarbeit': 'unknown'}",
+            "Sentence: Als Java Senior Software Engineer mit Erfahrung wirst du Mitglied eines Scrum-Teams. \n Answer: {'java': 'advanced', 'software engineering': 'advanced'}",
         ],
     },
     "matching": {
