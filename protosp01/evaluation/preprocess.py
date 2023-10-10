@@ -4,7 +4,7 @@ import ipdb
 
 # this method just loads the dataset and drops the pos column
 # can be used to get other splits of the dataset as well
-def load_skills_data(dataset_name, split='test'):
+def load_skills_data(dataset_name, split):
     dataset_name = "jjzha/" + dataset_name
     dataset = load_dataset(dataset_name)
     dataset = pd.DataFrame(dataset[split])
@@ -56,7 +56,9 @@ def bio_tags_to_spans(tag_sequence):
         # Actual BIO tag.
         bio_tag = string_tag[0]
         if bio_tag not in ["B", "I", "O"]:
-            raise ValueError(f"Unrecognized BIO tag: {bio_tag}")
+            print(f"Unrecognized BIO tag: {bio_tag}")
+            bio_tag = "O" 
+            #raise ValueError(f"Unrecognized BIO tag: {bio_tag}")
         conll_tag = string_tag[2:]
         if bio_tag == "O":
             # The span has ended.
@@ -109,7 +111,7 @@ def extract_skill_tokens(words, spans):
     skills_list = []
     for span in spans:
         start, end = span[1][0], span[1][1]
-        skills_list.append(words[start:end+1])
+        skills_list.append(' '.join(words[start:end+1]))
     return skills_list
 
 def add_golden_answer_column(dataset):
@@ -131,8 +133,8 @@ def drop_long_examples(dataset, max_length=200):
     return dataset
 
 # this method performs all the required preprocessing on the dataset
-def preprocess_dataset(args):
-    dataset = pd.read_json(args.data_path) # TODO check size of dataset
+def preprocess_dataset(args, split):
+    dataset = pd.read_json(args.raw_data_dir + split + '.json') # TODO check size of dataset
     
     # uniformize format of B I O annotations
     dataset = uniformize_skills_column(dataset, args.dataset_name)
@@ -140,18 +142,12 @@ def preprocess_dataset(args):
 
     # get spans from B I O annotations
     dataset['skill_spans'] = dataset.apply(lambda row: bio_tags_to_spans(row['tags_skill_clean']), axis=1)
-
-    # filter only the examples that have at least one skill
-    # if args.exclude_empty:
-    #     dataset['has_item'] = dataset.apply(lambda row: len(row['skill_spans'])>0, axis=1)
-    #     dataset = dataset[dataset['has_item'] == True]
-    #     dataset.drop(columns=['has_item'], inplace=True)
-    # TODO remove this
     
     #dataset = dataset.sample(frac = 1, random_state=1450).reset_index(drop=True)
     dataset = add_golden_answer_column(dataset)  
 
     # save processed dataset
-    dataset.to_json(args.data_path.replace('raw', 'processed'), orient='records', indent=4, force_ascii=False)
-    print(f'Saved {args.dataset_name} dataset to {args.data_path.replace("raw", "processed")}, with {len(dataset)} examples.')
+    save_path = args.processed_data_dir + split + '.json'
+    dataset.to_json(save_path, orient='records', indent=4, force_ascii=False)
+    print(f'Saved {args.dataset_name} dataset to {save_path}, with {len(dataset)} examples.')
     return dataset
