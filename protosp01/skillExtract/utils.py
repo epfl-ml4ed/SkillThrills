@@ -211,7 +211,7 @@ class OPENAI:
                     prediction = json.loads(prediction)
                 except:
                     print("Error parsing json:", prediction)
-                    prediction = {"error": "error"}
+                    prediction = {}
                 extracted_skills = list(prediction.keys())
                 levels = list(prediction.values())
             else:
