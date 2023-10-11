@@ -32,7 +32,7 @@ PROMPT_TEMPLATES = {
         ],
     },
     # "extend_taxonomy_tech": {
-    #     "instruction": "I am looking for occurrences of the <SKILL_TYPE> '<NAME>' in a document. However, the author doesn't always refer to this <SKILL_TYPE> using the full name. Generate only a list of 10 other names that I could look for, separated by commas.\n",
+    #     "instruction": "I am lookgit ing for occurrences of the <SKILL_TYPE> '<NAME>' in a document. However, the author doesn't always refer to this <SKILL_TYPE> using the full name. Generate only a list of 10 other names that I could look for, separated by commas.\n",
     #     "1shot": "Skill: Microsoft Excel \n Answer: Excel, MS Excel, Microsoft Excel, Spreadsheet software by Microsoft, Microsoft's spreadsheet application, Excel program, Excel software, Microsoft's data analysis tool, Microsoft's workbook software, Spreadsheet program by Microsoft\n",
     # },
     # "extend_taxonomy_certif": {
