@@ -206,7 +206,7 @@ class OPENAI:
             if self.args.prompt_type == "level":
                 # extracted_skills would be the keys and mastery level would be the values
                 # keep only the dictionary
-                prediction = prediction.replace("'", '"')
+                # prediction = prediction.replace("'", '"')
                 try:
                     prediction = json.loads(prediction)
                 except:
@@ -255,7 +255,7 @@ class OPENAI:
                     for letter, description in options_dict.items()
                 )
                 input_ += f"\nSentence: {sample['sentence']} \nSkill: {extracted_skill} \nOptions: {options_string}.\nAnswer: "
-                prediction = self.run_gpt_sample(input_, max_tokens=5).lower().strip()
+                prediction = self.run_gpt_sample(input_, max_tokens=10).lower().strip()
 
                 chosen_letter = prediction[0].upper()
                 # TODO match this with the list of candidates, in case no letter was generated! (AD: try to ask it to output first line like "Answer is _")

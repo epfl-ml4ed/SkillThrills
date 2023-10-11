@@ -12,7 +12,7 @@ import numpy as np
 from split_words import Splitter
 
 # %%
-
+print("to run: python skillExtract/--num-sentences 1")
 # fmt: off
 
 parser = argparse.ArgumentParser()
