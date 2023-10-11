@@ -125,11 +125,10 @@ def chat_completion(messages, model="gpt-3.5-turbo", return_text=True, model_arg
             if return_text:
                 return response["choices"][0]["message"]["content"].strip()
             return response
-        except (RateLimitError, ServiceUnavailableError, APIError) as e:
+        except (RateLimitError, ServiceUnavailableError, APIError) as e: #Exception
             print("Timed out. Waiting for 1 minute.")
-            time.sleep(60)
+            time.sleep(5)
             continue
-
 
 def text_completion(
     prompt, model="text-davinci-003", return_text=True, model_args=None
@@ -147,8 +146,23 @@ def text_completion(
             return response
         except (RateLimitError, ServiceUnavailableError, APIError) as e:
             print("Timed out. Waiting for 1 minute.")
-            time.sleep(60)
+            time.sleep(5)
             continue
+
+def get_extraction_prompt_elements(data_type, prompt_type):
+    shots_field = "shots"
+    if data_type in ["job", "course"]:
+       system_prompt = "system_" + data_type
+       instruction_field = "instruction_" + data_type
+    else:
+        system_prompt = "system_CV"
+        instruction_field = "instruction_CV"
+    if prompt_type == "detailed":
+        instruction_field += "_detailed"
+    if prompt_type == "level":
+        instruction_field += "_level"
+        shots_field = "shots_level"
+    return system_prompt, instruction_field, shots_field
 
 
 class OPENAI:
@@ -175,33 +189,25 @@ class OPENAI:
         costs = 0
         pattern = r"@@(.*?)##"
         for idx, sample in enumerate(tqdm(self.data)):
-            if "vacancies" in self.args.datapath:
-                instruction_field = "instruction_job"
-            elif "vacancies" in self.args.datapath:
-                instruction_field = "instruction_course"
-            else:
-                instruction_field = "instruction_CV"
-            if self.args.prompt_type == "detailed":
-                instruction_field += "_detailed"
-            shots_field = "shots"
-            if self.args.prompt_type == "level":
-                instruction_field += "_level"
-                shots_field = "shots_level"
-            input_ = (
-                PROMPT_TEMPLATES["extraction"][instruction_field]
-                + "\n"
-                + "\n".join(
-                    PROMPT_TEMPLATES["extraction"][shots_field][: self.args.shots]
-                )
-            )
-            # if prompt_type == "level" add _level to shots:
-
-            # TODO 2. nb of shots as argument -- DONE
-            input_ += "\nSentence: " + sample["sentence"] + "\nAnswer:"
+            system_prompt, instruction_field, shots_field = get_extraction_prompt_elements(self.args.data_type, self.args.prompt_type)
+            # 1) system prompt
+            messages = [{"role": "system", "content": PROMPT_TEMPLATES[system_prompt]}]
+            # 2) instruction:
+            messages.append({"role": "user", "content": PROMPT_TEMPLATES["extraction"][instruction_field]})
+            
+            # 3) shots
+            for shot in PROMPT_TEMPLATES["extraction"][shots_field][: self.args.shots]:
+                sentence = shot.split("\nAnswer:")[0].split(":")[1].strip()
+                answer = shot.split("\nAnswer:")[1].strip()
+                messages.append({"role": "user", "content": sentence})
+                messages.append({"role": "assistant", "content": answer})
+            
+            # 4) user input
+            messages.append({"role": "user", "content": sample["sentence"]})
             max_tokens = self.args.max_tokens
 
             prediction = (
-                self.run_gpt_sample(input_, max_tokens=max_tokens).lower().strip()
+                self.run_gpt_sample(messages, max_tokens=max_tokens).lower().strip()
             )
             if self.args.prompt_type == "level":
                 # extracted_skills would be the keys and mastery level would be the values
@@ -220,27 +226,34 @@ class OPENAI:
             if self.args.prompt_type == "level":
                 sample["extracted_skills_levels"] = levels
             self.data[idx] = sample
-            cost = compute_cost(input_, prediction, self.args.model)
-            costs += cost
+            #cost = compute_cost(input_, prediction, self.args.model)
+            #costs += cost
+            # TODO recompute cost
         return costs
 
     def run_gpt_df_matching(self):
         costs = 0
-        instruction_field = (
-            "instruction_job" if "vacancies" in self.args.datapath else "instruction"
-        )
+        system_prompt = "system_" + self.args.data_type if self.args.data_type in ["job", "course"] else "system_CV"
+        instruction_field = "instruction_" + self.args.data_type if self.args.data_type in ["job", "course"] else "instruction_CV"
+
         for idxx, sample in enumerate(tqdm(self.data)):
-            # print(self.data)
-            # break
             sample["matched_skills"] = {}
             for extracted_skill in sample["extracted_skills"]:
-                input_ = (
-                    PROMPT_TEMPLATES["matching"][instruction_field]
-                    + "\n"
-                    + PROMPT_TEMPLATES["matching"]["shots"][0]
-                )
+                # 1) system prompt
+                messages = [{"role": "system", "content": PROMPT_TEMPLATES[system_prompt]}]
+                # 2) instruction:
+                messages.append({"role": "user", "content": PROMPT_TEMPLATES["matching"][instruction_field]})
+                # 3) shots
+                for shot in PROMPT_TEMPLATES["matching"]["shots"]:
+                    sentence = shot.split("\nAnswer:")[0]
+                    answer = shot.split("\nAnswer:")[1].strip()
+                    messages.append({"role": "user", "content": sentence})
+                    messages.append({"role": "assistant", "content": answer})
+
                 # TODO 1.5 having definition or not in the list of candidates ? Here we only prove the name and an example. Yes, should try, but maybe not if there are 10 candidates...
                 # update as an argument - like give def or not when doing the matching then ask Marco if it helps or decreases performance
+
+                # 4) user input
                 options_dict = {
                     letter.upper(): candidate["name+definition"]
                     for letter, candidate in zip(
@@ -254,8 +267,10 @@ class OPENAI:
                     letter + ": " + description
                     for letter, description in options_dict.items()
                 )
-                input_ += f"\nSentence: {sample['sentence']} \nSkill: {extracted_skill} \nOptions: {options_string}.\nAnswer: "
-                prediction = self.run_gpt_sample(input_, max_tokens=10).lower().strip()
+                user_input += f"Sentence: {sample['sentence']} \nSkill: {extracted_skill} \nOptions: {options_string}"
+
+                messages.append({"role": "user", "content": user_input})
+                prediction = self.run_gpt_sample(messages, max_tokens=10).lower().strip()
 
                 chosen_letter = prediction[0].upper()
                 # TODO match this with the list of candidates, in case no letter was generated! (AD: try to ask it to output first line like "Answer is _")
@@ -275,14 +290,13 @@ class OPENAI:
 
                 self.data[idxx] = sample
 
-                cost = compute_cost(input_, prediction, self.args.model)
-                costs += cost
+                #cost = compute_cost(input_, prediction, self.args.model)
+                #costs += cost
         return costs
 
-    def run_gpt_sample(self, prompt, max_tokens):
+    def run_gpt_sample(self, messages, max_tokens):
         if self.args.model in CHAT_COMPLETION_MODELS:
-            response = chat_completion(
-                [{"role": "user", "content": prompt}],
+            response = chat_completion(messages,
                 model=self.args.model,
                 return_text=True,
                 model_args={
@@ -295,7 +309,7 @@ class OPENAI:
             )
         elif self.args.model in TEXT_COMPLETION_MODELS:
             response = text_completion(
-                prompt,
+                messages,
                 model=self.args.model,
                 return_text=True,
                 model_args={

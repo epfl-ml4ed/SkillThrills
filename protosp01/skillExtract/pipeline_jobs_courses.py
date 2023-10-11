@@ -153,7 +153,6 @@ def main():
 
     print("loaded data:", len(data), "elements")
 
-    breakpoint()
     data = data.to_dict("records")
 
     # Intitialize pretrained word embeddings
