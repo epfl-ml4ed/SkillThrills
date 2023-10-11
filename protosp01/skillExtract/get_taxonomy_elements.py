@@ -37,6 +37,7 @@ def get_taxonomy():
     mastery["Level 2"] = mastery["Level 2"].fillna(method="ffill")
     mastery["Level 3"] = mastery["Level 3"].str.strip()
     mastery["Level 3"] = mastery["Level 3"].str.replace("Kennntnisse", "Kenntnisse")
+    mastery["Level 2"] = mastery["Level 2"].str.replace("Experte", "Expert")
     mastery = mastery.dropna()  # drop again to remove empty rows
     mastery = pd.concat(
         [mastery, mastery[mastery["Level 3"].str.contains(r"\(|/")]]

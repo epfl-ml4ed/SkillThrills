@@ -1,6 +1,7 @@
 # %%
 import os
 import pandas as pd
+import random
 
 # %%
 from utils import *
@@ -36,7 +37,7 @@ parser.add_argument("--word-emb-model", type=str, help="Word embedding model to 
 parser.add_argument("--debug", action="store_true", help="Keep only one sentence per job offer / course to debug")
 parser.add_argument("--detailed", action="store_true", help="Generate detailed output")
 parser.add_argument("--ids", type=str, help="Path to a file with specific ids to evaluate", default=None)
-
+parser.add_argument("--samplepct", type=int, help="Percentage of data to sample", default=100)
 
 # fmt: on
 
@@ -59,55 +60,71 @@ mastery_dict = dict(zip(mastery_df["Level 3"], mastery_df["Level 2"]))
 job_df = pd.DataFrame.from_records(read_json("../data/raw/vacancies.json")[0])
 job_df["fulltext"] = job_df["name"] + "\n" + job_df["description"]
 
+if args.samplepct < 100:
+    print(f"Sampling {args.samplepct}% of data")
+    job_df = job_df.sample(frac=args.samplepct / 100, random_state=42)
+
 job_df["text_num_words"] = job_df["fulltext"].apply(lambda x: len(x.split()))
 job_df = job_df[job_df["text_num_words"] > 100].drop(
     columns=["text_num_words"]
 )  # 100 words
 
-print(len(job_df))
-job_df["language"] = job_df["fulltext"].apply(detect_language)
-print(job_df["language"].value_counts())
-job_df = job_df[job_df["language"] == "de"]
+try:
+    # load job_df from csv
+    print("Loading german job vacancies from csv")
+    job_df = pd.read_csv("../data/processed/vacancies_german.csv")
+except:
+    print("German job vacancies csv not found. Filtering from json...")
+    print(len(job_df))
+    job_df["language"] = job_df["fulltext"].apply(detect_language)
+    print(job_df["language"].value_counts())
+    job_df = job_df[job_df["language"] == "de"]
 
+    # save job_df to csv
+    job_df.to_csv("../data/processed/vacancies_german.csv")
 
 keep_cols = ["id", "name", "description", "fulltext"]
 job_df = job_df[keep_cols]
 
-breakpoint()
-
 
 # %%
-# set flag for if fulltext contains any values from mastery_dict key = Beginner, Intermediate, and Experte
-def check_mastery(text, level):
-    return any(level == mastery_dict[key] for key in mastery_dict.keys() if key in text)
+# set flag for if fulltext contains any values from mastery_dict key = Beginner, Intermediate, and Expert
+def check_mastery(text, level, mastery_dict=mastery_dict):
+    # return any(level == mastery_dict[key] for key in mastery_dict.keys() if key in text):
+    for key in mastery_dict.keys():
+        if key in text and level == mastery_dict[key]:
+            return key
+    return None
 
 
 job_df["Beginner"] = job_df["fulltext"].apply(lambda x: check_mastery(x, "Beginner"))
 job_df["Intermediate"] = job_df["fulltext"].apply(
     lambda x: check_mastery(x, "Intermediate")
 )
-job_df["Experte"] = job_df["fulltext"].apply(lambda x: check_mastery(x, "Experte"))
+job_df["Expert"] = job_df["fulltext"].apply(lambda x: check_mastery(x, "Expert"))
 
 print("======= Overall Stats =======")
 print("number of jobs:", len(job_df))
-print("number of jobs with Beginner flag:", job_df["Beginner"].sum())
-print("number of jobs with Intermediate flag:", job_df["Intermediate"].sum())
-print("number of jobs with Experte flag:", job_df["Experte"].sum())
+print("number of jobs with Beginner flag:", job_df["Beginner"].notnull().sum())
+print("number of jobs with Intermediate flag:", job_df["Intermediate"].notnull().sum())
+print("number of jobs with Expert flag:", job_df["Expert"].notnull().sum())
 
-job_df["anyflag"] = job_df[["Beginner", "Intermediate", "Experte"]].any(axis=1)
+job_df["anyflag"] = job_df[["Beginner", "Intermediate", "Expert"]].any(axis=1)
 print("number of jobs with any flag:", job_df["anyflag"].sum())
 
 # %%
-print("======= Sample (10%) Stats =======")
-print("check json and csv")
-sample_df = job_df.sample(frac=0.1, random_state=42).copy()
+# print("======= Sample (10%) Stats =======")
+# print("check json and csv")
+# sample_df = job_df.sample(frac=0.1, random_state=42).copy()
+
+sample_df = job_df.copy()
 sample_dict = sample_df.to_dict("records")
 
 results_dict = {}
+
 # %%
 for _, item in enumerate(sample_dict):
     sentences = split_sentences(item["fulltext"])
-    #
     sentences_res_list = []
 
     for ii in range(0, len(sentences), args.num_sentences):
@@ -120,11 +137,65 @@ for _, item in enumerate(sample_dict):
     for idx, sample in enumerate(sentences_res_list):
         sample["Beginner"] = check_mastery(sample["sentence"], "Beginner")
         sample["Intermediate"] = check_mastery(sample["sentence"], "Intermediate")
-        sample["Experte"] = check_mastery(sample["sentence"], "Experte")
+        sample["Expert"] = check_mastery(sample["sentence"], "Expert")
     results_dict[item["id"]] = sentences_res_list
 
 # output results_dict to json
 write_json(results_dict, "../data/taxonomy/check_mastery_per_sentence.json")
+
+# keep only those examples that have at least one flag
+filtered_dict = {
+    key: [
+        entry
+        for entry in value
+        if entry["Beginner"] or entry["Intermediate"] or entry["Expert"]
+    ]
+    for key, value in results_dict.items()
+    if any(
+        entry["Beginner"] or entry["Intermediate"] or entry["Expert"] for entry in value
+    )
+}
+write_json(filtered_dict, "../data/taxonomy/check_mastery_per_sentence_flag.json")
+
+# # %%
+# # fetch 10 samples from filtered_dict with only beginner flag
+# beginner_sentences = []
+# intermediate_sentences = []
+# expert_sentences = []
+# # Separating sentences based on flags
+# for key, values in filtered_dict.items():
+#     for value in values:
+#         beginner_flag = value.get("Beginner")
+#         intermediate_flag = value.get("Intermediate")
+#         expert_flag = value.get("Expert")
+#         if beginner_flag:
+#             beginner_sentences.append(value["sentence"])
+#         if intermediate_flag:
+#             intermediate_sentences.append(value["sentence"])
+#         if expert_flag:
+#             expert_sentences.append(value["sentence"])
+# # Randomly sample 10 sentences for each flag
+# beginner_samples = random.sample(beginner_sentences, min(10, len(beginner_sentences)))
+# intermediate_samples = random.sample(
+#     intermediate_sentences, min(10, len(intermediate_sentences))
+# )
+# expert_samples = random.sample(expert_sentences, min(10, len(expert_sentences)))
+
+# # Print the samples
+# print("Beginner Samples:")
+# for sentence in beginner_samples:
+#     print(sentence)
+
+# print("\nIntermediate Samples:")
+# for sentence in intermediate_samples:
+#     print(sentence)
+
+# print("\nExpert Samples:")
+# for sentence in expert_samples:
+#     print(sentence)
+
+
+# breakpoint()
 
 
 # %%
@@ -133,8 +204,8 @@ def get_lowest_level(entry):
         return "Beginner"
     elif entry["Intermediate"]:
         return "Intermediate"
-    elif entry["Experte"]:
-        return "Experte"
+    elif entry["Expert"]:
+        return "Expert"
     else:
         return None
 
@@ -158,43 +229,44 @@ for key, sentences in results_dict_flag.items():
 
 filtered_data = {key: value for key, value in filtered_data.items() if value}
 
-print(filtered_data)
+# print(filtered_data)
 
 
 # output results_dict_flag_subset to json
 write_json(filtered_data, "../data/taxonomy/check_mastery_per_sentence_flagged.json")
-# %%
-agg_results_dict = {}
 
-for unique_id, result in results_dict.items():
-    num_sentences = len(result)
-    num_beginner = sum([x["Beginner"] for x in result])
-    num_intermediate = sum([x["Intermediate"] for x in result])
-    num_experte = sum([x["Experte"] for x in result])
-    agg_results_dict[unique_id] = {
-        "num_sentences": num_sentences,
-        "num_beginner": num_beginner,
-        "num_intermediate": num_intermediate,
-        "num_experte": num_experte,
-    }
+# # %%
+# agg_results_dict = {}
 
-# convert to dataframe
-agg_results_df = pd.DataFrame.from_dict(agg_results_dict, orient="index")
-agg_results_df.to_csv("../data/taxonomy/check_mastery_per_job.csv")
-# %%
+# for unique_id, result in results_dict.items():
+#     num_sentences = len(result)
+#     num_beginner = sum([x["Beginner"] for x in result])
+#     num_intermediate = sum([x["Intermediate"] for x in result])
+#     num_expert = sum([x["Expert"] for x in result])
+#     agg_results_dict[unique_id] = {
+#         "num_sentences": num_sentences,
+#         "num_beginner": num_beginner,
+#         "num_intermediate": num_intermediate,
+#         "num_expert": num_expert,
+#     }
 
-agg_results_df["total_flags"] = agg_results_df[
-    ["num_beginner", "num_intermediate", "num_experte"]
-].sum(axis=1)
+# # convert to dataframe
+# agg_results_df = pd.DataFrame.from_dict(agg_results_dict, orient="index")
+# agg_results_df.to_csv("../data/taxonomy/check_mastery_per_job.csv")
+# # # %%
 
-# get distribution of total flags
-agg_results_df["pct_flagged"] = (
-    agg_results_df["total_flags"] / agg_results_df["num_sentences"]
-)
+# agg_results_df["total_flags"] = agg_results_df[
+#     ["num_beginner", "num_intermediate", "num_expert"]
+# ].sum(axis=1)
 
-# %%
-print("======= percentage of sentences flagged =======")
-print(agg_results_df["pct_flagged"].describe())
+# # get distribution of total flags
+# agg_results_df["pct_flagged"] = (
+#     agg_results_df["total_flags"] / agg_results_df["num_sentences"]
+# )
+
+# # %%
+# print("======= percentage of sentences flagged =======")
+# print(agg_results_df["pct_flagged"].describe())
 
 # %%
 data_type = "ms"

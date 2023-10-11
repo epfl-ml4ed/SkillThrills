@@ -74,6 +74,26 @@ def main():
     args.output_path = args.output_path + args.data_type + "_" + args.model + ".json"
     print("Output path", args.output_path)
 
+    emb_sh = "_rules"
+    if args.candidates_method != "rules":
+        if word_emb == "agne/jobBERT-de":
+            emb_sh = "_jBd"
+        elif word_emb == "agne/jobGBERT":
+            emb_sh = "_jGB"
+
+        try:
+            print(f"Loading embedded taxonomy for {word_emb}")
+            with open(f"../data/taxonomy/taxonomy_embeddings{emb_sh}.pkl", "rb") as f:
+                emb_tax = pickle.load(f)
+        except:
+            print(f"Loading failed, generating embedded taxonomy for {word_emb}")
+            emb_tax = embed_taxonomy(taxonomy, word_emb_model, word_emb_tokenizer)
+            with open(f"../data/taxonomy/taxonomy_embeddings{emb_sh}.pkl", "wb") as f:
+                pickle.dump(emb_tax, f)
+
+    if args.candidates_method == "mixed":
+        emb_sh = "_mixed"
+
     if args.ids is not None:
         args.num_samples = 0
         with open(args.ids, "r") as f:
@@ -133,6 +153,7 @@ def main():
 
     print("loaded data:", len(data), "elements")
 
+    breakpoint()
     data = data.to_dict("records")
 
     # Intitialize pretrained word embeddings
@@ -141,26 +162,6 @@ def main():
     word_emb_tokenizer = AutoTokenizer.from_pretrained(word_emb)
 
     taxonomy, skill_names, skill_definitions = load_taxonomy(args)
-
-    emb_sh = "_rules"
-    if args.candidates_method != "rules":
-        if word_emb == "agne/jobBERT-de":
-            emb_sh = "_jBd"
-        elif word_emb == "agne/jobGBERT":
-            emb_sh = "_jGB"
-
-        try:
-            print(f"Loading embedded taxonomy for {word_emb}")
-            with open(f"../data/taxonomy/taxonomy_embeddings{emb_sh}.pkl", "rb") as f:
-                emb_tax = pickle.load(f)
-        except:
-            print(f"Loading failed, generating embedded taxonomy for {word_emb}")
-            emb_tax = embed_taxonomy(taxonomy, word_emb_model, word_emb_tokenizer)
-            with open(f"../data/taxonomy/taxonomy_embeddings{emb_sh}.pkl", "wb") as f:
-                pickle.dump(emb_tax, f)
-
-    if args.candidates_method == "mixed":
-        emb_sh = "_mixed"
 
     # We create two files:
     # 1. results_detailed.json: contains a list of jobs/courses ids
