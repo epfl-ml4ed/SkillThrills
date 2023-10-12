@@ -1,6 +1,20 @@
 from collections import Counter, defaultdict
 
 
+def skill_skill_similarity(provided_level, required_level):
+    """
+    Computes the similarity between two mastery levels of the same skill.
+
+    Args:
+        provided_level (int): Mastery level of the provided_skill.
+        required_level (int): Mastery level of the required_skill.
+
+    Returns:
+        float: Similarity ratio for the given skill levels, ranging from 0 to 1.
+    """
+    return min(provided_level, required_level) / required_level
+
+
 def learner_job_matching(learner, job):
     """
     Computes the compatibility score between a learner's skills and a job's required skills.
@@ -48,11 +62,10 @@ def learner_job_matching(learner, job):
         # Check if the learner possesses the skill
         if skill in learner["possessed_skills"]:
             # Calculate similarity ratio based on mastery levels
-            sim = (
-                min(learner["possessed_skills"][skill], job["required_skills"][skill])
-                / job["required_skills"][skill]
+
+            matching += skill_skill_similarity(
+                learner["possessed_skills"][skill], job["required_skills"][skill]
             )
-            matching += sim
 
     # Convert total similarity into percentage form
     matching = 100 * matching / len(job["required_skills"])
