@@ -1,93 +1,73 @@
 from collections import Counter, defaultdict
 
 
-def profile_job_matching(profile, job):
-    """Computes a profile job matching score based on the proportion of skills that the user possesses
+def skill_skill_similarity(provided_level, required_level):
+    """
+    Computes the similarity between two mastery levels of the same skill.
 
     Args:
-        profile (dict): dictionnary of skills that the profile has
-        job (dict): dictionnary of skills required for the job
+        provided_level (int): Mastery level of the provided_skill.
+        required_level (int): Mastery level of the required_skill.
 
     Returns:
-        float: matching score
+        float: Similarity ratio for the given skill levels, ranging from 0 to 1.
+    """
+    return min(provided_level, required_level) / required_level
+
+
+def learner_job_matching(learner, job):
+    """
+    Computes the compatibility score between a learner's skills and a job's required skills.
+
+    For each required skill in the job, the function checks if the learner possesses that skill.
+    If so, it calculates a similarity ratio based on the learner's mastery level and the
+    job's required level for that skill. The final matching score is the average of all these
+    similarity ratios for all required skills, expressed as a percentage.
+
+    Args:
+        learner (dict): Dictionary containing details about the learner.
+                        - "possessed_skills": Dictionary where keys are skill names and values
+                                              represent mastery levels.
+                        - "year": Year associated with the learner's data.
+        job (dict): Dictionary containing job requirements.
+                    - "required_skills": Dictionary where keys are skill names and values
+                                         represent required mastery levels.
+                    - "year": Year associated with the job's data.
+
+    Returns:
+        float: Matching score between the learner and the job, ranging from 0 to 100.
+
+    Example:
+        learner = {
+            "possessed_skills": {
+                "Python": 3,
+                "JavaScript": 1
+            },
+            "year": 2020
+        }
+        job = {
+            "required_skills": {
+        "Python": 2,
+        "JavaScript": 3
+            },
+            "year": 2023
+        }
+        score = learner_job_matching(learner, job)
+        print(score)  # This would output 66.66666
     """
     matching = 0
-    for skill in job:
-        if skill in profile:
-            matching += 1
-    matching = 100 * matching / len(job)
+
+    # For each required skill in the job
+    for skill in job["required_skills"]:
+        # Check if the learner possesses the skill
+        if skill in learner["possessed_skills"]:
+            # Calculate similarity ratio based on mastery levels
+
+            matching += skill_skill_similarity(
+                learner["possessed_skills"][skill], job["required_skills"][skill]
+            )
+
+    # Convert total similarity into percentage form
+    matching = 100 * matching / len(job["required_skills"])
+
     return matching
-
-
-def profile_job_matching_with_level(profile, job):
-    """Computes a profile job matching score based on the proportion of skills that the user possesses
-
-    Args:
-        profile (dict): dictionnary of skills that the profile has
-        job (dict): dictionnary of skills required for the job
-
-    Returns:
-        float: matching score
-    """
-    matching = 0
-    for skill in job:
-        if skill in profile:
-            sim = min(profile[skill], job[skill]) / job[skill]
-            matching += sim
-    matching = 100 * matching / len(job)
-    return matching
-
-
-def profile_alljobs_match(profile, jobs, job_inverted_index):
-    """Computes a matching for all jobs using the proportion of skills that the user possesses
-
-    Args:
-        profile (set): set of skills that the profile has
-        jobs (dict): dictionnary of all jobs and the skills that they require
-        job_inverted_index (dict): inverted index of jobs and skills for an efficient search
-
-    Returns:
-        dict: jobs matchings based on the proportion of skills that the user possesses
-    """
-    ranked_jobs = Counter()
-    for skill in profile:
-        if skill in job_inverted_index:
-            for job in job_inverted_index[skill]:
-                ranked_jobs[job] += 100
-    for job in ranked_jobs:
-        ranked_jobs[job] /= len(jobs[job])
-    return ranked_jobs
-
-
-def profile_allcourse_requirements(profile, courses, course_required_inverted_index):
-    """Computes a matching for all courses based on the proportion of skills that the user possesses
-    in the required skills for the course. Remove courses that the user already has the skills for.
-
-    Args:
-        profile (set): set of skills that the profile has
-        courses (dict): dictionnary of all courses and the skills that they provide
-        course_required_inverted_index (dict): inverted index of courses and skills for an efficient search
-
-    Returns:
-        dict: courses matchings based on the proportion of skills that the user possesses
-    """
-    ranked_courses = Counter()
-    for skill in profile:
-        if skill in course_required_inverted_index:
-            for course in course_required_inverted_index[skill]:
-                ranked_courses[course] += 100
-
-    # Create a list of courses to remove after iterating over the dictionary
-    courses_to_remove = []
-    for course in ranked_courses:
-        for skill, level in courses[course]["provided"].items():
-            if skill in profile and profile[skill] >= level:
-                courses_to_remove.append(course)
-                break
-        else:
-            ranked_courses[course] /= len(courses[course]["required"])
-
-    for course in courses_to_remove:
-        del ranked_courses[course]
-
-    return ranked_courses
