@@ -74,6 +74,11 @@ def main():
     args.output_path = args.output_path + args.data_type + "_" + args.model + ".json"
     print("Output path", args.output_path)
 
+    # Intitialize pretrained word embeddings
+    word_emb = args.word_emb_model
+    word_emb_model = AutoModel.from_pretrained(word_emb)
+    word_emb_tokenizer = AutoTokenizer.from_pretrained(word_emb)
+
     emb_sh = "_rules"
     if args.candidates_method != "rules":
         if word_emb == "agne/jobBERT-de":
@@ -154,11 +159,6 @@ def main():
     print("loaded data:", len(data), "elements")
 
     data = data.to_dict("records")
-
-    # Intitialize pretrained word embeddings
-    word_emb = args.word_emb_model
-    word_emb_model = AutoModel.from_pretrained(word_emb)
-    word_emb_tokenizer = AutoTokenizer.from_pretrained(word_emb)
 
     taxonomy, skill_names, skill_definitions = load_taxonomy(args)
 
