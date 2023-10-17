@@ -201,19 +201,37 @@ def text_completion(
             continue
 
 
-def get_extraction_prompt_elements(data_type, prompt_type):
-    shots_field = "shots"
-    if data_type in ["job", "course"]:
-        system_prompt = "system_" + data_type
-        instruction_field = "instruction_" + data_type
-    else:
-        system_prompt = "system_CV"
-        instruction_field = "instruction_CV"
-    if prompt_type == "detailed":
-        instruction_field += "_detailed"
-    if prompt_type == "level":
-        instruction_field += "_level"
-        shots_field = "shots_level"
+def get_extraction_prompt_elements(
+    data_type,
+    prompt_type,
+):
+    try:
+        data_dict = PROMPT_TEMPLATES[data_type]["extraction"]
+    except KeyError:
+        raise ValueError("Invalid data_type (should be job, course or cv)")
+
+    try:
+        prompt_dict = data_dict[prompt_type]
+    except KeyError:
+        raise ValueError("Invalid prompt_type, should be skills or wlevels")
+
+    system_prompt = PROMPT_TEMPLATES[data_type]["system"]
+    instruction_field = prompt_dict["instruction"]
+    shots_field = prompt_dict["shots"]
+
+    return system_prompt, instruction_field, shots_field
+
+
+def get_matching_prompt_elements(data_type):
+    try:
+        data_dict = PROMPT_TEMPLATES[data_type]["matching"]
+    except KeyError:
+        raise ValueError("Invalid data_type (should be job, course or cv)")
+
+    system_prompt = PROMPT_TEMPLATES[data_type]["system"]
+    instruction_field = data_dict["instruction"]
+    shots_field = data_dict["shots"]
+
     return system_prompt, instruction_field, shots_field
 
 
@@ -249,17 +267,18 @@ class OPENAI:
                 self.args.data_type, self.args.prompt_type
             )
             # 1) system prompt
-            messages = [{"role": "system", "content": PROMPT_TEMPLATES[system_prompt]}]
+            messages = [{"role": "system", "content": system_prompt}]
+
             # 2) instruction:
             messages.append(
                 {
                     "role": "user",
-                    "content": PROMPT_TEMPLATES["extraction"][instruction_field],
+                    "content": instruction_field,
                 }
             )
 
             # 3) shots
-            for shot in PROMPT_TEMPLATES["extraction"][shots_field][: self.args.shots]:
+            for shot in shots_field[: self.args.shots]:
                 sentence = shot.split("\nAnswer:")[0].split(":")[1].strip()
                 answer = shot.split("\nAnswer:")[1].strip()
                 messages.append({"role": "user", "content": sentence})
@@ -296,33 +315,28 @@ class OPENAI:
 
     def run_gpt_df_matching(self):
         costs = 0
-        system_prompt = (
-            "system_" + self.args.data_type
-            if self.args.data_type in ["job", "course"]
-            else "system_CV"
-        )
-        instruction_field = (
-            "instruction_" + self.args.data_type
-            if self.args.data_type in ["job", "course"]
-            else "instruction_CV"
-        )
+        (
+            system_prompt,
+            instruction_field,
+            shots_field,
+        ) = get_matching_prompt_elements(self.args.data_type)
 
         for idxx, sample in enumerate(tqdm(self.data)):
             sample["matched_skills"] = {}
             for extracted_skill in sample["extracted_skills"]:
                 # 1) system prompt
-                messages = [
-                    {"role": "system", "content": PROMPT_TEMPLATES[system_prompt]}
-                ]
+                messages = [{"role": "system", "content": system_prompt}]
+
                 # 2) instruction:
                 messages.append(
                     {
                         "role": "user",
-                        "content": PROMPT_TEMPLATES["matching"][instruction_field],
+                        "content": instruction_field,
                     }
                 )
+
                 # 3) shots
-                for shot in PROMPT_TEMPLATES["matching"]["shots"]:
+                for shot in shots_field:
                     sentence = shot.split("\nAnswer:")[0]
                     answer = shot.split("\nAnswer:")[1].strip()
                     messages.append({"role": "user", "content": sentence})

@@ -20,7 +20,7 @@ import tiktoken
 import difflib
 from split_words import Splitter
 
-from prompt_template import PROMPT_TEMPLATES
+from protosp01.skillExtract.prompt_template_ss import PROMPT_TEMPLATES
 from utils import *
 
 # fmt: off
