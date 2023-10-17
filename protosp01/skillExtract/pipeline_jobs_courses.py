@@ -123,27 +123,56 @@ def main():
     data = pd.DataFrame.from_records(data)
     if args.data_type == "job":
         data["fulltext"] = data["name"] + "\n" + data["description"]
+
     elif args.data_type == "course":
         data = data[data["active"] == True]
-        data["fulltext"] = (
-            data["learning_targets_description"].fillna("")
-            + data["name"]
-            + data["key_benefits"].fillna("")
+        keep_ids = {1, 5, 9}
+        data = data[data["study_ids"].apply(lambda x: bool(set(x) & keep_ids))]
+
+        # drop cols that are not needed
+        drop_cols = [
+            "type",
+            "active",
+            "pricing_description",
+            "ects_points",
+            "average_effort_per_week",
+            "total_effort",
+            "structure_description",
+            "application_process_description",
+            "admission_criteria_description",
+            "required_number_years_of_experience",
+            "currency",
+            "pricing_type",
+            "transaction_type",
+        ]
+        data.drop(columns=drop_cols, inplace=True)
+
+        data["acq_fulltext"] = (
+            data["name"]
             + data["intro"].fillna("")
+            + data["key_benefits"].fillna("")
+            + data["learning_targets_description"].fillna("")
         )
+        data["req_fulltext"] = data["admission_criteria_description"].fillna("") + data[
+            "target_group_description"
+        ].fillna("")
     # TODO 2. select best columns for each data type
     # TODO filter the ones with too small descriptions (eg less than 4 sentences?)
 
     # get number of words in each description
-    data["text_num_words"] = data["fulltext"].apply(lambda x: len(x.split()))
-    data = data[data["text_num_words"] > 100].drop(
-        columns=["text_num_words"]
-    )  # 100 words
+
+    fulltext_cols = ["fulltext", "acq_fulltext", "req_fulltext"]
+    for col in fulltext_cols:
+        if col in data.columns:
+            data = drop_short_text(data, col, 100)
 
     if args.ids is not None:
         data = data[data["id"].isin(ids)]
         data_to_save = data.copy()
-        data_to_save.drop(columns=["fulltext"], inplace=True)
+
+        for col_to_drop in fulltext_cols:
+            if col_to_drop in data_to_save.columns:
+                data_to_save.drop(columns=col_to_drop, axis=1, inplace=True)
         # save the content of the ids in a separate file
         ids_content = data_to_save.to_dict("records")
         write_json(
@@ -152,7 +181,9 @@ def main():
         )
     else:
         # apply language detection
-        data["language"] = data["fulltext"].apply(detect_language)
+        for col in fulltext_cols:
+            if col in data.columns:
+                data["language"] = data[col].apply(detect_language)
         print(data["language"].value_counts())
         data = data[data["language"] == "de"]
 
@@ -246,7 +277,6 @@ def main():
         # TODO find a way to correctly identify even common strings (eg 'R')! (AD: look in utils exact_match)
         # Idem for finding C on top of C# and C++
         # TODO update alternative names generation to get also shortest names (eg .Net, SQL etc) (Syrielle)
-        detailed_results_dict[item["id"]] = sentences_res_list
 
     if args.debug:
         args.output_path = args.output_path.replace(
@@ -269,8 +299,9 @@ def main():
             "Technologies_alternative_names",
             "Certifications",
             "Certification_alternative_names",
-            "Languages",
         ]
+        if args.data_type == "job":
+            categs.append("Languages")
         clean_output_dict = {}
 
         for item_id, detailed_res in detailed_results_dict.items():

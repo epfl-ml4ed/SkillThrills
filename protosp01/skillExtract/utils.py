@@ -103,6 +103,13 @@ def split_sentences(text):
     return sentences
 
 
+def drop_short_text(df, text_col, min_length=100):
+    df["text_length"] = df[text_col].apply(lambda x: len(x.split()))
+    df = df[df["text_length"] > min_length].drop(columns=["text_length"])
+
+    return df
+
+
 def num_tokens_from_string(sentence, model):
     encoding_name = ENCODINGS[model]
     encoding = tiktoken.get_encoding(encoding_name)
