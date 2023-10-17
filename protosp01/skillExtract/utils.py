@@ -17,6 +17,7 @@ import ipdb
 import pathlib
 import re
 import tiktoken
+import asyncio
 import difflib
 from split_words import Splitter
 from sentence_splitter import SentenceSplitter, split_text_into_sentences
@@ -124,6 +125,48 @@ def chat_completion(messages, model="gpt-3.5-turbo", return_text=True, model_arg
             response = openai.ChatCompletion.create(
                 model=model, messages=messages, request_timeout=20, **model_args
             )
+            if return_text:
+                return response["choices"][0]["message"]["content"].strip()
+            return response
+        except (
+            RateLimitError,
+            ServiceUnavailableError,
+            APIError,
+            Timeout,
+        ) as e:  # Exception
+            print("Timed out. Waiting for 5 seconds.")
+            time.sleep(5)
+            continue
+
+
+# async def batch_chat_completion(
+#     messages, model="gpt-3.5-turbo", return_text=True, model_args=None
+# ):
+#     async_responses = [
+#         openai.ChatCompletion.create(
+#             model=model,
+#             messages=msg,
+#             request_timeout=20,
+#             **model_args,
+#         )
+#         for msg in messages
+#     ]
+#     time.sleep(1)
+#     return await asyncio.gather(*async_responses)
+
+
+def chat_completion(messages, model="gpt-3.5-turbo", return_text=True, model_args=None):
+    if model_args is None:
+        model_args = {}
+
+    while True:
+        try:
+            response = openai.ChatCompletion.create(
+                model=model, messages=messages, request_timeout=20, **model_args
+            )
+            # response = asyncio.run(
+            #     batch_chat_completion(messages, model, return_text, model_args)
+            # )
             if return_text:
                 return response["choices"][0]["message"]["content"].strip()
             return response
@@ -306,6 +349,9 @@ class OPENAI:
                 user_input += f"Sentence: {sample['sentence']} \nSkill: {extracted_skill} \nOptions: {options_string}"
 
                 messages.append({"role": "user", "content": user_input})
+
+                # messages_list = [
+                #     messages + [{"role": "user", "content": option}]
                 prediction = (
                     self.run_gpt_sample(messages, max_tokens=10).lower().strip()
                 )
@@ -348,7 +394,6 @@ class OPENAI:
             )
             # get num_tokens of response
             num_tokens = num_tokens_from_string(response, self.args.model)
-            print("num_tokens:", num_tokens)
 
         elif self.args.model in TEXT_COMPLETION_MODELS:
             response = text_completion(
@@ -364,7 +409,6 @@ class OPENAI:
                 },
             )
             num_tokens = num_tokens_from_string(response, self.args.model)
-            print("num_tokens:", num_tokens)
 
         else:
             raise ValueError(f"Model {self.args.model} not supported for evaluation.")
@@ -424,7 +468,7 @@ def get_emb_inputs(text, tokenizer):
     return tokens
 
 
-def find_best_matching_tokens(skill_tokens, sentence_tokens, threshold=90):
+def find_best_matching_tokens(skill_tokens, sentence_tokens, threshold=95):
     best_matches = []
     best_start_idx = None
     best_end_idx = None
@@ -442,7 +486,7 @@ def find_best_matching_tokens(skill_tokens, sentence_tokens, threshold=90):
     return best_start_idx, best_end_idx
 
 
-def get_token_idx(sentence, skill, tokenizer, threshold=90):
+def get_token_idx(sentence, skill, tokenizer, threshold=95):
     sentence = sentence.lower().strip()
     sentence_tokens = tokenizer.tokenize(sentence)
     skill_tokens = tokenizer.tokenize(skill)
@@ -450,6 +494,9 @@ def get_token_idx(sentence, skill, tokenizer, threshold=90):
     start_idx, end_idx = find_best_matching_tokens(
         skill_tokens, sentence_tokens, threshold
     )
+
+    if start_idx is None:
+        print("String not found in sentence for: ", skill)
 
     return start_idx, end_idx
 
@@ -482,11 +529,17 @@ def get_top_vec_similarity(
     max_candidates=10,
 ):
     start_idx, end_idx = get_token_idx(context, extracted_skill, tokenizer)
-    skill_vec = get_embeddings(get_emb_inputs(context, tokenizer), model)[
-        :, start_idx:end_idx, :
-    ].mean(
-        dim=1
-    )  # get the contextualized token of skill
+    if start_idx is None and end_idx is None:
+        # no idx found for extracted skill so we will take just the embeddings of the skill
+        skill_vec = get_embeddings(get_emb_inputs(extracted_skill, tokenizer), model)[
+            :, 0, :
+        ]  # taking the CLS token since we are comparing against the CLS token of the taxonomy
+    else:
+        skill_vec = get_embeddings(get_emb_inputs(context, tokenizer), model)[
+            :, start_idx:end_idx, :
+        ].mean(
+            dim=1
+        )  # get the contextualized token of skill
 
     emb_tax["similarity"] = emb_tax["embeddings"].apply(
         lambda x: F.cosine_similarity(x, skill_vec).item()
@@ -537,18 +590,18 @@ def select_candidates_from_taxonomy(
                             "name+definition"
                         ].str.contains(subword, case=False, regex=False)
 
-                if not taxonomy["results"].any():
-                    if method == "rules":
-                        # print("checking for matches in difflib")
-                        matching_elements = difflib.get_close_matches(
-                            extracted_skill,
-                            taxonomy["name+definition"],
-                            cutoff=0.4,
-                            n=max_candidates,
-                        )
-                        taxonomy["results"] = taxonomy["name+definition"].isin(
-                            matching_elements
-                        )
+                # if not taxonomy["results"].any():
+                #     if method == "rules":
+                #         # print("checking for matches in difflib")
+                #         matching_elements = difflib.get_close_matches(
+                #             extracted_skill,
+                #             taxonomy["name+definition"],
+                #             cutoff=0.4,
+                #             n=max_candidates,
+                #         )
+                #         taxonomy["results"] = taxonomy["name+definition"].isin(
+                #             matching_elements
+                #         )
 
                 if not taxonomy["results"].any():
                     print("No candidates found for: ", extracted_skill)
