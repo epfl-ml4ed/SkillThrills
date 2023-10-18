@@ -123,11 +123,15 @@ def main():
     data = pd.DataFrame.from_records(data)
     if args.data_type == "job":
         data["fulltext"] = data["name"] + "\n" + data["description"]
+        print("num jobs:", len(data))
+        breakpoint()
 
     elif args.data_type == "course":
         data = data[data["active"] == True]
         keep_ids = {1, 5, 9}
         data = data[data["study_ids"].apply(lambda x: bool(set(x) & keep_ids))]
+
+        print("num courses with ids 1,5,9:", len(data))
 
         # drop cols that are not needed
         drop_cols = [
@@ -139,40 +143,45 @@ def main():
             "total_effort",
             "structure_description",
             "application_process_description",
-            "admission_criteria_description",
             "required_number_years_of_experience",
+            "certificate_type",
             "currency",
             "pricing_type",
             "transaction_type",
         ]
         data.drop(columns=drop_cols, inplace=True)
 
-        data["acq_fulltext"] = (
-            data["name"]
-            + data["intro"].fillna("")
-            + data["key_benefits"].fillna("")
-            + data["learning_targets_description"].fillna("")
+        # to keep an indicator for the type of skill (to acquire or prereq), we will run the skill extraction/matching pipeline twice
+        acq_data = data.copy()
+        acq_data["fulltext"] = (
+            acq_data["name"]
+            + acq_data["intro"].fillna("")
+            + acq_data["key_benefits"].fillna("")
+            + acq_data["learning_targets_description"].fillna("")
         )
-        data["req_fulltext"] = data["admission_criteria_description"].fillna("") + data[
-            "target_group_description"
-        ].fillna("")
-    # TODO 2. select best columns for each data type
-    # TODO filter the ones with too small descriptions (eg less than 4 sentences?)
+        acq_data["skill_type"] = "to_acquire"
 
-    # get number of words in each description
+        req_data = data.copy()
+        req_data["fulltext"] = req_data["admission_criteria_description"].fillna(
+            ""
+        ) + req_data["target_group_description"].fillna("")
+        req_data["skill_type"] = "prereq"
 
-    fulltext_cols = ["fulltext", "acq_fulltext", "req_fulltext"]
-    for col in fulltext_cols:
-        if col in data.columns:
-            data = drop_short_text(data, col, 100)
+        data = pd.concat([acq_data, req_data], axis=0)
+        print("num courses after duplication:", len(data))
+
+        # TODO 2. select best columns for each data type
+        # TODO filter the ones with too small descriptions (eg less than 4 sentences?)
+
+        # get number of words in each description
+
+    data = drop_short_text(data, "fulltext", 100)
 
     if args.ids is not None:
         data = data[data["id"].isin(ids)]
         data_to_save = data.copy()
 
-        for col_to_drop in fulltext_cols:
-            if col_to_drop in data_to_save.columns:
-                data_to_save.drop(columns=col_to_drop, axis=1, inplace=True)
+        data_to_save.drop(columns="fulltext", axis=1, inplace=True)
         # save the content of the ids in a separate file
         ids_content = data_to_save.to_dict("records")
         write_json(
@@ -181,9 +190,7 @@ def main():
         )
     else:
         # apply language detection
-        for col in fulltext_cols:
-            if col in data.columns:
-                data["language"] = data[col].apply(detect_language)
+        data["language"] = data["fulltext"].apply(detect_language)
         print(data["language"].value_counts())
         data = data[data["language"] == "de"]
 
@@ -191,7 +198,7 @@ def main():
 
     data = data.to_dict("records")
 
-    taxonomy, skill_names, skill_definitions = load_taxonomy(args)
+    taxonomy = load_taxonomy(args)
 
     # We create two files:
     # 1. results_detailed.json: contains a list of jobs/courses ids
@@ -203,6 +210,7 @@ def main():
     detailed_results_dict = {}
     for _, item in tqdm(enumerate(data)):  # item is job or course in dictionary format
         sentences = split_sentences(item["fulltext"])
+        breakpoint()
         if args.debug:
             # sentences = [sent for sent in sentences if len(sent.split())<80]
             # if len(sentences)==0:

@@ -465,8 +465,8 @@ def load_taxonomy(args):
     taxonomy = taxonomy.dropna(subset=["Definition", "Type Level 2"])
     taxonomy["name+definition"] = taxonomy.apply(concatenate_cols_skillname, axis=1)
     # taxonomy["unique_id"] = list(range(len(taxonomy)))
-    skill_definitions = list(taxonomy["Definition"].apply(lambda x: x.lower()))
-    skill_names = list(taxonomy["name+definition"].apply(lambda x: x.lower()))
+    # skill_definitions = list(taxonomy["Definition"].apply(lambda x: x.lower()))
+    # skill_names = list(taxonomy["name+definition"].apply(lambda x: x.lower()))
 
     keep_cols = [
         "unique_id",
@@ -481,7 +481,7 @@ def load_taxonomy(args):
         "name+definition",
     ]
     taxonomy = taxonomy[keep_cols]
-    return taxonomy, skill_names, skill_definitions
+    return taxonomy  # , skill_names, skill_definitions
 
 
 def get_emb_inputs(text, tokenizer):
