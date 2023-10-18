@@ -124,7 +124,6 @@ def main():
     if args.data_type == "job":
         data["fulltext"] = data["name"] + "\n" + data["description"]
         print("num jobs:", len(data))
-        breakpoint()
 
     elif args.data_type == "course":
         data = data[data["active"] == True]
@@ -210,7 +209,6 @@ def main():
     detailed_results_dict = {}
     for _, item in tqdm(enumerate(data)):  # item is job or course in dictionary format
         sentences = split_sentences(item["fulltext"])
-        breakpoint()
         if args.debug:
             # sentences = [sent for sent in sentences if len(sent.split())<80]
             # if len(sentences)==0:
@@ -242,9 +240,11 @@ def main():
             api = OPENAI(args, sentences_res_list)
             sentences_res_list, cost = api.do_prediction("extraction")
             extraction_cost += cost
+            # breakpoint()
 
         # select candidate skills from taxonomy
         if "extracted_skills" in sentences_res_list[0]:
+            print("Starting candidate selection")
             splitter = Splitter()
             max_candidates = 10
             for idxx, sample in enumerate(sentences_res_list):
@@ -259,13 +259,14 @@ def main():
                     emb_tax=None if args.candidates_method == "rules" else emb_tax,
                 )
                 sentences_res_list[idxx] = sample
+            # breakpoint()
 
         # match skills with taxonomy
         if args.do_matching and "skill_candidates" in sentences_res_list[0]:
             print("Starting matching")
             api = OPENAI(args, sentences_res_list)
             sentences_res_list, cost = api.do_prediction("matching")
-
+            # breakpoint()
             matching_cost += cost
 
         # Do exact match with technologies, languages, certifications
@@ -285,6 +286,7 @@ def main():
         # TODO find a way to correctly identify even common strings (eg 'R')! (AD: look in utils exact_match)
         # Idem for finding C on top of C# and C++
         # TODO update alternative names generation to get also shortest names (eg .Net, SQL etc) (Syrielle)
+        detailed_results_dict[item["id"]] = sentences_res_list
 
     if args.debug:
         args.output_path = args.output_path.replace(
@@ -295,6 +297,7 @@ def main():
         detailed_results_dict_output = {
             key: remove_level_2(value) for key, value in detailed_results_dict.items()
         }
+        # breakpoint()
         write_json(
             detailed_results_dict_output,
             args.output_path.replace(".json", f"{nsent}{nsamp}{emb_sh}_detailed.json"),

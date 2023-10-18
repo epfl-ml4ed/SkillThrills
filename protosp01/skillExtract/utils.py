@@ -298,7 +298,7 @@ class OPENAI:
             prediction = (
                 self.run_gpt_sample(messages, max_tokens=max_tokens).lower().strip()
             )
-            if self.args.prompt_type == "level":
+            if self.args.prompt_type == "wlevels":
                 # extracted_skills would be the keys and mastery level would be the values
                 # keep only the dictionary
                 # prediction = prediction.replace("'", '"')
@@ -312,7 +312,7 @@ class OPENAI:
             else:
                 extracted_skills = re.findall(pattern, prediction)
             sample["extracted_skills"] = extracted_skills  # AD: removed duplicates
-            if self.args.prompt_type == "level":
+            if self.args.prompt_type == "wlevels":
                 sample["extracted_skills_levels"] = levels
             self.data[idx] = sample
             # cost = compute_cost(input_, prediction, self.args.model)

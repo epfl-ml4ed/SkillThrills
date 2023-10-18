@@ -20,6 +20,13 @@ job_shots_match = [
     'Sentence: Grundlegende Bestimmungen von Urheberrecht und Datenschutz verstehen. \nSkill: Datenschutz. \nOptions: \nA: "Grundsätze des Datenschutzes respektieren" \nB: "Datenschutz verstehen" \nC: "Datenschutz im Luftfahrtbetrieb sicherstellen" \nD: "Datenschutz". \nAnswer: "Datenschutz verstehen", "Datenschutz".\n'
 ]
 
+course_shots_extr_skills = job_shots_extr_skills
+course_shots_extr_wlevels = job_shots_extr_wlevels
+course_shots_match = job_shots_match
+
+cv_shots_extr_skills = job_shots_extr_skills
+cv_shots_extr_wlevels = job_shots_extr_wlevels
+cv_shots_match = job_shots_match
 
 PROMPT_TEMPLATES = {
     "job": {
@@ -45,16 +52,16 @@ PROMPT_TEMPLATES = {
         "extraction": {
             "skills": {
                 "instruction": "You are given a sentence from a course description in German. Highlight all the skills and competencies that are learned when following the course described in the sentence, by surrounding them with tags '@@' and '##'.\n",
-                "shots": job_shots_extr_skills,
+                "shots": course_shots_extr_skills,
             },
             "wlevels": {
                 "instruction": "You are given a sentence from a job description in German. Extract all skills and competencies that are mentioned in the course description sentence (make sure that the extracted skills are substrings of the sentence) and infer the corresponding mastery skill level (beginner, intermediate, advanced, or unknown). Return the output as only a json file with the skill as key and mastery level as value.\n",
-                "shots": job_shots_extr_wlevels,
+                "shots": course_shots_extr_wlevels,
             },
         },
         "matching": {
             "instruction": "You are looking for an online course. You are given a sentence from a course description in German, and a skill extracted from this sentence. Choose from the list of options the one that best match the skill in the context. Answer with the associated letter.\n",
-            "shots": job_shots_match,
+            "shots": course_shots_match,
         },
     },
     "cv": {
@@ -62,16 +69,16 @@ PROMPT_TEMPLATES = {
         "extraction": {
             "skills": {
                 "instruction": "Extract candidates skills in German from the following German sentence, taken from a CV.\n",
-                "shots": job_shots_extr_skills,
+                "shots": cv_shots_extr_skills,
             },
             "wlevels": {
                 "instruction": "Extract all skills and competencies from the CV (make sure that the extracted skills are substrings of the sentence) and infer the corresponding mastery skill level (beginner, intermediate, advanced, or unknown). Return the output as only a json file with the skill as key and mastery level as value.\n",
-                "shots": job_shots_extr_wlevels,
+                "shots": cv_shots_extr_wlevels,
             },
         },
         "matching": {
             "instruction": "You are an expert human resource manager. From a given German sentence from a CV, and a skill extracted from this sentence, choose from the options one or several items that best match the skill in the context. Answer with the associated letter(s).\n",
-            "shots": job_shots_match,
+            "shots": cv_shots_match,
         },
     },
 }
