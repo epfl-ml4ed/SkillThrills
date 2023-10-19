@@ -282,11 +282,22 @@ def main():
             tech_certif_lang,
             tech_alternative_names,
             certification_alternative_names,
+            args.data_type,
         )
         # TODO find a way to correctly identify even common strings (eg 'R')! (AD: look in utils exact_match)
         # Idem for finding C on top of C# and C++
         # TODO update alternative names generation to get also shortest names (eg .Net, SQL etc) (Syrielle)
-        detailed_results_dict[item["id"]] = sentences_res_list
+        if args.data_type == "course":
+            skill_type = item["skill_type"]  # to acquire or prereq
+            item_id = item["id"]  # number, first level of dict
+            if item_id not in detailed_results_dict:
+                detailed_results_dict[item_id] = {}
+            if skill_type not in detailed_results_dict[item_id]:
+                detailed_results_dict[item_id][skill_type] = sentences_res_list
+            else:
+                detailed_results_dict[item_id][skill_type].extend(sentences_res_list)
+        else:
+            detailed_results_dict[item["id"]] = sentences_res_list
 
     if args.debug:
         args.output_path = args.output_path.replace(
@@ -311,18 +322,38 @@ def main():
             "Certifications",
             "Certification_alternative_names",
         ]
-        if args.data_type == "job":
+        if args.data_type != "course":
             categs.append("Languages")
         clean_output_dict = {}
 
-        for item_id, detailed_res in detailed_results_dict.items():
-            clean_output = {categ: [] for categ in categs}
-            clean_output["skills"] = []
+        if args.data_type == "course":
+            for item_id, skill_type_dict in detailed_results_dict.items():
+                for skill_type, detailed_res in skill_type_dict.items():
+                    clean_output = {skill_type: {}}
+                    clean_output[skill_type] = {categ: [] for categ in categs}
+                    clean_output[skill_type]["skills"] = []
+
+                for ii, sample in enumerate(detailed_res):
+                    for cat in categs:
+                        clean_output[skill_type][cat].extend(sample[cat])
+
+                    if "matched_skills" in sample:
+                        for skill in sample["matched_skills"]:
+                            clean_output[skill_type]["skills"].append(
+                                sample["matched_skills"][skill]
+                            )
+                clean_output_dict[item_id] = clean_output
+                for key, value in clean_output_dict.items():
+                    for kkey, vvalue in value.items():
+                        clean_output_dict[key][kkey] = remove_namedef(vvalue)
+        else:
+            for item_id, detailed_res in detailed_results_dict.items():
+                clean_output = {categ: [] for categ in categs}
+                clean_output["skills"] = []
 
             for ii, sample in enumerate(detailed_res):
                 for cat in categs:
                     clean_output[cat].extend(sample[cat])
-                    # TODO deduplicate all elements /!\
 
                 if "matched_skills" in sample:
                     for skill in sample["matched_skills"]:

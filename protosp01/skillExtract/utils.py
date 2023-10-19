@@ -141,7 +141,7 @@ def chat_completion(messages, model="gpt-3.5-turbo", return_text=True, model_arg
             APIError,
             Timeout,
         ) as e:  # Exception
-            print("Timed out. Waiting for 5 seconds.")
+            print(f"Timed out {e}. Waiting for 5 seconds.")
             time.sleep(5)
             continue
 
@@ -183,7 +183,7 @@ def chat_completion(messages, model="gpt-3.5-turbo", return_text=True, model_arg
             APIError,
             Timeout,
         ) as e:  # Exception
-            print("Timed out. Waiting for 5 seconds.")
+            print(f"Timed out {e}. Waiting for 5 seconds.")
             time.sleep(5)
             continue
 
@@ -663,8 +663,18 @@ def select_candidates_from_taxonomy(
     return sample
 
 
+def add_skill_type(
+    df,
+):
+    pass
+
+
 def exact_match(
-    data, tech_certif_lang, tech_alternative_names, certification_alternative_names
+    data,
+    tech_certif_lang,
+    tech_alternative_names,
+    certification_alternative_names,
+    data_type,
 ):
     # Create a dictionary to map alternative names to their corresponding Level 2 values
     synonym_to_tech_mapping = {}
@@ -684,6 +694,9 @@ def exact_match(
             synonym_to_certif_mapping[alt_name] = row["Level 2"]
 
     categs = set(tech_certif_lang["Level 1"])
+    if data_type == "course":
+        categs = categs - set(["Languages"])
+
     word_sets = [
         set(tech_certif_lang[tech_certif_lang["Level 1"] == categ]["Level 2"])
         for categ in categs
