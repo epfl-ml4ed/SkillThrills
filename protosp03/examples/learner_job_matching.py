@@ -46,3 +46,24 @@ score4 = learner_job_matching(learner4, job4)
 print(
     f"Scenario 4: {score4:.2f}%"
 )  # This will be 100% because even though learner knows Java, the algorithm focuses on required skills
+
+
+learner5 = {"possessed_skills": {"Python": 1, "Java": 2}, "year": 2020}
+job5 = {
+    "required_skills": {
+        "Python": 3,
+        "JavaScript": 2,
+        "HTML": 2,
+        "CSS": 2,
+        "Java": 4,
+        "C++": 1,
+        "C#": 2,
+        "PHP": 2,
+    },
+    "year": 2023,
+}
+
+score5 = learner_job_matching(learner5, job5)
+print(
+    f"Scenario 5: {score5:.2f}%"
+)  # This should be 10.42% since the learner does not possess all the required skills
