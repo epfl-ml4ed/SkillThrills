@@ -103,6 +103,13 @@ def split_sentences(text):
     return sentences
 
 
+def drop_short_text(df, text_col, min_length=100):
+    df["text_length"] = df[text_col].apply(lambda x: len(x.split()))
+    df = df[df["text_length"] > min_length].drop(columns=["text_length"])
+
+    return df
+
+
 def num_tokens_from_string(sentence, model):
     encoding_name = ENCODINGS[model]
     encoding = tiktoken.get_encoding(encoding_name)
@@ -134,7 +141,7 @@ def chat_completion(messages, model="gpt-3.5-turbo", return_text=True, model_arg
             APIError,
             Timeout,
         ) as e:  # Exception
-            print("Timed out. Waiting for 5 seconds.")
+            print(f"Timed out {e}. Waiting for 5 seconds.")
             time.sleep(5)
             continue
 
@@ -176,7 +183,7 @@ def chat_completion(messages, model="gpt-3.5-turbo", return_text=True, model_arg
             APIError,
             Timeout,
         ) as e:  # Exception
-            print("Timed out. Waiting for 5 seconds.")
+            print(f"Timed out {e}. Waiting for 5 seconds.")
             time.sleep(5)
             continue
 
@@ -201,19 +208,37 @@ def text_completion(
             continue
 
 
-def get_extraction_prompt_elements(data_type, prompt_type):
-    shots_field = "shots"
-    if data_type in ["job", "course"]:
-        system_prompt = "system_" + data_type
-        instruction_field = "instruction_" + data_type
-    else:
-        system_prompt = "system_CV"
-        instruction_field = "instruction_CV"
-    if prompt_type == "detailed":
-        instruction_field += "_detailed"
-    if prompt_type == "level":
-        instruction_field += "_level"
-        shots_field = "shots_level"
+def get_extraction_prompt_elements(
+    data_type,
+    prompt_type,
+):
+    try:
+        data_dict = PROMPT_TEMPLATES[data_type]["extraction"]
+    except KeyError:
+        raise ValueError("Invalid data_type (should be job, course or cv)")
+
+    try:
+        prompt_dict = data_dict[prompt_type]
+    except KeyError:
+        raise ValueError("Invalid prompt_type, should be skills or wlevels")
+
+    system_prompt = PROMPT_TEMPLATES[data_type]["system"]
+    instruction_field = prompt_dict["instruction"]
+    shots_field = prompt_dict["shots"]
+
+    return system_prompt, instruction_field, shots_field
+
+
+def get_matching_prompt_elements(data_type):
+    try:
+        data_dict = PROMPT_TEMPLATES[data_type]["matching"]
+    except KeyError:
+        raise ValueError("Invalid data_type (should be job, course or cv)")
+
+    system_prompt = PROMPT_TEMPLATES[data_type]["system"]
+    instruction_field = data_dict["instruction"]
+    shots_field = data_dict["shots"]
+
     return system_prompt, instruction_field, shots_field
 
 
@@ -249,17 +274,18 @@ class OPENAI:
                 self.args.data_type, self.args.prompt_type
             )
             # 1) system prompt
-            messages = [{"role": "system", "content": PROMPT_TEMPLATES[system_prompt]}]
+            messages = [{"role": "system", "content": system_prompt}]
+
             # 2) instruction:
             messages.append(
                 {
                     "role": "user",
-                    "content": PROMPT_TEMPLATES["extraction"][instruction_field],
+                    "content": instruction_field,
                 }
             )
 
             # 3) shots
-            for shot in PROMPT_TEMPLATES["extraction"][shots_field][: self.args.shots]:
+            for shot in shots_field[: self.args.shots]:
                 sentence = shot.split("\nAnswer:")[0].split(":")[1].strip()
                 answer = shot.split("\nAnswer:")[1].strip()
                 messages.append({"role": "user", "content": sentence})
@@ -272,7 +298,7 @@ class OPENAI:
             prediction = (
                 self.run_gpt_sample(messages, max_tokens=max_tokens).lower().strip()
             )
-            if self.args.prompt_type == "level":
+            if self.args.prompt_type == "wlevels":
                 # extracted_skills would be the keys and mastery level would be the values
                 # keep only the dictionary
                 # prediction = prediction.replace("'", '"')
@@ -286,7 +312,7 @@ class OPENAI:
             else:
                 extracted_skills = re.findall(pattern, prediction)
             sample["extracted_skills"] = extracted_skills  # AD: removed duplicates
-            if self.args.prompt_type == "level":
+            if self.args.prompt_type == "wlevels":
                 sample["extracted_skills_levels"] = levels
             self.data[idx] = sample
             # cost = compute_cost(input_, prediction, self.args.model)
@@ -296,33 +322,28 @@ class OPENAI:
 
     def run_gpt_df_matching(self):
         costs = 0
-        system_prompt = (
-            "system_" + self.args.data_type
-            if self.args.data_type in ["job", "course"]
-            else "system_CV"
-        )
-        instruction_field = (
-            "instruction_" + self.args.data_type
-            if self.args.data_type in ["job", "course"]
-            else "instruction_CV"
-        )
+        (
+            system_prompt,
+            instruction_field,
+            shots_field,
+        ) = get_matching_prompt_elements(self.args.data_type)
 
         for idxx, sample in enumerate(tqdm(self.data)):
             sample["matched_skills"] = {}
             for extracted_skill in sample["extracted_skills"]:
                 # 1) system prompt
-                messages = [
-                    {"role": "system", "content": PROMPT_TEMPLATES[system_prompt]}
-                ]
+                messages = [{"role": "system", "content": system_prompt}]
+
                 # 2) instruction:
                 messages.append(
                     {
                         "role": "user",
-                        "content": PROMPT_TEMPLATES["matching"][instruction_field],
+                        "content": instruction_field,
                     }
                 )
+
                 # 3) shots
-                for shot in PROMPT_TEMPLATES["matching"]["shots"]:
+                for shot in shots_field:
                     sentence = shot.split("\nAnswer:")[0]
                     answer = shot.split("\nAnswer:")[1].strip()
                     messages.append({"role": "user", "content": sentence})
@@ -444,8 +465,8 @@ def load_taxonomy(args):
     taxonomy = taxonomy.dropna(subset=["Definition", "Type Level 2"])
     taxonomy["name+definition"] = taxonomy.apply(concatenate_cols_skillname, axis=1)
     # taxonomy["unique_id"] = list(range(len(taxonomy)))
-    skill_definitions = list(taxonomy["Definition"].apply(lambda x: x.lower()))
-    skill_names = list(taxonomy["name+definition"].apply(lambda x: x.lower()))
+    # skill_definitions = list(taxonomy["Definition"].apply(lambda x: x.lower()))
+    # skill_names = list(taxonomy["name+definition"].apply(lambda x: x.lower()))
 
     keep_cols = [
         "unique_id",
@@ -460,7 +481,7 @@ def load_taxonomy(args):
         "name+definition",
     ]
     taxonomy = taxonomy[keep_cols]
-    return taxonomy, skill_names, skill_definitions
+    return taxonomy  # , skill_names, skill_definitions
 
 
 def get_emb_inputs(text, tokenizer):
@@ -642,8 +663,18 @@ def select_candidates_from_taxonomy(
     return sample
 
 
+def add_skill_type(
+    df,
+):
+    pass
+
+
 def exact_match(
-    data, tech_certif_lang, tech_alternative_names, certification_alternative_names
+    data,
+    tech_certif_lang,
+    tech_alternative_names,
+    certification_alternative_names,
+    data_type,
 ):
     # Create a dictionary to map alternative names to their corresponding Level 2 values
     synonym_to_tech_mapping = {}
@@ -663,6 +694,9 @@ def exact_match(
             synonym_to_certif_mapping[alt_name] = row["Level 2"]
 
     categs = set(tech_certif_lang["Level 1"])
+    if data_type == "course":
+        categs = categs - set(["Languages"])
+
     word_sets = [
         set(tech_certif_lang[tech_certif_lang["Level 1"] == categ]["Level 2"])
         for categ in categs
