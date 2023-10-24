@@ -164,10 +164,12 @@ def main():
         req_data["fulltext"] = req_data["admission_criteria_description"].fillna(
             ""
         ) + req_data["target_group_description"].fillna("")
-        req_data["skill_type"] = "prereq"
+        req_data["skill_type"] = "required"
+        breakpoint()
 
-        data = pd.concat([acq_data, req_data], axis=0)
-        print("num courses after duplication:", len(data))
+        # I need to vertically concatenate the two dataframes
+        data = pd.concat([acq_data, req_data], ignore_index=True)
+        # print("num courses after duplication:", len(data))
 
         # TODO 2. select best columns for each data type
         # TODO filter the ones with too small descriptions (eg less than 4 sentences?)
