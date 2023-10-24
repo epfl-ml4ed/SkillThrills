@@ -2,7 +2,7 @@ import sys
 
 sys.path.append("../recommendation")  # Add the src directory to the path
 
-from matchings import skill_skill_similarity, learner_job_matching
+from matchings import learner_job_matching
 
 
 learner1 = {"possessed_skills": {"Python": 5, "JavaScript": 4}, "year": 2020}
