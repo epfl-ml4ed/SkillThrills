@@ -45,10 +45,9 @@ def main():
     parser.add_argument("--top_p", type=float, help="Top p for generation", default=1)
     parser.add_argument("--frequency_penalty", type=float, help="Frequency penalty for generation", default=0)
     parser.add_argument("--presence_penalty", type=float, help="Presence penalty for generation", default=0)
-    parser.add_argument("--candidates_method", type=str, help="How to select candidates: rules, mixed or embeddings. Default is rules", default="rules")
-    parser.add_argument("--no-candidates", action="store_true")
+    parser.add_argument("--candidates_method", type=str, help="How to select candidates: rules, mixed or embeddings. Default is embeddings", default="embeddings")
     parser.add_argument("--output_path", type=str, help="Output for evaluation results", default="results/")
-    parser.add_argument("--prompt_type", type=str, help="Prompt type, from the prompt_template.py file. For now, only \"detailed\" and \"level\". default is empty.", default="")
+    parser.add_argument("--prompt_type", type=str, help="Prompt type, from the prompt_template.py file. For now, only \"skills\" and \"wlevels\". default is wlevels.", default="wlevels")
     parser.add_argument("--num-samples", type=int, help="Last N elements to evaluate (the new ones)", default=10)
     parser.add_argument("--num-sentences", type=int, help="by how many sentences to split the corpus", default=2)
     parser.add_argument("--do-extraction", action="store_true", help="Whether to do the extraction or directly the matching")
@@ -74,6 +73,11 @@ def main():
     args.api_key = API_KEY  # args.openai_key
     args.output_path = args.output_path + args.data_type + "_" + args.model + ".json"
     print("Output path", args.output_path)
+
+    # Intitialize pretrained word embeddings
+    word_emb = args.word_emb_model
+    word_emb_model = AutoModel.from_pretrained(word_emb)
+    word_emb_tokenizer = AutoTokenizer.from_pretrained(word_emb)
 
     emb_sh = "_rules"
     if args.candidates_method != "rules":
@@ -119,27 +123,66 @@ def main():
     data = pd.DataFrame.from_records(data)
     if args.data_type == "job":
         data["fulltext"] = data["name"] + "\n" + data["description"]
+        print("num jobs:", len(data))
+
     elif args.data_type == "course":
         data = data[data["active"] == True]
-        data["fulltext"] = (
-            data["learning_targets_description"].fillna("")
-            + data["name"]
-            + data["key_benefits"].fillna("")
-            + data["intro"].fillna("")
-        )
-    # TODO 2. select best columns for each data type
-    # TODO filter the ones with too small descriptions (eg less than 4 sentences?)
+        keep_ids = {1, 5, 9}
+        data = data[data["study_ids"].apply(lambda x: bool(set(x) & keep_ids))]
 
-    # get number of words in each description
-    data["text_num_words"] = data["fulltext"].apply(lambda x: len(x.split()))
-    data = data[data["text_num_words"] > 100].drop(
-        columns=["text_num_words"]
-    )  # 100 words
+        print("num courses with ids 1,5,9:", len(data))
+
+        # drop cols that are not needed
+        drop_cols = [
+            "type",
+            "active",
+            "pricing_description",
+            "ects_points",
+            "average_effort_per_week",
+            "total_effort",
+            "structure_description",
+            "application_process_description",
+            "required_number_years_of_experience",
+            "certificate_type",
+            "currency",
+            "pricing_type",
+            "transaction_type",
+        ]
+        data.drop(columns=drop_cols, inplace=True)
+
+        # to keep an indicator for the type of skill (to acquire or prereq), we will run the skill extraction/matching pipeline twice
+        acq_data = data.copy()
+        acq_data["fulltext"] = (
+            acq_data["name"]
+            + acq_data["intro"].fillna("")
+            + acq_data["key_benefits"].fillna("")
+            + acq_data["learning_targets_description"].fillna("")
+        )
+        acq_data["skill_type"] = "to_acquire"
+
+        req_data = data.copy()
+        req_data["fulltext"] = req_data["admission_criteria_description"].fillna(
+            ""
+        ) + req_data["target_group_description"].fillna("")
+        req_data["skill_type"] = "required"
+        breakpoint()
+
+        # I need to vertically concatenate the two dataframes
+        data = pd.concat([acq_data, req_data], ignore_index=True)
+        # print("num courses after duplication:", len(data))
+
+        # TODO 2. select best columns for each data type
+        # TODO filter the ones with too small descriptions (eg less than 4 sentences?)
+
+        # get number of words in each description
+
+    data = drop_short_text(data, "fulltext", 100)
 
     if args.ids is not None:
         data = data[data["id"].isin(ids)]
         data_to_save = data.copy()
-        data_to_save.drop(columns=["fulltext"], inplace=True)
+
+        data_to_save.drop(columns="fulltext", axis=1, inplace=True)
         # save the content of the ids in a separate file
         ids_content = data_to_save.to_dict("records")
         write_json(
@@ -156,12 +199,7 @@ def main():
 
     data = data.to_dict("records")
 
-    # Intitialize pretrained word embeddings
-    word_emb = args.word_emb_model
-    word_emb_model = AutoModel.from_pretrained(word_emb)
-    word_emb_tokenizer = AutoTokenizer.from_pretrained(word_emb)
-
-    taxonomy, skill_names, skill_definitions = load_taxonomy(args)
+    taxonomy = load_taxonomy(args)
 
     # We create two files:
     # 1. results_detailed.json: contains a list of jobs/courses ids
@@ -204,9 +242,10 @@ def main():
             api = OPENAI(args, sentences_res_list)
             sentences_res_list, cost = api.do_prediction("extraction")
             extraction_cost += cost
+            # breakpoint()
 
         # select candidate skills from taxonomy
-        if "extracted_skills" in sentences_res_list[0] and not args.no_candidates:
+        if "extracted_skills" in sentences_res_list[0]:
             splitter = Splitter()
             max_candidates = 10
             for idxx, sample in enumerate(sentences_res_list):
@@ -221,13 +260,14 @@ def main():
                     emb_tax=None if args.candidates_method == "rules" else emb_tax,
                 )
                 sentences_res_list[idxx] = sample
+            # breakpoint()
 
         # match skills with taxonomy
         if args.do_matching and "skill_candidates" in sentences_res_list[0]:
             print("Starting matching")
             api = OPENAI(args, sentences_res_list)
             sentences_res_list, cost = api.do_prediction("matching")
-
+            # breakpoint()
             matching_cost += cost
 
         # Do exact match with technologies, languages, certifications
@@ -243,11 +283,22 @@ def main():
             tech_certif_lang,
             tech_alternative_names,
             certification_alternative_names,
+            args.data_type,
         )
         # TODO find a way to correctly identify even common strings (eg 'R')! (AD: look in utils exact_match)
         # Idem for finding C on top of C# and C++
         # TODO update alternative names generation to get also shortest names (eg .Net, SQL etc) (Syrielle)
-        detailed_results_dict[item["id"]] = sentences_res_list
+        if args.data_type == "course":
+            skill_type = item["skill_type"]  # to acquire or prereq
+            item_id = item["id"]  # number, first level of dict
+            if item_id not in detailed_results_dict:
+                detailed_results_dict[item_id] = {}
+            if skill_type not in detailed_results_dict[item_id]:
+                detailed_results_dict[item_id][skill_type] = sentences_res_list
+            else:
+                detailed_results_dict[item_id][skill_type].extend(sentences_res_list)
+        else:
+            detailed_results_dict[item["id"]] = sentences_res_list
 
     if args.debug:
         args.output_path = args.output_path.replace(
@@ -258,6 +309,7 @@ def main():
         detailed_results_dict_output = {
             key: remove_level_2(value) for key, value in detailed_results_dict.items()
         }
+        # breakpoint()
         write_json(
             detailed_results_dict_output,
             args.output_path.replace(".json", f"{nsent}{nsamp}{emb_sh}_detailed.json"),
@@ -270,18 +322,39 @@ def main():
             "Technologies_alternative_names",
             "Certifications",
             "Certification_alternative_names",
-            "Languages",
         ]
+        if args.data_type != "course":
+            categs.append("Languages")
         clean_output_dict = {}
 
-        for item_id, detailed_res in detailed_results_dict.items():
-            clean_output = {categ: [] for categ in categs}
-            clean_output["skills"] = []
+        if args.data_type == "course":
+            for item_id, skill_type_dict in detailed_results_dict.items():
+                for skill_type, detailed_res in skill_type_dict.items():
+                    clean_output = {skill_type: {}}
+                    clean_output[skill_type] = {categ: [] for categ in categs}
+                    clean_output[skill_type]["skills"] = []
+
+                for ii, sample in enumerate(detailed_res):
+                    for cat in categs:
+                        clean_output[skill_type][cat].extend(sample[cat])
+
+                    if "matched_skills" in sample:
+                        for skill in sample["matched_skills"]:
+                            clean_output[skill_type]["skills"].append(
+                                sample["matched_skills"][skill]
+                            )
+                clean_output_dict[item_id] = clean_output
+                for key, value in clean_output_dict.items():
+                    for kkey, vvalue in value.items():
+                        clean_output_dict[key][kkey] = remove_namedef(vvalue)
+        else:
+            for item_id, detailed_res in detailed_results_dict.items():
+                clean_output = {categ: [] for categ in categs}
+                clean_output["skills"] = []
 
             for ii, sample in enumerate(detailed_res):
                 for cat in categs:
                     clean_output[cat].extend(sample[cat])
-                    # TODO deduplicate all elements /!\
 
                 if "matched_skills" in sample:
                     for skill in sample["matched_skills"]:

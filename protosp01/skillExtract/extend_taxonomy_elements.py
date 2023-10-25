@@ -10,7 +10,7 @@ from split_words import Splitter
 
 # %%
 from utils import *
-from prompt_template import PROMPT_TEMPLATES
+from protosp01.skillExtract.prompt_template_ss import PROMPT_TEMPLATES
 from api_key import *
 
 # %%

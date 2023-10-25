@@ -7,6 +7,7 @@ from openai.error import (
     ServiceUnavailableError,
     APIError,
     APIConnectionError,
+    Timeout,
 )
 import os
 from tqdm import tqdm
@@ -16,6 +17,7 @@ import ipdb
 import pathlib
 import re
 import tiktoken
+import asyncio
 import difflib
 from split_words import Splitter
 from sentence_splitter import SentenceSplitter, split_text_into_sentences
@@ -27,6 +29,7 @@ import torch
 from transformers import AutoModel, AutoTokenizer
 import torch.nn.functional as F
 from googletrans import Translator
+from fuzzywuzzy import fuzz
 
 
 def get_lang_detector(nlp, name):
@@ -100,6 +103,13 @@ def split_sentences(text):
     return sentences
 
 
+def drop_short_text(df, text_col, min_length=100):
+    df["text_length"] = df[text_col].apply(lambda x: len(x.split()))
+    df = df[df["text_length"] > min_length].drop(columns=["text_length"])
+
+    return df
+
+
 def num_tokens_from_string(sentence, model):
     encoding_name = ENCODINGS[model]
     encoding = tiktoken.get_encoding(encoding_name)
@@ -120,15 +130,63 @@ def chat_completion(messages, model="gpt-3.5-turbo", return_text=True, model_arg
     while True:
         try:
             response = openai.ChatCompletion.create(
-                model=model, messages=messages, **model_args
+                model=model, messages=messages, request_timeout=20, **model_args
             )
             if return_text:
                 return response["choices"][0]["message"]["content"].strip()
             return response
-        except (RateLimitError, ServiceUnavailableError, APIError) as e: #Exception
-            print("Timed out. Waiting for 1 minute.")
+        except (
+            RateLimitError,
+            ServiceUnavailableError,
+            APIError,
+            Timeout,
+        ) as e:  # Exception
+            print(f"Timed out {e}. Waiting for 5 seconds.")
             time.sleep(5)
             continue
+
+
+# async def batch_chat_completion(
+#     messages, model="gpt-3.5-turbo", return_text=True, model_args=None
+# ):
+#     async_responses = [
+#         openai.ChatCompletion.create(
+#             model=model,
+#             messages=msg,
+#             request_timeout=20,
+#             **model_args,
+#         )
+#         for msg in messages
+#     ]
+#     time.sleep(1)
+#     return await asyncio.gather(*async_responses)
+
+
+def chat_completion(messages, model="gpt-3.5-turbo", return_text=True, model_args=None):
+    if model_args is None:
+        model_args = {}
+
+    while True:
+        try:
+            response = openai.ChatCompletion.create(
+                model=model, messages=messages, request_timeout=20, **model_args
+            )
+            # response = asyncio.run(
+            #     batch_chat_completion(messages, model, return_text, model_args)
+            # )
+            if return_text:
+                return response["choices"][0]["message"]["content"].strip()
+            return response
+        except (
+            RateLimitError,
+            ServiceUnavailableError,
+            APIError,
+            Timeout,
+        ) as e:  # Exception
+            print(f"Timed out {e}. Waiting for 5 seconds.")
+            time.sleep(5)
+            continue
+
 
 def text_completion(
     prompt, model="text-davinci-003", return_text=True, model_args=None
@@ -139,29 +197,48 @@ def text_completion(
     while True:
         try:
             response = openai.Completion.create(
-                model=model, prompt=prompt, **model_args
+                model=model, prompt=prompt, request_timeout=20, **model_args
             )
             if return_text:
                 return response["choices"][0]["text"].strip()
             return response
-        except (RateLimitError, ServiceUnavailableError, APIError) as e:
-            print("Timed out. Waiting for 1 minute.")
+        except (RateLimitError, ServiceUnavailableError, APIError, Timeout) as e:
+            print("Timed out. Waiting for 5 seconds.")
             time.sleep(5)
             continue
 
-def get_extraction_prompt_elements(data_type, prompt_type):
-    shots_field = "shots"
-    if data_type in ["job", "course"]:
-       system_prompt = "system_" + data_type
-       instruction_field = "instruction_" + data_type
-    else:
-        system_prompt = "system_CV"
-        instruction_field = "instruction_CV"
-    if prompt_type == "detailed":
-        instruction_field += "_detailed"
-    if prompt_type == "level":
-        instruction_field += "_level"
-        shots_field = "shots_level"
+
+def get_extraction_prompt_elements(
+    data_type,
+    prompt_type,
+):
+    try:
+        data_dict = PROMPT_TEMPLATES[data_type]["extraction"]
+    except KeyError:
+        raise ValueError("Invalid data_type (should be job, course or cv)")
+
+    try:
+        prompt_dict = data_dict[prompt_type]
+    except KeyError:
+        raise ValueError("Invalid prompt_type, should be skills or wlevels")
+
+    system_prompt = PROMPT_TEMPLATES[data_type]["system"]
+    instruction_field = prompt_dict["instruction"]
+    shots_field = prompt_dict["shots"]
+
+    return system_prompt, instruction_field, shots_field
+
+
+def get_matching_prompt_elements(data_type):
+    try:
+        data_dict = PROMPT_TEMPLATES[data_type]["matching"]
+    except KeyError:
+        raise ValueError("Invalid data_type (should be job, course or cv)")
+
+    system_prompt = PROMPT_TEMPLATES[data_type]["system"]
+    instruction_field = data_dict["instruction"]
+    shots_field = data_dict["shots"]
+
     return system_prompt, instruction_field, shots_field
 
 
@@ -189,19 +266,31 @@ class OPENAI:
         costs = 0
         pattern = r"@@(.*?)##"
         for idx, sample in enumerate(tqdm(self.data)):
-            system_prompt, instruction_field, shots_field = get_extraction_prompt_elements(self.args.data_type, self.args.prompt_type)
+            (
+                system_prompt,
+                instruction_field,
+                shots_field,
+            ) = get_extraction_prompt_elements(
+                self.args.data_type, self.args.prompt_type
+            )
             # 1) system prompt
-            messages = [{"role": "system", "content": PROMPT_TEMPLATES[system_prompt]}]
+            messages = [{"role": "system", "content": system_prompt}]
+
             # 2) instruction:
-            messages.append({"role": "user", "content": PROMPT_TEMPLATES["extraction"][instruction_field]})
-            
+            messages.append(
+                {
+                    "role": "user",
+                    "content": instruction_field,
+                }
+            )
+
             # 3) shots
-            for shot in PROMPT_TEMPLATES["extraction"][shots_field][: self.args.shots]:
+            for shot in shots_field[: self.args.shots]:
                 sentence = shot.split("\nAnswer:")[0].split(":")[1].strip()
                 answer = shot.split("\nAnswer:")[1].strip()
                 messages.append({"role": "user", "content": sentence})
                 messages.append({"role": "assistant", "content": answer})
-            
+
             # 4) user input
             messages.append({"role": "user", "content": sample["sentence"]})
             max_tokens = self.args.max_tokens
@@ -209,7 +298,7 @@ class OPENAI:
             prediction = (
                 self.run_gpt_sample(messages, max_tokens=max_tokens).lower().strip()
             )
-            if self.args.prompt_type == "level":
+            if self.args.prompt_type == "wlevels":
                 # extracted_skills would be the keys and mastery level would be the values
                 # keep only the dictionary
                 # prediction = prediction.replace("'", '"')
@@ -223,28 +312,38 @@ class OPENAI:
             else:
                 extracted_skills = re.findall(pattern, prediction)
             sample["extracted_skills"] = extracted_skills  # AD: removed duplicates
-            if self.args.prompt_type == "level":
+            if self.args.prompt_type == "wlevels":
                 sample["extracted_skills_levels"] = levels
             self.data[idx] = sample
-            #cost = compute_cost(input_, prediction, self.args.model)
-            #costs += cost
+            # cost = compute_cost(input_, prediction, self.args.model)
+            # costs += cost
             # TODO recompute cost
         return costs
 
     def run_gpt_df_matching(self):
         costs = 0
-        system_prompt = "system_" + self.args.data_type if self.args.data_type in ["job", "course"] else "system_CV"
-        instruction_field = "instruction_" + self.args.data_type if self.args.data_type in ["job", "course"] else "instruction_CV"
+        (
+            system_prompt,
+            instruction_field,
+            shots_field,
+        ) = get_matching_prompt_elements(self.args.data_type)
 
         for idxx, sample in enumerate(tqdm(self.data)):
             sample["matched_skills"] = {}
             for extracted_skill in sample["extracted_skills"]:
                 # 1) system prompt
-                messages = [{"role": "system", "content": PROMPT_TEMPLATES[system_prompt]}]
+                messages = [{"role": "system", "content": system_prompt}]
+
                 # 2) instruction:
-                messages.append({"role": "user", "content": PROMPT_TEMPLATES["matching"][instruction_field]})
+                messages.append(
+                    {
+                        "role": "user",
+                        "content": instruction_field,
+                    }
+                )
+
                 # 3) shots
-                for shot in PROMPT_TEMPLATES["matching"]["shots"]:
+                for shot in shots_field:
                     sentence = shot.split("\nAnswer:")[0]
                     answer = shot.split("\nAnswer:")[1].strip()
                     messages.append({"role": "user", "content": sentence})
@@ -254,6 +353,7 @@ class OPENAI:
                 # update as an argument - like give def or not when doing the matching then ask Marco if it helps or decreases performance
 
                 # 4) user input
+                user_input = ""
                 options_dict = {
                     letter.upper(): candidate["name+definition"]
                     for letter, candidate in zip(
@@ -270,7 +370,12 @@ class OPENAI:
                 user_input += f"Sentence: {sample['sentence']} \nSkill: {extracted_skill} \nOptions: {options_string}"
 
                 messages.append({"role": "user", "content": user_input})
-                prediction = self.run_gpt_sample(messages, max_tokens=10).lower().strip()
+
+                # messages_list = [
+                #     messages + [{"role": "user", "content": option}]
+                prediction = (
+                    self.run_gpt_sample(messages, max_tokens=10).lower().strip()
+                )
 
                 chosen_letter = prediction[0].upper()
                 # TODO match this with the list of candidates, in case no letter was generated! (AD: try to ask it to output first line like "Answer is _")
@@ -290,13 +395,14 @@ class OPENAI:
 
                 self.data[idxx] = sample
 
-                #cost = compute_cost(input_, prediction, self.args.model)
-                #costs += cost
+                # cost = compute_cost(input_, prediction, self.args.model)
+                # costs += cost
         return costs
 
     def run_gpt_sample(self, messages, max_tokens):
         if self.args.model in CHAT_COMPLETION_MODELS:
-            response = chat_completion(messages,
+            response = chat_completion(
+                messages,
                 model=self.args.model,
                 return_text=True,
                 model_args={
@@ -307,6 +413,9 @@ class OPENAI:
                     "presence_penalty": self.args.presence_penalty,
                 },
             )
+            # get num_tokens of response
+            num_tokens = num_tokens_from_string(response, self.args.model)
+
         elif self.args.model in TEXT_COMPLETION_MODELS:
             response = text_completion(
                 messages,
@@ -320,6 +429,8 @@ class OPENAI:
                     "presence_penalty": self.args.presence_penalty,
                 },
             )
+            num_tokens = num_tokens_from_string(response, self.args.model)
+
         else:
             raise ValueError(f"Model {self.args.model} not supported for evaluation.")
 
@@ -354,8 +465,8 @@ def load_taxonomy(args):
     taxonomy = taxonomy.dropna(subset=["Definition", "Type Level 2"])
     taxonomy["name+definition"] = taxonomy.apply(concatenate_cols_skillname, axis=1)
     # taxonomy["unique_id"] = list(range(len(taxonomy)))
-    skill_definitions = list(taxonomy["Definition"].apply(lambda x: x.lower()))
-    skill_names = list(taxonomy["name+definition"].apply(lambda x: x.lower()))
+    # skill_definitions = list(taxonomy["Definition"].apply(lambda x: x.lower()))
+    # skill_names = list(taxonomy["name+definition"].apply(lambda x: x.lower()))
 
     keep_cols = [
         "unique_id",
@@ -370,7 +481,7 @@ def load_taxonomy(args):
         "name+definition",
     ]
     taxonomy = taxonomy[keep_cols]
-    return taxonomy, skill_names, skill_definitions
+    return taxonomy  # , skill_names, skill_definitions
 
 
 def get_emb_inputs(text, tokenizer):
@@ -378,13 +489,35 @@ def get_emb_inputs(text, tokenizer):
     return tokens
 
 
-def get_token_idx(sentence, skill, tokenizer):
+def find_best_matching_tokens(skill_tokens, sentence_tokens, threshold=95):
+    best_matches = []
+    best_start_idx = None
+    best_end_idx = None
+
+    for i in range(len(sentence_tokens) - len(skill_tokens) + 1):
+        score = sum(
+            fuzz.ratio(skill_token, sentence_tokens[i + j])
+            for j, skill_token in enumerate(skill_tokens)
+        )
+        if score >= threshold and (best_start_idx is None or score > best_matches):
+            best_matches = score
+            best_start_idx = i
+            best_end_idx = i + len(skill_tokens)
+
+    return best_start_idx, best_end_idx
+
+
+def get_token_idx(sentence, skill, tokenizer, threshold=95):
     sentence = sentence.lower().strip()
     sentence_tokens = tokenizer.tokenize(sentence)
     skill_tokens = tokenizer.tokenize(skill)
 
-    start_idx = sentence_tokens.index(skill_tokens[0])
-    end_idx = start_idx + len(skill_tokens)
+    start_idx, end_idx = find_best_matching_tokens(
+        skill_tokens, sentence_tokens, threshold
+    )
+
+    if start_idx is None:
+        print("String not found in sentence for: ", skill)
 
     return start_idx, end_idx
 
@@ -417,11 +550,17 @@ def get_top_vec_similarity(
     max_candidates=10,
 ):
     start_idx, end_idx = get_token_idx(context, extracted_skill, tokenizer)
-    skill_vec = get_embeddings(get_emb_inputs(context, tokenizer), model)[
-        :, start_idx:end_idx, :
-    ].mean(
-        dim=1
-    )  # get the contextualized token of skill
+    if start_idx is None and end_idx is None:
+        # no idx found for extracted skill so we will take just the embeddings of the skill
+        skill_vec = get_embeddings(get_emb_inputs(extracted_skill, tokenizer), model)[
+            :, 0, :
+        ]  # taking the CLS token since we are comparing against the CLS token of the taxonomy
+    else:
+        skill_vec = get_embeddings(get_emb_inputs(context, tokenizer), model)[
+            :, start_idx:end_idx, :
+        ].mean(
+            dim=1
+        )  # get the contextualized token of skill
 
     emb_tax["similarity"] = emb_tax["embeddings"].apply(
         lambda x: F.cosine_similarity(x, skill_vec).item()
@@ -453,37 +592,37 @@ def select_candidates_from_taxonomy(
             print("extracted skill:", extracted_skill)
 
             if method == "rules" or method == "mixed":
-                print("checking for matches in name+definition")
+                # print("checking for matches in name+definition")
                 taxonomy["results"] = taxonomy["name+definition"].str.contains(
                     extracted_skill, case=False, regex=False
                 )
 
                 if not taxonomy["results"].any():
-                    print("checking for matches in example")
+                    # print("checking for matches in example")
                     taxonomy["results"] = taxonomy["Example"].str.contains(
                         extracted_skill, case=False, regex=False
                     )
 
                 if not taxonomy["results"].any():
-                    print("checking for matches in subwords")
+                    # print("checking for matches in subwords")
                     taxonomy["results"] = False
                     for subword in filter_subwords(extracted_skill, splitter):
                         taxonomy["results"] = taxonomy["results"] + taxonomy[
                             "name+definition"
                         ].str.contains(subword, case=False, regex=False)
 
-                if not taxonomy["results"].any():
-                    if method == "rules":
-                        print("checking for matches in difflib")
-                        matching_elements = difflib.get_close_matches(
-                            extracted_skill,
-                            taxonomy["name+definition"],
-                            cutoff=0.4,
-                            n=max_candidates,
-                        )
-                        taxonomy["results"] = taxonomy["name+definition"].isin(
-                            matching_elements
-                        )
+                # if not taxonomy["results"].any():
+                #     if method == "rules":
+                #         # print("checking for matches in difflib")
+                #         matching_elements = difflib.get_close_matches(
+                #             extracted_skill,
+                #             taxonomy["name+definition"],
+                #             cutoff=0.4,
+                #             n=max_candidates,
+                #         )
+                #         taxonomy["results"] = taxonomy["name+definition"].isin(
+                #             matching_elements
+                #         )
 
                 if not taxonomy["results"].any():
                     print("No candidates found for: ", extracted_skill)
@@ -495,7 +634,7 @@ def select_candidates_from_taxonomy(
                     taxonomy.loc[selected_indices, "results"] = True
 
             if method == "embeddings" or method == "mixed":
-                print("checking for highest embedding similarity")
+                # print("checking for highest embedding similarity")
                 emb_tax = get_top_vec_similarity(
                     extracted_skill,
                     sample["sentence"],
@@ -524,8 +663,18 @@ def select_candidates_from_taxonomy(
     return sample
 
 
+def add_skill_type(
+    df,
+):
+    pass
+
+
 def exact_match(
-    data, tech_certif_lang, tech_alternative_names, certification_alternative_names
+    data,
+    tech_certif_lang,
+    tech_alternative_names,
+    certification_alternative_names,
+    data_type,
 ):
     # Create a dictionary to map alternative names to their corresponding Level 2 values
     synonym_to_tech_mapping = {}
@@ -545,6 +694,9 @@ def exact_match(
             synonym_to_certif_mapping[alt_name] = row["Level 2"]
 
     categs = set(tech_certif_lang["Level 1"])
+    if data_type == "course":
+        categs = categs - set(["Languages"])
+
     word_sets = [
         set(tech_certif_lang[tech_certif_lang["Level 1"] == categ]["Level 2"])
         for categ in categs
