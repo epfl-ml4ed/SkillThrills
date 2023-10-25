@@ -1,4 +1,4 @@
-from collections import Counter, defaultdict
+from collections import Counter
 import sys
 
 
@@ -85,7 +85,7 @@ def shortest_distance(node1, node2):
         int: The shortest distance between the two nodes.
 
     Example:
-    shortest_distance([2, 1, 3], [2, 1]) # This would output 1
+        shortest_distance([2, 1, 3], [2, 1]) # This would output 1
     """
 
     # Find the last common ancestor
