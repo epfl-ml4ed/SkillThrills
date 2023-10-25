@@ -170,6 +170,10 @@ api_key*
 
 # Other
 trash*
+diag_*
+check_*
+~$*
+*_ss*
 data/annotated/
 data/raw/job_profiles.json
 data/raw/job_skills.json

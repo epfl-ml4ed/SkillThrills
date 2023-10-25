@@ -21,6 +21,7 @@ import tiktoken
 import difflib
 from split_words import Splitter
 import pickle
+import datetime
 
 
 # %%
@@ -52,12 +53,18 @@ def main():
     parser.add_argument("--num-sentences", type=int, help="by how many sentences to split the corpus", default=2)
     parser.add_argument("--do-extraction", action="store_true", help="Whether to do the extraction or directly the matching")
     parser.add_argument("--do-matching", action="store_true", help="Whether to do the matching or not")
+    parser.add_argument("--load-extraction", type=str, help="Path to a file with intermediate extraction results", default="")
     parser.add_argument("--word-emb-model", type=str, help="Word embedding model to use", default="agne/jobBERT-de")
     parser.add_argument("--debug", action="store_true", help="Keep only one sentence per job offer / course to debug")
     parser.add_argument("--detailed", action="store_true", help="Generate detailed output")
     parser.add_argument("--ids", type=str, help="Path to a file with specific ids to evaluate", default=None)
     parser.add_argument("--annotate", action="store_true", help="Whether to annotate the data or not")
     # fmt: on
+
+    ###
+    # Extraction checkpoints:
+    # results/course_gpt-3.5-turbo_2sent_n10_V4231025_extraction.json
+    ###
 
     args = parser.parse_args()
     if args.datapath.split("/")[-1] == "vacancies.json":
@@ -69,6 +76,10 @@ def main():
 
     nsent = f"_{args.num_sentences}sent"
     nsamp = f"_n{args.num_samples}"
+    # dt = datetime.datetime.now().strftime("%y%m%d")
+    # tax_v = "_" + args.taxonomy.split("/")[-1].split(".")[0].split("_")[-1]
+    dt = "231025"
+    tax_v = "_V4"
 
     args.api_key = API_KEY  # args.openai_key
     args.output_path = args.output_path + args.data_type + "_" + args.model + ".json"
@@ -88,12 +99,16 @@ def main():
 
         try:
             print(f"Loading embedded taxonomy for {word_emb}")
-            with open(f"../data/taxonomy/taxonomy_embeddings{emb_sh}.pkl", "rb") as f:
+            with open(
+                f"../data/taxonomy/taxonomy{tax_v}_embeddings{emb_sh}.pkl", "rb"
+            ) as f:
                 emb_tax = pickle.load(f)
         except:
             print(f"Loading failed, generating embedded taxonomy for {word_emb}")
             emb_tax = embed_taxonomy(taxonomy, word_emb_model, word_emb_tokenizer)
-            with open(f"../data/taxonomy/taxonomy_embeddings{emb_sh}.pkl", "wb") as f:
+            with open(
+                f"../data/taxonomy/taxonomy{tax_v}_embeddings{emb_sh}.pkl", "wb"
+            ) as f:
                 pickle.dump(emb_tax, f)
 
     if args.candidates_method == "mixed":
@@ -113,7 +128,6 @@ def main():
             ".json", f"{nsent}{nsamp}{emb_sh}_ids.json"
         )
 
-    # Load data
     if args.num_samples > 0:
         data = read_json(args.datapath, lastN=args.num_samples)
         data = data[0][-args.num_samples :]
@@ -165,9 +179,7 @@ def main():
             ""
         ) + req_data["target_group_description"].fillna("")
         req_data["skill_type"] = "required"
-        breakpoint()
 
-        # I need to vertically concatenate the two dataframes
         data = pd.concat([acq_data, req_data], ignore_index=True)
         # print("num courses after duplication:", len(data))
 
@@ -209,8 +221,20 @@ def main():
     extraction_cost = 0
     matching_cost = 0
     detailed_results_dict = {}
+    if args.load_extraction != "":
+        args.do_extraction = False
+        try:
+            with open(args.load_extraction, "r") as f:
+                detailed_results_dict = json.load(f)
+        except:
+            print(
+                "Error: could not load intermediate extraction file. Try arg --do_extraction instead"
+            )
+            exit()
+
     for _, item in tqdm(enumerate(data)):  # item is job or course in dictionary format
         sentences = split_sentences(item["fulltext"])
+        # breakpoint()
         if args.debug:
             # sentences = [sent for sent in sentences if len(sent.split())<80]
             # if len(sentences)==0:
@@ -242,10 +266,16 @@ def main():
             api = OPENAI(args, sentences_res_list)
             sentences_res_list, cost = api.do_prediction("extraction")
             extraction_cost += cost
-            # breakpoint()
+
+        if args.load_extraction != "":
+            sentences_res_list = (
+                detailed_results_dict[str(item["id"])][item["skill_type"]]
+                if args.data_type == "course"
+                else detailed_results_dict[str(item["id"])]
+            )
 
         # select candidate skills from taxonomy
-        if "extracted_skills" in sentences_res_list[0]:
+        if args.do_matching and "extracted_skills" in sentences_res_list[0]:
             print("Starting candidate selection")
             splitter = Splitter()
             max_candidates = 10
@@ -279,6 +309,7 @@ def main():
         certification_alternative_names = pd.read_csv(
             "../data/taxonomy/certifications_alternative_names.csv", sep="\t"
         )
+
         sentences_res_list = exact_match(
             sentences_res_list,
             tech_certif_lang,
@@ -314,6 +345,14 @@ def main():
         write_json(
             detailed_results_dict_output,
             args.output_path.replace(".json", f"{nsent}{nsamp}{emb_sh}_detailed.json"),
+        )
+
+    if args.do_extraction:
+        write_json(
+            detailed_results_dict,
+            args.output_path.replace(
+                ".json", f"{nsent}{nsamp}{tax_v}{dt}_extraction.json"
+            ),
         )
 
     # Output final

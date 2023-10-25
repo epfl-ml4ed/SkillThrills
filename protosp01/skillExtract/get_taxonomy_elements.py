@@ -47,6 +47,9 @@ def get_taxonomy():
     # this joins three sheets vertically into one df
     tech_certif_lang = pd.concat([tech, certif, lang], ignore_index=True)
     tech_certif_lang.columns = tech_certif_lang.columns.str.strip()
+    # for any row where the first column is empty, fill it with the value from the previous row
+    tech_certif_lang["Level 1"] = tech_certif_lang["Level 1"].fillna(method="ffill")
+
     print("num tech_certif_lang rows:", len(tech_certif_lang))
 
     # Assigning unique ids

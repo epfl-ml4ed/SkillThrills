@@ -93,6 +93,7 @@ def split_sentences(text):
     # sentences = text.split("\n\n")  # TODO: AD test number of sentences here
     splitter = SentenceSplitter(language="de")
     sentences = splitter.split(text)
+    # if sentences are took long, split them again
     sentences = [sentence.rstrip(".") for sentence in sentences]
     # if sentences shorter than 5 words, merge with next sentence
     for idx, sentence in enumerate(sentences):
@@ -100,12 +101,29 @@ def split_sentences(text):
             sentences[idx + 1] = sentence + " " + sentences[idx + 1]
             sentences[idx] = ""
     sentences = [sentence for sentence in sentences if sentence != ""]
+
+    # save long sentences to see what's going on
+    # long_sents = [sentence for sentence in sentences if len(sentence.split()) > 50]
+    # with open("diag_long_sents.txt", "w", encoding="utf-8") as f:
+    #     f.write("\n\n".join(long_sents))
     return sentences
 
 
 def drop_short_text(df, text_col, min_length=100):
     df["text_length"] = df[text_col].apply(lambda x: len(x.split()))
     df = df[df["text_length"] > min_length].drop(columns=["text_length"])
+
+    return df
+
+
+def drop_long_text(df, text_col, max_length=1000):
+    df["text_length"] = df[text_col].apply(lambda x: len(x.split()))
+    df_long = df[df["text_length"] > max_length].drop(columns=["text_length"])
+    df = df[df["text_length"] < max_length].drop(columns=["text_length"])
+
+    # # save df_long to see what's going on
+    # df_long = df_long[text_col]
+    # df_long.to_csv("diag_df_long.csv", index=False)
 
     return df
 
@@ -471,7 +489,7 @@ def load_taxonomy(args):
     keep_cols = [
         "unique_id",
         "ElementID",
-        "Dimension",
+        # "Dimension",
         "Type Level 1",
         "Type Level 2",
         "Type Level 3",
