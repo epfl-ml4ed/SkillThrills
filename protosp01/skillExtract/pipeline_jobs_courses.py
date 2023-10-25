@@ -46,6 +46,7 @@ def main():
     parser.add_argument("--frequency_penalty", type=float, help="Frequency penalty for generation", default=0)
     parser.add_argument("--presence_penalty", type=float, help="Presence penalty for generation", default=0)
     parser.add_argument("--candidates_method", type=str, help="How to select candidates: rules, mixed or embeddings. Default is rules", default="rules")
+    parser.add_argument("--no-candidates", action="store_true")
     parser.add_argument("--output_path", type=str, help="Output for evaluation results", default="results/")
     parser.add_argument("--prompt_type", type=str, help="Prompt type, from the prompt_template.py file. For now, only \"detailed\" and \"level\". default is empty.", default="")
     parser.add_argument("--num-samples", type=int, help="Last N elements to evaluate (the new ones)", default=10)
@@ -205,7 +206,7 @@ def main():
             extraction_cost += cost
 
         # select candidate skills from taxonomy
-        if "extracted_skills" in sentences_res_list[0]:
+        if "extracted_skills" in sentences_res_list[0] and not args.no_candidates:
             splitter = Splitter()
             max_candidates = 10
             for idxx, sample in enumerate(sentences_res_list):
