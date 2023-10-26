@@ -79,7 +79,7 @@ def main():
     # dt = datetime.datetime.now().strftime("%y%m%d")
     # tax_v = "_" + args.taxonomy.split("/")[-1].split(".")[0].split("_")[-1]
     dt = "231025"
-    tax_v = "_V4"
+    tax_v = f"_{args.taxonomy.split('/')[-1].split('.')[0].split('_')[-1]}"
 
     args.api_key = API_KEY  # args.openai_key
     args.output_path = args.output_path + args.data_type + "_" + args.model + ".json"
@@ -127,9 +127,7 @@ def main():
             args.data_type = "course"
         ids = [int(id.split("/")[-1]) for id in ids]
         print("Evaluating only ids:", ids)
-        args.output_path = args.output_path.replace(
-            ".json", f"{nsent}{nsamp}{emb_sh}_ids.json"
-        )
+        args.output_path = args.output_path.replace(".json", f"_ids.json")
 
     if args.num_samples > 0:
         data = read_json(args.datapath, lastN=args.num_samples)
@@ -184,6 +182,8 @@ def main():
         req_data["skill_type"] = "required"
 
         data = pd.concat([acq_data, req_data], ignore_index=True)
+        # replace every 10 tags with a period to avoid too long sentences
+        data["fulltext"] = data["fulltext"].apply(replace_html_tags)
         # print("num courses after duplication:", len(data))
 
         # TODO 2. select best columns for each data type
@@ -192,6 +192,8 @@ def main():
         # get number of words in each description
 
     data = drop_short_text(data, "fulltext", 100)
+    # data = drop_long_text(data, "fulltext", 15000)
+    # breakpoint()
 
     if args.ids is not None:
         data = data[data["id"].isin(ids)]
@@ -202,7 +204,7 @@ def main():
         ids_content = data_to_save.to_dict("records")
         write_json(
             ids_content,
-            args.output_path.replace(".json", f"{nsent}{emb_sh}_content.json"),
+            args.output_path.replace(".json", f"{nsent}{emb_sh}{tax_v}_content.json"),
         )
     else:
         # apply language detection
@@ -339,7 +341,7 @@ def main():
 
     if args.debug:
         args.output_path = args.output_path.replace(
-            ".json", f"{nsent}{nsamp}{emb_sh}_debug.json"
+            ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}_debug.json"
         )
     if args.detailed:
         # TODO: remove "Type Level 2" from detailed results - DONE
@@ -349,18 +351,19 @@ def main():
         # breakpoint()
         write_json(
             detailed_results_dict_output,
-            args.output_path.replace(".json", f"{nsent}{nsamp}{emb_sh}_detailed.json"),
+            args.output_path.replace(
+                ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}_detailed.json"
+            ),
         )
 
     if args.do_extraction:
         write_json(
             detailed_results_dict,
-            args.output_path.replace(
-                ".json", f"{nsent}{nsamp}{tax_v}{dt}_extraction.json"
-            ),
+            args.output_path.replace(".json", f"{nsent}{nsamp}{dt}_extraction.json"),
         )
 
     # Output final
+    # TODO: edit the output to not just have the last one
     if not args.debug:
         categs = [
             "Technologies",
@@ -411,7 +414,9 @@ def main():
 
         write_json(
             clean_output_dict,
-            args.output_path.replace(".json", f"{nsent}{nsamp}{emb_sh}_clean.json"),
+            args.output_path.replace(
+                ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}_clean.json"
+            ),
         )
     print("Done")
     print("Extraction cost ($):", extraction_cost)
@@ -421,11 +426,13 @@ def main():
     if args.detailed:
         print(
             "Saved detailed results in",
-            args.output_path.replace(".json", f"{nsent}{nsamp}{emb_sh}_detailed.json"),
+            args.output_path.replace(
+                ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}_detailed.json"
+            ),
         )
     print(
         "Saved clean results in",
-        args.output_path.replace(".json", f"{nsent}{nsamp}{emb_sh}_clean.json"),
+        args.output_path.replace(".json", f"{nsent}{nsamp}{emb_sh}{tax_v}_clean.json"),
     )
 
 
