@@ -67,6 +67,8 @@ def main():
     ###
 
     args = parser.parse_args()
+    if not os.path.exists(args.output_path):
+        os.makedirs(args.output_path)
     if args.datapath.split("/")[-1] == "vacancies.json":
         args.data_type = "job"
     elif args.datapath.split("/")[-1] == "learning_opportunities.json":
