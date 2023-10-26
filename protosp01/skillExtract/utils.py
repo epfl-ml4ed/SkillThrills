@@ -312,8 +312,8 @@ class OPENAI:
             messages.append({"role": "user", "content": sample["sentence"]})
             max_tokens = self.args.max_tokens
 
-            if self.get_num_tokens(sentence) > 3000:
-                prediction = {}
+            if self.get_num_tokens(sentence) > 2000:
+                pass
 
             else:
                 prediction = (
