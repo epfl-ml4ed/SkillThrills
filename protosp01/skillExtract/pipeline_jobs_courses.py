@@ -91,6 +91,9 @@ def main():
     word_emb_tokenizer = AutoTokenizer.from_pretrained(word_emb)
 
     emb_sh = "_rules"
+
+    taxonomy = load_taxonomy(args)
+
     if args.candidates_method != "rules":
         if word_emb == "agne/jobBERT-de":
             emb_sh = "_jBd"
@@ -211,8 +214,6 @@ def main():
 
     data = data.to_dict("records")
 
-    taxonomy = load_taxonomy(args)
-
     # We create two files:
     # 1. results_detailed.json: contains a list of jobs/courses ids
     # each job / course has a list of sentence, each sentence has all extraction details
@@ -264,6 +265,10 @@ def main():
         if args.do_extraction:
             print("Starting extraction")
             api = OPENAI(args, sentences_res_list)
+            # if max(api.get_num_tokens(sentences_res_list)) > 3000:
+            #     for ii, sent in enumerate(sentences_res_list):
+            #         with open("diag_sentences_too_long.txt", "a") as f:
+            #             f.write(f"\n\n {str(item['id'])}\n{sent['sentence']}")
             sentences_res_list, cost = api.do_prediction("extraction")
             extraction_cost += cost
 
