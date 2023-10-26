@@ -8,6 +8,7 @@ from openai.error import (
     APIError,
     APIConnectionError,
     Timeout,
+    InvalidRequestError,
 )
 import os
 from tqdm import tqdm
@@ -102,7 +103,7 @@ def split_sentences(text):
             sentences[idx] = ""
     sentences = [sentence for sentence in sentences if sentence != ""]
 
-    # save long sentences to see what's going on
+    # # save long sentences to see what's going on
     # long_sents = [sentence for sentence in sentences if len(sentence.split()) > 50]
     # with open("diag_long_sents.txt", "w", encoding="utf-8") as f:
     #     f.write("\n\n".join(long_sents))
@@ -126,13 +127,6 @@ def drop_long_text(df, text_col, max_length=1000):
     # df_long.to_csv("diag_df_long.csv", index=False)
 
     return df
-
-
-def num_tokens_from_string(sentence, model):
-    encoding_name = ENCODINGS[model]
-    encoding = tiktoken.get_encoding(encoding_name)
-    num_tokens = len(encoding.encode(str(sentence)))
-    return num_tokens
 
 
 def compute_cost(input, output, model):
@@ -220,7 +214,12 @@ def text_completion(
             if return_text:
                 return response["choices"][0]["text"].strip()
             return response
-        except (RateLimitError, ServiceUnavailableError, APIError, Timeout) as e:
+        except (
+            RateLimitError,
+            ServiceUnavailableError,
+            APIError,
+            Timeout,
+        ) as e:
             print("Timed out. Waiting for 5 seconds.")
             time.sleep(5)
             continue
@@ -313,9 +312,13 @@ class OPENAI:
             messages.append({"role": "user", "content": sample["sentence"]})
             max_tokens = self.args.max_tokens
 
-            prediction = (
-                self.run_gpt_sample(messages, max_tokens=max_tokens).lower().strip()
-            )
+            if self.get_num_tokens(sentence) > 3000:
+                prediction = {}
+
+            else:
+                prediction = (
+                    self.run_gpt_sample(messages, max_tokens=max_tokens).lower().strip()
+                )
             if self.args.prompt_type == "wlevels":
                 # extracted_skills would be the keys and mastery level would be the values
                 # keep only the dictionary
@@ -417,6 +420,18 @@ class OPENAI:
                 # costs += cost
         return costs
 
+    def get_num_tokens(self, text):
+        encoding = tiktoken.encoding_for_model(self.args.model)
+        num_tokens_list = []
+        if type(text) == list:
+            for item in text:
+                num_tokens = len(encoding.encode(item["sentence"]))
+                num_tokens_list.append(num_tokens)
+            return num_tokens_list
+        if type(text) == str:
+            num_tokens = len(encoding.encode(text))
+            return num_tokens
+
     def run_gpt_sample(self, messages, max_tokens):
         if self.args.model in CHAT_COMPLETION_MODELS:
             response = chat_completion(
@@ -432,7 +447,7 @@ class OPENAI:
                 },
             )
             # get num_tokens of response
-            num_tokens = num_tokens_from_string(response, self.args.model)
+            num_tokens = self.get_num_tokens(response)
 
         elif self.args.model in TEXT_COMPLETION_MODELS:
             response = text_completion(
@@ -447,7 +462,7 @@ class OPENAI:
                     "presence_penalty": self.args.presence_penalty,
                 },
             )
-            num_tokens = num_tokens_from_string(response, self.args.model)
+            num_tokens = self.get_num_tokens(response)
 
         else:
             raise ValueError(f"Model {self.args.model} not supported for evaluation.")
