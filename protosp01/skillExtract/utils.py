@@ -117,16 +117,24 @@ def drop_short_text(df, text_col, min_length=100):
     return df
 
 
-def drop_long_text(df, text_col, max_length=1000):
-    df["text_length"] = df[text_col].apply(lambda x: len(x.split()))
-    df_long = df[df["text_length"] > max_length].drop(columns=["text_length"])
-    df = df[df["text_length"] < max_length].drop(columns=["text_length"])
+def replace_html_tags(text):
+    def replace_tags(_):
+        nonlocal tag_count
+        tag_count += 1
+        if tag_count % 10 == 0:
+            return ". "
+        else:
+            return " "
 
-    # # save df_long to see what's going on
-    # df_long = df_long[text_col]
-    # df_long.to_csv("diag_df_long.csv", index=False)
+    tag_count = 0
+    pattern = r"<.*?>"
+    result = re.sub(pattern, replace_tags, text)
+    return result
 
-    return df
+
+def num_tokens_from_string(string, model):
+    encoding = tiktoken.encoding_for_model(model)
+    return len(encoding.encode(string))
 
 
 def compute_cost(input, output, model):
@@ -312,13 +320,9 @@ class OPENAI:
             messages.append({"role": "user", "content": sample["sentence"]})
             max_tokens = self.args.max_tokens
 
-            if self.get_num_tokens(sentence) > 2000:
-                pass
-
-            else:
-                prediction = (
-                    self.run_gpt_sample(messages, max_tokens=max_tokens).lower().strip()
-                )
+            prediction = (
+                self.run_gpt_sample(messages, max_tokens=max_tokens).lower().strip()
+            )
             if self.args.prompt_type == "wlevels":
                 # extracted_skills would be the keys and mastery level would be the values
                 # keep only the dictionary
@@ -446,8 +450,9 @@ class OPENAI:
                     "presence_penalty": self.args.presence_penalty,
                 },
             )
+
             # get num_tokens of response
-            num_tokens = self.get_num_tokens(response)
+            # num_tokens = self.get_num_tokens(response)
 
         elif self.args.model in TEXT_COMPLETION_MODELS:
             response = text_completion(
@@ -462,7 +467,7 @@ class OPENAI:
                     "presence_penalty": self.args.presence_penalty,
                 },
             )
-            num_tokens = self.get_num_tokens(response)
+            # num_tokens = self.get_num_tokens(response)
 
         else:
             raise ValueError(f"Model {self.args.model} not supported for evaluation.")
@@ -622,7 +627,7 @@ def select_candidates_from_taxonomy(
     sample["skill_candidates"] = {}
     if len(sample["extracted_skills"]) > 0:
         for extracted_skill in sample["extracted_skills"]:
-            print("extracted skill:", extracted_skill)
+            #print("extracted skill:", extracted_skill)
 
             if method == "rules" or method == "mixed":
                 # print("checking for matches in name+definition")
