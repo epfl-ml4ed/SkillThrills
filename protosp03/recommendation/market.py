@@ -40,20 +40,20 @@ def get_skill_trend(skill_demand, skill, years):
         float: trend of a skill's demand between the last two years
 
     Example:
-        demand = {2020: Counter({('Python', 2): 1, ('JavaScript', 1): 1}), 2021: Counter({('Python', 3): 1, ('JavaScript', 2): 1})}
+        demand = {2020: Counter({('Python', 2): 1, ('JavaScript', 2): 1}), 2021: Counter({('Python', 3): 1, ('JavaScript', 2): 1})}
 
-        skill = ('Python', 2)
+        skill = ('JavaScript', 2)
         years = [2021, 2020]
 
-        get_skill_trend(demand, skill, years) # This should output: -100.0
+        get_skill_trend(demand, skill, years) # This should output: 100.0
     """
     current_year = years[0]
     last_year = years[1]
     current_demand = skill_demand[current_year][skill]
     last_demand = skill_demand[last_year][skill]
     if last_demand == 0:
-        return None
-    return 100 * (current_demand - last_demand) / last_demand
+        return 100 * current_demand
+    return 100 * (current_demand - last_demand) / (last_demand)
 
 
 def get_learner_trend(skill_demand, learner, years):
@@ -78,7 +78,9 @@ def get_learner_trend(skill_demand, learner, years):
     learner_trend = dict()
 
     for skill, level in learner["possessed_skills"].items():
-        learner_trend[skill] = get_skill_trend(skill_demand, (skill, level), years)
+        learner_trend[(skill, level)] = get_skill_trend(
+            skill_demand, (skill, level), years
+        )
 
     return learner_trend
 
