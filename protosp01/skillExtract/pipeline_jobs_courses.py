@@ -381,20 +381,26 @@ def main():
         if args.data_type == "course":
             for item_id, skill_type_dict in detailed_results_dict.items():
                 for skill_type, detailed_res in skill_type_dict.items():
-                    clean_output = {skill_type: {}}
-                    clean_output[skill_type] = {categ: [] for categ in categs}
-                    clean_output[skill_type]["skills"] = []
+                    if item_id not in clean_output_dict:
+                        clean_output_dict[item_id] = {}
+
+                    clean_output = clean_output_dict[item_id].get(skill_type, {})
+                    if not clean_output:
+                        clean_output = {categ: [] for categ in categs}
+                        clean_output["skills"] = []
 
                     for ii, sample in enumerate(detailed_res):
                         for cat in categs:
-                            clean_output[skill_type][cat].extend(sample[cat])
+                            clean_output[cat].extend(sample[cat])
 
                         if "matched_skills" in sample:
                             for skill in sample["matched_skills"]:
-                                clean_output[skill_type]["skills"].append(
+                                clean_output["skills"].append(
                                     sample["matched_skills"][skill]
                                 )
-                    clean_output_dict[item_id] = clean_output
+
+                    # Update the clean_output for the current skill_type
+                    clean_output_dict[item_id][skill_type] = clean_output
                     for key, value in clean_output_dict.items():
                         for kkey, vvalue in value.items():
                             clean_output_dict[key][kkey] = remove_namedef(vvalue)
