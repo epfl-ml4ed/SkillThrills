@@ -75,18 +75,10 @@ def get_learner_trend(skill_demand, learner, years):
 
         get_learner_trend(demand, learner, years) # This should output: {'Python': 150.0, 'JavaScript': -50.0}
     """
-    current_year = years[0]
-    last_year = years[1]
-
     learner_trend = dict()
 
     for skill, level in learner["possessed_skills"].items():
-        current_demand = skill_demand[current_year][(skill, level)]
-        last_demand = skill_demand[last_year][(skill, level)]
-        if last_demand == 0:
-            learner_trend[skill] = None
-        else:
-            learner_trend[skill] = 100 * (current_demand - last_demand) / last_demand
+        learner_trend[skill] = get_skill_trend(skill_demand, (skill, level), years)
 
     return learner_trend
 
@@ -137,15 +129,14 @@ def get_skill_attractiveness(skill, years, skill_supply, skill_demand):
         skill = ('Python', 3)
         years = [2020, 2021]
 
-        get_skill_attractiveness(skill, years, skill_supply, skill_demand) # This should output 1.3333333333333333
+        get_skill_attractiveness(skill, years, skill_supply, skill_demand) # This should output 1.1666666666666667
     """
     skill_attractiveness = 0
     normalization_factor = 0
     for i, year in enumerate(years):
-        if skill in skill_supply[year]:
-            skill_attractiveness += skill_demand[year][skill] / (
-                skill_supply[year][skill] * (i + 1)
-            )
+        skill_attractiveness += (skill_demand[year][skill] + 1) / (
+            (skill_supply[year][skill] + 1) * (i + 1)
+        )
         normalization_factor += 1 / (i + 1)
     return skill_attractiveness / normalization_factor
 
@@ -176,3 +167,27 @@ def get_learner_attractiveness(learner, years, skill_supply, skill_demand):
             (skill, level), years, skill_supply, skill_demand
         )
     return learner_attractiveness
+
+
+def get_all_skills_attractiveness(
+    skills, mastery_levels, years, skill_supply, skill_demand
+):
+    """Calculate the attractiveness of all skills for each mastery level.
+
+    Args:
+        skills (list): list of skills
+        mastery_levels (list): list of mastery levels
+        years (list): list of years
+        skill_supply (dict): dictionary of Counter for each year with skills and their supply
+        skill_demand (dict): dictionary of Counter for each year with skills and their demand
+
+    Returns:
+        dict: attractiveness of all skills for each mastery level
+    """
+    skills_attractiveness = dict()
+    for skill in skills:
+        for level in mastery_levels:
+            skills_attractiveness[(skill, level)] = get_skill_attractiveness(
+                (skill, level), years, skill_supply, skill_demand
+            )
+    return skills_attractiveness

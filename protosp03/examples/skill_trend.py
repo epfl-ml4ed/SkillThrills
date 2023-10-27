@@ -33,5 +33,5 @@ print(
 trend2 = get_skill_trend(skill_demand, ("Python", 2), years)
 print(
     f"Scenario 2 - Python 2 demand trend: {trend2}"
-    # This should be None, since there was no demand for Python 2 in 2021, to discuss with the team
+    # This should be 0, since there was no demand for Python 2 in 2021, to discuss with the team
 )
