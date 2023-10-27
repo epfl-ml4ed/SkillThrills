@@ -184,9 +184,9 @@ def get_all_skills_attractiveness(
         skill_demand (dict): dictionary of Counter for each year with skills and their demand
 
     Returns:
-        dict: attractiveness of all skills for each mastery level
+        Counter: attractiveness of all skills for each mastery level
     """
-    skills_attractiveness = dict()
+    skills_attractiveness = Counter()
     for skill in skills:
         for level in mastery_levels:
             skills_attractiveness[(skill, level)] = get_skill_attractiveness(
