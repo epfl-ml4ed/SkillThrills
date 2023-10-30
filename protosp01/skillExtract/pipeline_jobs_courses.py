@@ -18,6 +18,7 @@ import random
 import pathlib
 import re
 import tiktoken
+from transformers import AutoModel, AutoTokenizer
 import difflib
 from split_words import Splitter
 import pickle
@@ -41,7 +42,7 @@ def main():
     parser.add_argument("--api_key", type=str, help="openai keys", default = API_KEY)
     parser.add_argument("--model", type=str, help="Model to use for generation", default="gpt-3.5-turbo")
     parser.add_argument("--temperature", type=float, help="Temperature for generation", default=0)
-    parser.add_argument("--max_tokens", type=int, help="Max tokens for generation", default=100)
+    parser.add_argument("--max_tokens", type=int, help="Max tokens for generation", default=1000)
     parser.add_argument("--shots", type=int, help="Number of demonstrations, max = 5", default=5)
     parser.add_argument("--top_p", type=float, help="Top p for generation", default=1)
     parser.add_argument("--frequency_penalty", type=float, help="Frequency penalty for generation", default=0)
@@ -230,7 +231,8 @@ def main():
             )
             exit()
 
-    for _, item in tqdm(enumerate(data)):  # item is job or course in dictionary format
+    for i, item in tqdm(enumerate(data)):  # item is job or course in dictionary format
+        print(f"*** Processing {i+1}/{len(data)} ***")
         sentences = split_sentences(item["fulltext"])
         # breakpoint()
         if args.debug:
