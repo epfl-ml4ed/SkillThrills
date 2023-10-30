@@ -28,12 +28,13 @@ def get_skill_demand(jobs, years):
     return skill_demand
 
 
-def get_skill_trend(skill_demand, skill, years):
+def get_skill_trend(skill_demand, skill, mastery_level, years):
     """Get the trend of a skill's demand between the last two years.
 
     Args:
         skill_demand (Counter): Counter of skills and their demand for each year
         skill (str): skill name
+        mastery_level (int): mastery level
         years (list): list of years
 
     Returns:
@@ -49,11 +50,32 @@ def get_skill_trend(skill_demand, skill, years):
     """
     current_year = years[0]
     last_year = years[1]
-    current_demand = skill_demand[current_year][skill]
-    last_demand = skill_demand[last_year][skill]
+    current_demand = skill_demand[current_year][(skill, mastery_level)]
+    last_demand = skill_demand[last_year][(skill, mastery_level)]
     if last_demand == 0:
         return 100 * current_demand
     return 100 * (current_demand - last_demand) / (last_demand)
+
+
+def get_all_skills_trend(skills, mastery_levels, years, skill_demand):
+    """Get the trend of all skills' demand between the last two years.
+
+    Args:
+        skills (list): list of skills
+        mastery_levels (list): list of mastery levels
+        years (list): list of years
+        skill_demand (dict): dict of skills and their demand for each year
+
+    Returns:
+        Counter: trend of all skills' demand between the last two years
+    """
+    skills_trend = Counter()
+    for skill in skills:
+        for level in mastery_levels:
+            skills_trend[(skill, level)] = get_skill_trend(
+                skill_demand, skill, level, years
+            )
+    return skills_trend
 
 
 def get_learner_trend(skill_demand, learner, years):
@@ -193,3 +215,25 @@ def get_all_skills_attractiveness(
                 (skill, level), years, skill_supply, skill_demand
             )
     return skills_attractiveness
+
+
+def get_all_market_metrics(skills, mastery_levels, learners, jobs, years):
+    """Get all market metrics.
+
+    Args:
+        skills (list): list of skills
+        mastery_levels (list): list of mastery levels
+        learners (list): list of learners
+        jobs (list): list of jobs
+        years (list): list of years
+
+    Returns:
+        tuple: tuple of skill_supply, skill_demand, skill_trends, skills_attractiveness
+    """
+    skill_supply = get_skill_supply(learners, years)
+    skill_demand = get_skill_demand(jobs, years)
+    skill_trends = get_all_skills_trend(skills, mastery_levels, years, skill_demand)
+    skills_attractiveness = get_all_skills_attractiveness(
+        skills, mastery_levels, years, skill_supply, skill_demand
+    )
+    return skill_supply, skill_demand, skill_trends, skills_attractiveness

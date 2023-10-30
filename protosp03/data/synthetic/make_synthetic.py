@@ -241,7 +241,7 @@ def get_all_jobs(
     max_n_skills=5,
     n_jobs=1000,
 ):
-    """Creates a random job with a random number of skills and mastery levels and a random year.
+    """Creates a list of random jobs.
 
     Args:
         skills (list): list of skills
@@ -251,7 +251,7 @@ def get_all_jobs(
         mastery_levels_normalized_probabilities (array): a probability distribution over the skills
         years_normalized_probabilities (array): a probability distribution over the skills
         min_n_skills (int, optional): minimum number of skills that a job requires. Defaults to 2.
-        max_n_skills (int, optional): maximun number of skills that a job requires. Defaults to 5.
+        max_n_skills (int, optional): maximum number of skills that a job requires. Defaults to 5.
         n_jobs (int, optional): number of jobs to create. Defaults to 100.
 
     Returns:
@@ -271,55 +271,6 @@ def get_all_jobs(
         )
         for _ in range(n_jobs)
     ]
-
-
-def get_job_market(
-    path="../data/taxonomy/taxonomy_V4.csv",
-    mastery_levels=[1, 2, 3, 4],
-    years=[i for i in range(2023, 2017, -1)],
-    learner_min_n_skills=5,
-    learner_max_n_skills=10,
-    n_learners=1000,
-):
-    """Creates a job market with random learners and jobs.
-
-    Args:
-        path (str, optional): path of the taxonomy. Defaults to "../data/taxonomy/taxonomy_V4.csv".
-        mastery_levels (list, optional): list of mastery levels. Defaults to [1, 2, 3, 4].
-        years (list, optional): list of years. Defaults to [i for i in range(2023, 2017, -1)].
-
-    Returns:
-        list, list, list: a list of skills, a list of learners and a list of jobs
-    """
-    taxonomy = read_taxonomy(path)
-    mastery_levels_normalized_probabilities = get_mastery_levels_proba(mastery_levels)
-    skills, skills_normalized_probabilities = get_skills(taxonomy)
-    years_normalized_probabilities = get_years_proba(years)
-    learners = get_all_learners(
-        skills,
-        mastery_levels,
-        years,
-        skills_normalized_probabilities,
-        mastery_levels_normalized_probabilities,
-        years_normalized_probabilities,
-        learner_min_n_skills,
-        learner_max_n_skills,
-        n_learners,
-    )
-
-    jobs = get_all_jobs(
-        skills,
-        mastery_levels,
-        years,
-        skills_normalized_probabilities,
-        mastery_levels_normalized_probabilities,
-        years_normalized_probabilities,
-        min_n_skills=2,
-        max_n_skills=5,
-        n_jobs=1000,
-    )
-
-    return skills, learners, jobs
 
 
 def get_random_provided_skills(
@@ -362,6 +313,19 @@ def get_random_course(
     min_n_provided_skills=1,
     max_n_provided_skills=2,
 ):
+    """Creates a random course with a random number of required and provided skills.
+
+    Args:
+        skills (list): list of skills
+        mastery_levels (list): list of mastery levels
+        min_n_required_skills (int, optional): minimum number of required skills. Defaults to 1.
+        max_n_required_skills (int, optional): maximum number of required skills. Defaults to 5.
+        min_n_provided_skills (int, optional): minimum number of provided skills. Defaults to 1.
+        max_n_provided_skills (int, optional): maximum number of provided skills. Defaults to 2.
+
+    Returns:
+        dict: a dictionary containing the required and provided skills of the course
+    """
     n_required_skills = random.randint(min_n_required_skills, max_n_required_skills)
     required = {
         skill: level
@@ -388,14 +352,95 @@ def get_all_courses(
     max_n_provided_skills=2,
     n_courses=1000,
 ):
+    """
+
+    Args:
+        skills (_type_): _description_
+        mastery_levels (_type_): _description_
+        min_n_required_skills (int, optional): _description_. Defaults to 1.
+        max_n_required_skills (int, optional): _description_. Defaults to 5.
+        min_n_provided_skills (int, optional): _description_. Defaults to 1.
+        max_n_provided_skills (int, optional): _description_. Defaults to 2.
+        n_courses (int, optional): _description_. Defaults to 1000.
+
+    Returns:
+        _type_: _description_
+    """
     return [
         get_random_course(
             skills,
             mastery_levels,
-            min_n_required_skills=1,
-            max_n_required_skills=5,
-            min_n_provided_skills=1,
-            max_n_provided_skills=2,
+            min_n_required_skills,
+            max_n_required_skills,
+            min_n_provided_skills,
+            max_n_provided_skills,
         )
         for _ in range(n_courses)
     ]
+
+
+def get_job_market(
+    path="../data/taxonomy/taxonomy_V4.csv",
+    mastery_levels=[1, 2, 3, 4],
+    years=[i for i in range(2023, 2017, -1)],
+    learner_min_n_skills=5,
+    learner_max_n_skills=10,
+    n_learners=1000,
+    job_min_n_skills=2,
+    job_max_n_skills=5,
+    job_n_jobs=1000,
+    course_min_n_required_skills=1,
+    course_max_n_required_skills=5,
+    course_min_n_provided_skills=1,
+    course_max_n_provided_skills=2,
+    n_courses=1000,
+):
+    """Creates a job market with random learners and jobs.
+
+    Args:
+        path (str, optional): path of the taxonomy. Defaults to "../data/taxonomy/taxonomy_V4.csv".
+        mastery_levels (list, optional): list of mastery levels. Defaults to [1, 2, 3, 4].
+        years (list, optional): list of years. Defaults to [i for i in range(2023, 2017, -1)].
+
+    Returns:
+        list, list, list: a list of skills, a list of learners and a list of jobs
+    """
+    taxonomy = read_taxonomy(path)
+    mastery_levels_normalized_probabilities = get_mastery_levels_proba(mastery_levels)
+    skills, skills_normalized_probabilities = get_skills(taxonomy)
+    years_normalized_probabilities = get_years_proba(years)
+    learners = get_all_learners(
+        skills,
+        mastery_levels,
+        years,
+        skills_normalized_probabilities,
+        mastery_levels_normalized_probabilities,
+        years_normalized_probabilities,
+        learner_min_n_skills,
+        learner_max_n_skills,
+        n_learners,
+    )
+
+    jobs = get_all_jobs(
+        skills,
+        mastery_levels,
+        years,
+        skills_normalized_probabilities,
+        mastery_levels_normalized_probabilities,
+        years_normalized_probabilities,
+        job_min_n_skills,
+        job_max_n_skills,
+        job_n_jobs,
+    )
+
+    courses = get_all_courses(
+        skills,
+        mastery_levels,
+        course_min_n_required_skills,
+        course_max_n_required_skills,
+        course_min_n_provided_skills,
+        course_max_n_provided_skills,
+        n_courses,
+    )
+
+    return skills, learners, jobs, courses
