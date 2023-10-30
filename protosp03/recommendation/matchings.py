@@ -186,3 +186,63 @@ def learner_job_group_matching(learner, job, groups_dict, levels_dict):
         matching = 100 * matching / len(job["required_skills"])
         group_matchings[group_name] = matching
     return group_matchings
+
+
+def learner_course_required_matching(learner, course):
+    """Computes the matching between a learner and a course based on the required skills.
+
+    Args:
+        learner (dict): Learner's profile including possessed skills and levels.
+        course (dict): Course required and provided skills.
+
+    Returns:
+        float: matching value between 0 and 1
+    """
+    required_matching = 0
+    for skill in course["required_skills"]:
+        if skill in learner["possessed_skills"]:
+            sim = skill_skill_similarity(
+                learner["possessed_skills"][skill], course["required_skills"][skill]
+            )
+            required_matching += sim
+    return required_matching / len(course["required_skills"])
+
+
+def learner_course_provided_matching(learner, course):
+    """Computes the matching between a learner and a course based on the provided skills.
+
+    Args:
+        learner (dict): Learner's profile including possessed skills and levels.
+        course (dict): Course required and provided skills.
+
+    Returns:
+        float: matching value between 0 and 1
+    """
+    provided_matching = 0
+    for skill in course["provided_skills"]:
+        if skill in learner["possessed_skills"]:
+            sim = skill_skill_similarity(
+                learner["possessed_skills"][skill], course["provided_skills"][skill]
+            )
+            provided_matching += sim
+    return provided_matching / len(course["provided_skills"])
+
+
+def learner_course_matching(learner, course):
+    """Computes the matching between a learner and a course.
+
+    Args:
+        learner (dict): Learner's profile including possessed skills and levels.
+        course (dict): Course required and provided skills.
+
+    Returns:
+        float: matching value between 0 and 1
+    """
+    required_matching = learner_course_required_matching(learner, course)
+    provided_matching = learner_course_provided_matching(learner, course)
+
+    # if the learner has all the provided skills, the courses is not a match
+    if provided_matching >= 1.0:
+        return 0
+
+    return required_matching / (provided_matching + 1)
