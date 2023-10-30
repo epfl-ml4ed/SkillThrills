@@ -186,16 +186,9 @@ def main():
 
         data = pd.concat([acq_data, req_data], ignore_index=True)
         # replace every 10 tags with a period to avoid too long sentences
-        data["fulltext"] = data["fulltext"].apply(replace_html_tags)
-        # print("num courses after duplication:", len(data))
 
-        # TODO 2. select best columns for each data type
-        # TODO filter the ones with too small descriptions (eg less than 4 sentences?)
-
-        # get number of words in each description
-
+    data["fulltext"] = data["fulltext"].apply(replace_html_tags)
     data = drop_short_text(data, "fulltext", 100)
-    # data = drop_long_text(data, "fulltext", 15000)
     # breakpoint()
 
     if args.ids is not None:
@@ -279,11 +272,17 @@ def main():
             extraction_cost += cost
 
         if args.load_extraction != "":
-            sentences_res_list = (
-                detailed_results_dict[str(item["id"])][item["skill_type"]]
-                if args.data_type == "course"
-                else detailed_results_dict[str(item["id"])]
-            )
+            try:
+                sentences_res_list = (
+                    detailed_results_dict[str(item["id"])][item["skill_type"]]
+                    if args.data_type == "course"
+                    else detailed_results_dict[str(item["id"])]
+                )
+            except:
+                print(
+                    f"Error: could not find {str(item['id'])} in intermediate extraction file. Try arg --do_extraction instead"
+                )
+                exit()
 
         # select candidate skills from taxonomy
         if args.do_matching and "extracted_skills" in sentences_res_list[0]:
@@ -348,10 +347,13 @@ def main():
             ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}_debug.json"
         )
     if args.detailed:
-        # TODO: remove "Type Level 2" from detailed results - DONE
         detailed_results_dict_output = {
             key: remove_level_2(value) for key, value in detailed_results_dict.items()
         }
+        # save detailed results
+        # write_json(
+        #     detailed_results_dict, args.output_path.replace(".json", "_DEBBBUGGG.json")
+        # )
         # breakpoint()
         write_json(
             detailed_results_dict_output,
@@ -367,7 +369,6 @@ def main():
         )
 
     # Output final
-    # TODO: edit the output to not just have the last one
     if not args.debug:
         categs = [
             "Technologies",
@@ -382,39 +383,47 @@ def main():
         if args.data_type == "course":
             for item_id, skill_type_dict in detailed_results_dict.items():
                 for skill_type, detailed_res in skill_type_dict.items():
-                    clean_output = {skill_type: {}}
-                    clean_output[skill_type] = {categ: [] for categ in categs}
-                    clean_output[skill_type]["skills"] = []
+                    if item_id not in clean_output_dict:
+                        clean_output_dict[item_id] = {}
 
-                for ii, sample in enumerate(detailed_res):
-                    for cat in categs:
-                        clean_output[skill_type][cat].extend(sample[cat])
+                    clean_output = clean_output_dict[item_id].get(skill_type, {})
+                    if not clean_output:
+                        clean_output = {categ: [] for categ in categs}
+                        clean_output["skills"] = []
 
-                    if "matched_skills" in sample:
-                        for skill in sample["matched_skills"]:
-                            clean_output[skill_type]["skills"].append(
-                                sample["matched_skills"][skill]
-                            )
-                clean_output_dict[item_id] = clean_output
-                for key, value in clean_output_dict.items():
-                    for kkey, vvalue in value.items():
-                        clean_output_dict[key][kkey] = remove_namedef(vvalue)
+                    for ii, sample in enumerate(detailed_res):
+                        for cat in categs:
+                            clean_output[cat].extend(sample[cat])
+
+                        if "matched_skills" in sample:
+                            for skill in sample["matched_skills"]:
+                                clean_output["skills"].append(
+                                    sample["matched_skills"][skill]
+                                )
+
+                    # Update the clean_output for the current skill_type
+                    clean_output_dict[item_id][skill_type] = clean_output
+                    for key, value in clean_output_dict.items():
+                        for kkey, vvalue in value.items():
+                            clean_output_dict[key][kkey] = remove_namedef(vvalue)
         else:
             for item_id, detailed_res in detailed_results_dict.items():
                 clean_output = {categ: [] for categ in categs}
                 clean_output["skills"] = []
 
-            for ii, sample in enumerate(detailed_res):
-                for cat in categs:
-                    clean_output[cat].extend(sample[cat])
+                for ii, sample in enumerate(detailed_res):
+                    for cat in categs:
+                        clean_output[cat].extend(sample[cat])
 
-                if "matched_skills" in sample:
-                    for skill in sample["matched_skills"]:
-                        clean_output["skills"].append(sample["matched_skills"][skill])
+                    if "matched_skills" in sample:
+                        for skill in sample["matched_skills"]:
+                            clean_output["skills"].append(
+                                sample["matched_skills"][skill]
+                            )
 
-            clean_output_dict[item_id] = clean_output
-            for key, value in clean_output_dict.items():
-                clean_output_dict[key] = remove_namedef(value)
+                clean_output_dict[item_id] = clean_output
+                for key, value in clean_output_dict.items():
+                    clean_output_dict[key] = remove_namedef(value)
 
         write_json(
             clean_output_dict,
