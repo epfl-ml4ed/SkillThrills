@@ -27,7 +27,6 @@ import spacy
 from spacy.language import Language
 from spacy_language_detection import LanguageDetector
 import torch
-from transformers import AutoModel, AutoTokenizer
 import torch.nn.functional as F
 from googletrans import Translator
 from fuzzywuzzy import fuzz
@@ -162,7 +161,7 @@ def chat_completion(messages, model="gpt-3.5-turbo", return_text=True, model_arg
             Timeout,
         ) as e:  # Exception
             print(f"Timed out {e}. Waiting for 5 seconds.")
-            time.sleep(5)
+            time.sleep(10)
             continue
 
 
