@@ -1,0 +1,85 @@
+[
+    {
+        "doc_id": 6096,
+        "extraction": [
+            {
+                "start": 556,
+                "end": 578,
+                "text": "ICT-Providermanagement",
+                "label": {
+                    "text": "Beginner",
+                    "color": "red"
+                },
+                "Match 1": "Optional",
+                "Match 2": "Analysieren von Daten oder Informationen",
+                "Match 3": "Bewegungsanpassung",
+                "Match 4": ""
+            },
+            {
+                "start": 921,
+                "end": 936,
+                "text": "flexiblen Team ",
+                "label": {
+                    "text": "Intermediate",
+                    "color": "cyan"
+                },
+                "Match 1": "Optional",
+                "Match 2": "Selbstreflexion",
+                "Match 3": "",
+                "Match 4": ""
+            },
+            {
+                "start": 1131,
+                "end": 1148,
+                "text": "Bachelorabschluss",
+                "label": {
+                    "text": "Intermediate",
+                    "color": "cyan"
+                },
+                "Match 1": "Required",
+                "Match 2": "Bewegungsanpassung",
+                "Match 3": "Mathematisches Denken",
+                "Match 4": ""
+            },
+            {
+                "start": 1467,
+                "end": 1485,
+                "text": "nformationsanalyse",
+                "label": {
+                    "text": "Unknown",
+                    "color": "violet"
+                },
+                "Match 1": "Required",
+                "Match 2": "Bewegungsanpassung",
+                "Match 3": "",
+                "Match 4": ""
+            },
+            {
+                "start": 1512,
+                "end": 1536,
+                "text": "Computerhardwaresystemen",
+                "label": {
+                    "text": "Intermediate",
+                    "color": "cyan"
+                },
+                "Match 1": "SELECT_BELOW",
+                "Match 2": "Fokuswechsel",
+                "Match 3": "",
+                "Match 4": ""
+            },
+            {
+                "start": 434,
+                "end": 454,
+                "text": "Bewerbungsunterlagen",
+                "label": {
+                    "text": "Unknown",
+                    "color": "violet"
+                },
+                "Match 1": "Optional",
+                "Match 2": "ICT Service Operation",
+                "Match 3": "Aufnahmefähigkeit",
+                "Match 4": ""
+            }
+        ]
+    }
+]
