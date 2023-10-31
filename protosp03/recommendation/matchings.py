@@ -1,5 +1,6 @@
 from collections import Counter
 import sys
+from copy import deepcopy
 
 
 def skill_skill_similarity(provided_level, required_level):
@@ -246,3 +247,66 @@ def learner_course_matching(learner, course):
         return 0
 
     return required_matching / (provided_matching + 1)
+
+
+def get_nb_applicable_jobs(learner, jobs, applicability_threshold=80):
+    """Computes the number of jobs that the learner can apply to, based on the applicability threshold.
+
+    Args:
+        learner (dict): Learner's profile including possessed skills and levels.
+        jobs (list): List of jobs.
+        applicability_threshold (int): Threshold for the minimum matching for applicability
+
+    Returns:
+        int: Number of jobs that the learner can apply to
+    """
+    nb_applicable_jobs = 0
+    for job in jobs:
+        matching = learner_job_matching(learner, job)
+        if matching >= applicability_threshold:
+            nb_applicable_jobs += 1
+    return nb_applicable_jobs
+
+
+def get_increased_nb_applicable_jobs(
+    learner, jobs, up_skilling_advice, applicability_threshold=80
+):
+    """Computes the number of jobs that the learner can apply to after up-skilling.
+
+    Args:
+        learner (dict): Learner's profile including possessed skills and levels.
+        jobs (list): List of jobs.
+        up_skilling_advice (tuple): Up-skilling advice (skill, level).
+        applicability_threshold (int, optional): Threshold for the minimum matching for applicability. Defaults to 80.
+
+    Returns:
+        _type_: _description_
+    """
+    old_nb_applicable_jobs = get_nb_applicable_jobs(
+        learner, jobs, applicability_threshold
+    )
+    up_learner = deepcopy(learner)
+    up_learner["possessed_skills"][up_skilling_advice[0]] = up_skilling_advice[1]
+    new_nb_applicable_jobs = get_nb_applicable_jobs(
+        up_learner, jobs, applicability_threshold
+    )
+    return new_nb_applicable_jobs - old_nb_applicable_jobs
+
+
+def get_all_enrollable_courses(learner, courses, threshold):
+    """Computes the list of courses that the learner can enroll to.
+
+    Args:
+        learner (dict): Learner's profile including possessed skills and levels.
+        courses (list): List of courses.
+        threshold (int): Threshold for the minimum matching for applicability
+
+    Returns:
+        list: List of courses that the learner can enroll to
+    """
+    enrollable_courses = []
+    for course in courses:
+        matching = learner_course_required_matching(learner, course)
+        if matching >= threshold:
+            enrollable_courses.append(course)
+    return enrollable_courses
