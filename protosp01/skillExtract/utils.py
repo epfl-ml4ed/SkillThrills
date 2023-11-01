@@ -175,15 +175,26 @@ class OPENAI:
         costs = 0
         pattern = r"@@(.*?)##"
         for idx, sample in enumerate(tqdm(self.data)):
-            if "vacancies" in self.args.datapath:
+            
+            if self.args.datapath == "remote-annotated-en":
+                ## ADDED CASE GEN METRICS
+                instruction_field = "instruction_en"
+            elif "vacancies" in self.args.datapath:
                 instruction_field = "instruction_job"
             elif "vacancies" in self.args.datapath:
                 instruction_field = "instruction_course"
             else:
                 instruction_field = "instruction_CV"
+            
             if self.args.prompt_type == "detailed":
                 instruction_field += "_detailed"
-            shots_field = "shots"
+            
+            if(self.args.datapath == "remote-annotated-en"):
+                ## ADDED CASE GEN METRICS
+                shots_field = "shots_en"
+            else:
+                shots_field = "shots"
+            
             if self.args.prompt_type == "level":
                 instruction_field += "_level"
                 shots_field = "shots_level"
@@ -237,7 +248,7 @@ class OPENAI:
                 input_ = (
                     PROMPT_TEMPLATES["matching"][instruction_field]
                     + "\n"
-                    + PROMPT_TEMPLATES["matching"]["shots"][0]
+                    + PROMPT_TEMPLATES["matching"]["shots_en" if self.args.prompt_type == "inde" else "shots"][0]
                 )
                 # TODO 1.5 having definition or not in the list of candidates ? Here we only prove the name and an example. Yes, should try, but maybe not if there are 10 candidates...
                 # update as an argument - like give def or not when doing the matching then ask Marco if it helps or decreases performance
