@@ -37,6 +37,7 @@ def get_taxonomy():
     mastery["Level 2"] = mastery["Level 2"].fillna(method="ffill")
     mastery["Level 3"] = mastery["Level 3"].str.strip()
     mastery["Level 3"] = mastery["Level 3"].str.replace("Kennntnisse", "Kenntnisse")
+    mastery["Level 2"] = mastery["Level 2"].str.replace("Experte", "Expert")
     mastery = mastery.dropna()  # drop again to remove empty rows
     mastery = pd.concat(
         [mastery, mastery[mastery["Level 3"].str.contains(r"\(|/")]]
@@ -46,6 +47,9 @@ def get_taxonomy():
     # this joins three sheets vertically into one df
     tech_certif_lang = pd.concat([tech, certif, lang], ignore_index=True)
     tech_certif_lang.columns = tech_certif_lang.columns.str.strip()
+    # for any row where the first column is empty, fill it with the value from the previous row
+    tech_certif_lang["Level 1"] = tech_certif_lang["Level 1"].fillna(method="ffill")
+
     print("num tech_certif_lang rows:", len(tech_certif_lang))
 
     # Assigning unique ids

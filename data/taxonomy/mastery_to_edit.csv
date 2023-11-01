@@ -1,80 +1,151 @@
 Level 2,Level 3
-Beginner,A1
-Beginner,A2
-Beginner,Grundkenntnisse
-Beginner,Grundkenntnisse
-Beginner,Junior
-Beginner,Kenntnisse
-Beginner,Mitarbeit bei
-Beginner,Mitwirken bei
-Beginner,Unterstützung bei
-Beginner,erste Erfahrung
-Beginner,gering
-Beginner,in Berührung gekommen
-Experte,Breites Know-how in
-Experte,C1
-Experte,C2
-Experte,Expert*in sein
-Experte,Expertenkenntnisse
-Experte,Expertise / vertiefte Expertise
-Experte,Expertise / vertiefte Expertise
-Experte,Fliessend
-Experte,Führen von
-Experte,Hohe Kenntnisse (Wissen)
-Experte,Hohe Kenntnisse (Wissen)
-Experte,Langjährige Erfahrung (z.B. Führungserfahrung)
-Experte,Langjährige Erfahrung (z.B. Führungserfahrung)
-Experte,Leiten von
-Experte,Muttersprache
-Experte,Stilsicher
-Experte,Verhandlungssicher
-Experte,ausgeprägt
-Experte,ausgewiesene
-Experte,ausgezeichnet (Kenntnisse / Wissen)
-Experte,ausgezeichnet (Kenntnisse / Wissen)
-Experte,eigeninitiativ sein
-Experte,fortgeschrittene Kenntnisse (Wissen)
-Experte,fortgeschrittene Kenntnisse (Wissen)
-Experte,fundierte Kenntnisse / Wissen
-Experte,fundierte Kenntnisse / Wissen
-Experte,fundierte Kenntnisse / Wissen
-Experte,fundierte Kenntnisse / Wissen
-Experte,gewohnt sen
-Experte,geübt sein in
-Experte,hochqualifiziert
-Experte,intensiv (z.b. auseinandergesetzt)
-Experte,intensiv (z.b. auseinandergesetzt)
-Experte,sehr gute Kenntisse / Wissen
-Experte,sehr gute Kenntisse / Wissen
-Experte,sehr hoch
-Experte,sehr kompetent sein
-Experte,sehr selbstständig sein
-Experte,senior
-Experte,tiefgreifendes Verständnis
-Experte,umfangreiches technisches Fachwissen
-Experte,umfassende Kenntnisse (Wissen)
-Experte,umfassende Kenntnisse (Wissen)
-Experte,verhandlungssicher sein  / Verhandlungsgeschick
-Experte,verhandlungssicher sein  / Verhandlungsgeschick
-Experte,versiert
-Experte,über ein Netzwerk verfügen
-Intermediate,B1
-Intermediate,B2
-Intermediate,Basic
-Intermediate,Fachfrau / Fachmann
-Intermediate,Fachfrau / Fachmann
-Intermediate,Gute Kenntnisse
-Intermediate,Know-How haben in
-Intermediate,Verantwortung übernehmen
-Intermediate,erhöht
-Intermediate,erweitert
-Intermediate,fachkundig sein in
-Intermediate,gut (Kenntnisse / Wissen)
-Intermediate,gut (Kenntnisse / Wissen)
-Intermediate,hoch
-Intermediate,kompetent sein in
-Intermediate,mehrjährige Erfahrung
-Intermediate,qualifiziert sein
-Intermediate,regelmässig
-Intermediate,sich auskennen mit
+Beginner,a1
+Beginner,a2
+Beginner,grundfertigkeiten
+Beginner,grundfähigkeiten
+Beginner,grundkenntnisse
+Beginner,grundkenntnisse
+Beginner,grundverständnis
+Beginner,grundwissen
+Beginner,junior
+Beginner,praktikant*in
+Beginner,affin sein für
+Beginner,angeeignet
+Beginner,erlerntes wissen in praxis umsetzten
+Beginner,erste arbeitserfahrungen
+Beginner,erste erfahrungen
+Beginner,erste kenntnisse
+Beginner,frisch abgeschlossenes studium
+Beginner,frisch erworbener abschluss
+Beginner,gearbeitet mit
+Beginner,grundlegende
+Beginner,in berührung gekommen
+Beginner,kundig sein in
+Beginner,mitgearbeitet
+Beginner,mitgewirkt
+Beginner,sich auskennen mit
+Beginner,unterstützen bei
+Expert,c1
+Expert,c2
+Expert,erstellung
+Expert,expert*innenwissen
+Expert,fliessend
+Expert,führungserfahrung
+Expert,gesamtverantwortung für
+Expert,hands-on-mentalität
+Expert,innovationsbereitschaft
+Expert,konzeption
+Expert,koordination
+Expert,lead übernehmen
+Expert,leitung für
+Expert,mitarbeitende entwickeln
+Expert,mitarbeitende führen
+Expert,motivation des teams
+Expert,muttersprache
+Expert,stilser
+Expert,verantwortung für
+Expert,verhandlungsser
+Expert,verhandlungssere
+Expert,ausgeprägt
+Expert,ausgeprägte expertise
+Expert,ausgeprägtes know-how
+Expert,ausgeprägtes wissen
+Expert,ausgezeichnet
+Expert,begleiten
+Expert,breite expertise
+Expert,breites know-how
+Expert,breites wissen
+Expert,bringe sehr gute
+Expert,eigenverantwortlich
+Expert,fachliche führung
+Expert,fundierte kenntnisse
+Expert,fördern
+Expert,gross
+Expert,habe sehr gute
+Expert,haben sehr gute
+Expert,hast sehr gute
+Expert,hautpverantwortlich sein für
+Expert,hervorragend
+Expert,hoch versiert
+Expert,hochkompetent
+Expert,hochqualifiziert in
+Expert,hohes mass an
+Expert,hohes verständis für kundenbedürfnisse
+Expert,implementieren
+Expert,inspirierendes arbeitsumfeld schaffen
+Expert,klar ziele setzten
+Expert,langjährige erfahrung
+Expert,langjährige expertise
+Expert,leiten von
+Expert,mehrjährige führungserfahrung
+Expert,personelle führung
+Expert,sehr gute
+Expert,sehr gute kenntnisse
+Expert,sehr hohe kompetenzen in
+Expert,sehr versiert
+Expert,sicherstellen
+Expert,sorgen für
+Expert,stark sein in
+Expert,steuern
+Expert,tief
+Expert,tiefgehend
+Expert,umfangreiche expertise
+Expert,umfangreiches know-how
+Expert,umfangreiches wissen
+Expert,umfassende expertise
+Expert,umfassende kompetenzen
+Expert,umfassendes know-how
+Expert,umfassendes wissen
+Expert,umsetzen
+Expert,unternehmerisches denken
+Expert,unternehmerisches denken
+Expert,verfüge über expert*innenwissen in
+Expert,verhandlungssicher
+Expert,weiterentwickeln
+Expert,zuständig sein für
+Expert,äusserst exakte arbeitsweise
+Expert,überwachen
+Intermediate,b1
+Intermediate,b2
+Intermediate,basic
+Intermediate,fachfrau für
+Intermediate,fachmann für
+Intermediate,gute kenntnisse
+Intermediate,umgang gewöhnt sein
+Intermediate,verantwortung übernommen
+Intermediate,ausgewiesene erfahrung in
+Intermediate,ausgewiesene fertigkeiten in
+Intermediate,ausgewiesene fähigkeiten in
+Intermediate,auskennen mit
+Intermediate,erhöhte fachkenntnisse
+Intermediate,erhöhte kenntnisse
+Intermediate,erhöhte kompetenzen
+Intermediate,erhöhte sachkenntnisse
+Intermediate,erhöhtes fachwissen
+Intermediate,erhöhtes know-how
+Intermediate,erhöhtes wissen
+Intermediate,erweiterte fachkenntnisse
+Intermediate,erweiterte kenntnisse
+Intermediate,erweiterte kompetenzen
+Intermediate,erweiterte sachkenntnisse
+Intermediate,erweitertes fachwissen
+Intermediate,erweitertes know-how
+Intermediate,erweitertes sachwissen
+Intermediate,erweitertes wissen
+Intermediate,fachkundig
+Intermediate,gute fachkenntnisse
+Intermediate,gute kenntnisse
+Intermediate,gute kompetenzen
+Intermediate,gute sachkenntnisse
+Intermediate,gutes fachwissen
+Intermediate,gutes know-how
+Intermediate,gutes sachwissen
+Intermediate,gutes verständnis für
+Intermediate,gutes wissen
+Intermediate,mehrjährige erfahrung
+Intermediate,qualifiziert in
+Intermediate,sachkundig
+Intermediate,selbstständig durchgeführt
+Intermediate,selbstständig umgesetzt
 Intermediate,vertraut sein mit
+Intermediate,vielfältige erfahrung
