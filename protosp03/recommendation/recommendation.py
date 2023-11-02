@@ -1,3 +1,6 @@
+import matchings
+
+
 def get_course_recommendation(learner, enrollable_courses, up_skilling_advice):
     """Get the course recommendation for a learner and a given up-skilling advice.
 
@@ -9,12 +12,13 @@ def get_course_recommendation(learner, enrollable_courses, up_skilling_advice):
     Returns:
         dict: The course recommendation
     """
-    course = None
+    course_recommendation = None
     matching = 0
     for course in enrollable_courses:
         if up_skilling_advice in course["provided_skills"].items():
+            print("Course", course["provided_skills"], "is recommended.")
             tmp_matching = matchings.learner_course_matching(learner, course)
             if tmp_matching > matching:
                 matching = tmp_matching
                 course_recommendation = course
-    return course
+    return course_recommendation
