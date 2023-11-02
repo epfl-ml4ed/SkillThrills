@@ -1,8 +1,8 @@
 from collections import Counter
 
 
-def get_skill_demand(jobs, years):
-    """Get the number of jobs that require a skill for each year.
+def get_skill_demand(jobs, years, max_level=4):
+    """Get the number of jobs that require a skill for each year. If a job requires a skill at a certain level, it is assumed that the skill at all higher levels are accepted as well.
 
     Args:
         jobs (list): list of jobs
@@ -14,17 +14,18 @@ def get_skill_demand(jobs, years):
     Example:
         jobs = [
             {"required_skills": {"Python": 2, "JavaScript": 1}, "year": 2020},
-            {"required_skills": {"Python": 3}, "year": 2021},
             {"required_skills": {"JavaScript": 2}, "year": 2021}
-        ]
+            ]
         years = [2020, 2021]
 
-        get_skill_demand(jobs, years) # This should output {2020: Counter({('Python', 2): 1, ('JavaScript', 1): 1}), 2021: Counter({('Python', 3): 1, ('JavaScript', 2): 1})}
+        get_skill_demand(jobs, years, max_level=2) # This should output {2020: Counter({('Python', 2): 1, ('JavaScript', 1): 1, ('JavaScript', 2): 1}), 2021: Counter({('JavaScript', 2): 1})}
+
     """
     skill_demand = {year: Counter() for year in years}
     for job in jobs:
         for skill, level in job["required_skills"].items():
-            skill_demand[job["year"]][(skill, level)] += 1
+            for sublevel in range(level, max_level + 1):
+                skill_demand[job["year"]][(skill, sublevel)] += 1
     return skill_demand
 
 
@@ -108,30 +109,34 @@ def get_learner_trend(skill_demand, learner, years):
 
 
 def get_skill_supply(learners, years):
-    """Get the number of learners that possess a skill for each year.
+    """Get the number of learners that possess a skill for each year. If a learner possesses a skill at a certain level, it is assumed that they also possess the skill at all lower levels.
 
-    Args:
-        learners (list): list of learners
-        years (list): list of years
+        Args:
+            learners (list): list of learners
+            years (list): list of years
 
-    Returns:
-        dict: dictionary of Counter for each year with skills and their supply
+        Returns:
+            dict: dictionary of Counter for each year with skills and their supply
 
-    Example:
+        Example:
 
-        learners = [
-            {"possessed_skills": {"Python": 3, "JavaScript": 2}, "year": 2020},
-            {"possessed_skills": {"Python": 2}, "year": 2021},
-            {"possessed_skills": {"JavaScript": 3}, "year": 2021}
-        ]
-        years = [2020, 2021]
+            learners = [
+                {"possessed_skills": {"Python": 2, "JavaScript": 2}, "year": 2020},
+                {"possessed_skills": {"JavaScript": 1}, "year": 2021}
+            ]
+    years = [2020, 2021]
 
-        get_skill_supply(learners, years) # This should output: {2020: Counter({('Python', 3): 1, ('JavaScript', 2): 1}), 2021: Counter({('Python', 2): 1, ('JavaScript', 3): 1})}
+    get_skill_supply(learners, years) # This should output: {2020: Counter({('Python', 2): 1,
+              ('Python', 1): 1,
+              ('JavaScript', 2): 1,
+              ('JavaScript', 1): 1}),
+     2021: Counter({('JavaScript', 1): 1})}
     """
     skill_supply = {year: Counter() for year in years}
     for learner in learners:
         for skill, level in learner["possessed_skills"].items():
-            skill_supply[learner["year"]][(skill, level)] += 1
+            for sublevel in range(level, 0, -1):
+                skill_supply[learner["year"]][(skill, sublevel)] += 1
     return skill_supply
 
 
@@ -175,7 +180,7 @@ def get_learner_attractiveness(learner, years, skill_supply, skill_demand):
         skill_demand (dict): dictionary of Counter for each year with skills and their demand
 
     Returns:
-        dict: attractiveness of each skill that the learner possesses
+        Counter: attractiveness of each skill that the learner possesses
 
     Example:
         skill_supply = {2020: Counter({('Python', 3): 1, ('JavaScript', 2): 1}), 2021: Counter({('Python', 3): 1, ('JavaScript', 3): 1})}
@@ -185,7 +190,7 @@ def get_learner_attractiveness(learner, years, skill_supply, skill_demand):
 
         get_learner_attractiveness(learner, years, skill_supply, skill_demand) # This should output {'Python': 1.3333333333333333, 'JavaScript': 0.0}
     """
-    learner_attractiveness = dict()
+    learner_attractiveness = Counter()
     for skill, level in learner["possessed_skills"].items():
         learner_attractiveness[skill] = get_skill_attractiveness(
             (skill, level), years, skill_supply, skill_demand
