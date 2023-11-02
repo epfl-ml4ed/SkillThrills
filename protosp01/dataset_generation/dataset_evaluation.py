@@ -49,7 +49,8 @@ class Args():
         self.datapath = "remote-annotated-en"
         self.candidates_method = "embeddings"  ## putting "rules" doesn't give the embeddings
         self.shots = 6
-        self.prompt_type = "inde"
+        self.prompt_type = "skills"
+        self.data_type = "en_job"
         
         ## RELATED TO CHAT GPT GENERATION
         self.max_tokens = 200      ## ?? default value but JobBERT suposedly takes 512
