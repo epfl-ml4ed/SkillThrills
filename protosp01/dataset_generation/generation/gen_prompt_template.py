@@ -1,9 +1,9 @@
 PROMPT_TEMPLATE = {
     "baseline": {
         "role_instruction": "You are a hiring manager for a big company. You need to define write a job opening for different skill requirements in your company.\n",
-        "instruction": "You are a hiring manage for a big company and you work in collaboration with ESCO to gather rigid standards for job postings. Given a list of ESCO skills and knowledges, you're asked to provide {N_EXAMPLES} examples that could be found in a job ad and refer to the skill or knowledge compenents.. Ensure that your examples are well written and could be found in real job advertisement. At least 75% of the job postings you will write should not contain any reference to the skills themselves. With each skills you will get a description of what it actually consists.\n",
+        "instruction": "You are a hiring manager for a big company and your goal is to write the perfect sentence to describe job that uses a set of skills. You'll be given a set of skill, the job posting will reference each of them explicitely or implicitely. The job you describe must include capailities in each of these skills. No external skills should be mentionned. The description of the job should be one line long and be as specific as possible.\n",
         "shots": [
-            
+            "skills: [SLQ, relational databases]\nJob opening : ability to manage database and query using SQL.\n"
         ]
     }
 }

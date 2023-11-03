@@ -16,7 +16,7 @@ from openai.error import (
     Timeout,
     InvalidRequestError,
 )
-
+from tqdm.notebook import tqdm
 import time
 
 class SkillsGenerator():
@@ -59,8 +59,12 @@ class SkillsGenerator():
 
     @staticmethod
     def embedd_df(df: DataFrame, key_to_embed:str, model: Any, tokenizer: Any):
-        pass
-
+        df["embeddings"] = df[key_to_embed]\
+                    .apply(lambda st : \
+                    model(**tokenizer(st, return_tensors="pt", max_length=768, padding=True, truncation=True))\
+                    .last_hidden_state[:, 0, :]\
+                    )
+        return df
 
     def compute_sim_matrix(self):
         """
@@ -72,7 +76,7 @@ class SkillsGenerator():
         self.pairwise_sims = pairwise_sims
 
 
-    def get_combination_for_(self, skill: str, k: int, threshold: float, temperature: float=1, frequency_select: bool=False, temperature_sample_size: float=1):
+    def get_combination_for_(self, skill: str, k: int, threshold: float, temperature: float=1, frequency_select: bool=False, temperature_sample_size: float=1, upper_bound_skill_matching:int = None):
         """
             Creates combination of skill to pair with skill
 
@@ -88,8 +92,14 @@ class SkillsGenerator():
         kNN = (-sims_with_skill).argsort()[1:k+1]
         (-sims_with_skill).argsort()
         kNN_skills = [self.idx_to_label[nn] for nn in kNN if self.pairwise_sims[skill_idx, nn] > threshold]
+        
+        if(len(kNN_skills) == 0):
+            return []
 
-        nb_associated_skills = self.get_combination_size(temperature_sample_size) - 1 ## we remove the skill selected first
+        if(upper_bound_skill_matching is None):
+            nb_associated_skills = self.get_combination_size(temperature_sample_size) - 1 ## we remove the skill selected first
+        else :
+            nb_associated_skills = min(self.get_combination_size(temperature_sample_size) - 1, upper_bound_skill_matching) ## we remove the skill selected first
 
         if(nb_associated_skills == 0):
             return []
@@ -118,7 +128,8 @@ class SkillsGenerator():
                             temperature_skill=1,
                             temperature_pairing=1,
                             temperature_sample_size=1,
-                            frequency_select=True):
+                            frequency_select=True, 
+                            upper_bound_skill_matching=None):
         all_skills = list(self.label_to_idx.keys())
         F = np.array([self.popularity[sk] for sk in self.label_to_idx.keys()])
         F = SkillsGenerator.softmax(F / F.sum(), temperature_skill)
@@ -130,7 +141,8 @@ class SkillsGenerator():
                                                         k=beam_size,
                                                         temperature=temperature_pairing,
                                                         frequency_select=frequency_select,
-                                                        temperature_sample_size=temperature_sample_size) ## get the tuple to generate
+                                                        temperature_sample_size=temperature_sample_size,
+                                                        upper_bound_skill_matching=upper_bound_skill_matching) ## get the tuple to generate
             yield combs
 
 
@@ -149,6 +161,8 @@ class DatasetGenerator():
                  emb_tokenizer: Any = None):
         openai.api_key = API_KEY
 
+        self.emb_tax = emb_tax
+
         ## reference dataset, use for precise few shots
         if(reference_df is not None):
             if("skill+sentence" not in reference_df.columns):
@@ -156,17 +170,28 @@ class DatasetGenerator():
             self.references = SkillsGenerator.embedd_df(reference_df, "skill+sentence", emb_model, emb_tokenizer)
 
 
-    def generate_ds(self, skills):
-        pass
+    def generate_ds(self, skill_generator, specific_few_shots, nb_few_shots=None, shot_sim_threshold=0.0):
+        ress = []
+        for skills in tqdm(skill_generator):
+            prompts = self.create_prompt_for(skills=skills,
+                                             mode="baseline",
+                                             specific_few_shots=specific_few_shots,
+                                             number_few_shots=nb_few_shots,
+                                             shot_sim_threshold=shot_sim_threshold)
+            ress.append([skills, self.query(prompts)])
+        return ress
 
     def query(self, 
-              messages:List[Dict[str]],
-              model: str="gpt-3.5-turbo"):
+              messages:List[Dict[str, str]],
+              model: str="gpt-4"):
+        print("-"*100)
+        for message in messages:
+            print(message["content"])
         try:
             response = openai.ChatCompletion.create(
                 model=model, messages=messages, request_timeout=20
             )
-            return response
+            return response["choices"][0]["message"]["content"]
         except (
             RateLimitError,
             ServiceUnavailableError,
@@ -180,7 +205,9 @@ class DatasetGenerator():
     def create_prompt_for(self, 
                           mode:str,
                           skills: List[str],
-                          specific_few_shots:bool):
+                          specific_few_shots:bool,
+                          number_few_shots:int,
+                          shot_sim_threshold:float):
         (system_prompt, instruction_field, shots_field) = (..., ..., ...)
         
 
@@ -201,22 +228,42 @@ class DatasetGenerator():
             ]
         shots = None
         if(specific_few_shots):
-            shots = self.generate_specific_few_shots(skills)
+            shots = self.generate_specific_few_shots(skills, number_few_shots, shot_sim_threshold)
         else :
             shots = PROMPT_TEMPLATE[mode]["shots"]
         
         for shot in shots:
-            skills, posting = ... ## get sen
+            skills, posting,_ = shot.split("\n")
             messages.append({'role':'user', 'content':skills})
             messages.append({'role':'assistant', 'content':posting})
 
-        messages.append({'role': 'user', 'content': skills})
+        messages.append({'role': 'user', 'content': "skills: " +str(skills)})
 
         return messages
 
 
 
 
-    def generate_specific_few_shots(self, skills):
-        pass
+    def generate_specific_few_shots(self, skills, n_shots, sim_treshold):
+        skills_embs = torch.cat(list(self.emb_tax[self.emb_tax.name.isin(skills)]["embeddings"].values)).detach().numpy()
+        all_refs = torch.cat(list(self.references["embeddings"].values)).detach().numpy()
+        sims = cosine_similarity(skills_embs, all_refs).mean(axis=0) ## take the average with all sentences
+        
+        top_sims = ((-sims).argsort())[:n_shots]
+        top_sims = np.array([nn for nn in top_sims if sims[nn] > sim_treshold])
+        if(top_sims.shape[0] == 0):
+            print("> no shots found the within the threshold")
+            return []
+        print("#"*50)
+        print((-np.sort(-sims))[:n_shots])
+        print("input skills : ", skills)
+        print("top sim ids : ", top_sims)
+        print(list(self.references.iloc[top_sims]["skill+sentence"].apply(lambda x : "skills: " + str(x.split(" : ")[0]) +"\nJob Opening : " + str(x.split(" : ")[1])+".\n").values))
+        print("#"*50)
+        return list(self.references.iloc[top_sims]["skill+sentence"].apply(lambda x : "skills: " + str(x.split(" : ")[0]) +"\nJob Opening : " + str(x.split(" : ")[1])+".\n").values)
+
+        
+        
+        
+        
 

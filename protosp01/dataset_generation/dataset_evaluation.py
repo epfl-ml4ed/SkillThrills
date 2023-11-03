@@ -3,7 +3,7 @@ sys.path.append("../skillExtract/")
 import pandas as pd
 from transformers import (AutoModel, AutoTokenizer)
 from utils import load_taxonomy
-from api_key import API_KEY
+from SkillThrills.protosp01.dataset_generation.generation.api_key import API_KEY
 import pickle
 from utils import embed_taxonomy
 from tqdm.notebook import tqdm
@@ -11,7 +11,7 @@ tqdm.pandas()
 from utils import (OPENAI,
                    Splitter,
                    select_candidates_from_taxonomy)
-from api_key import API_KEY
+from SkillThrills.protosp01.dataset_generation.generation.api_key import API_KEY
 import evaluate
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.metrics import (precision_score, 
