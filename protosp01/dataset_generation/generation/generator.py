@@ -18,6 +18,8 @@ from openai.error import (
 )
 from tqdm.notebook import tqdm
 import time
+import re
+from collections import defaultdict
 
 class SkillsGenerator():
 
@@ -149,7 +151,10 @@ class SkillsGenerator():
     def deterministic_iter(self):
         pass
 
-
+MODELS = {
+    'gpt-3.5' : "gpt-3.5-turbo",
+    'gpt-4'   : "gpt-4"
+}
 
 class DatasetGenerator():
 
@@ -158,7 +163,8 @@ class DatasetGenerator():
                  emb_tax: DataFrame,
                  reference_df: DataFrame = None,
                  emb_model: Any = None,
-                 emb_tokenizer: Any = None):
+                 emb_tokenizer: Any = None,
+                 additional_info:Dict[str, str]=defaultdict()):
         openai.api_key = API_KEY
 
         self.emb_tax = emb_tax
@@ -168,25 +174,38 @@ class DatasetGenerator():
             if("skill+sentence" not in reference_df.columns):
                 raise ValueError("The taxonomy must contain a 'skill+sentence' column")
             self.references = SkillsGenerator.embedd_df(reference_df, "skill+sentence", emb_model, emb_tokenizer)
+        
+        ## additional info regarding the skills for finer prompt
+        self.additional_infos = additional_info
 
 
-    def generate_ds(self, skill_generator, specific_few_shots, nb_few_shots=None, shot_sim_threshold=0.0):
+    def generate_ds(self,
+                    skill_generator,
+                    specific_few_shots,
+                    nb_few_shots=None,
+                    shot_sim_threshold=0.0,
+                    model="gpt-3",
+                    gen_mode="baseline"):
         ress = []
         for skills in tqdm(skill_generator):
             prompts = self.create_prompt_for(skills=skills,
-                                             mode="baseline",
+                                             mode=gen_mode,
                                              specific_few_shots=specific_few_shots,
                                              number_few_shots=nb_few_shots,
                                              shot_sim_threshold=shot_sim_threshold)
-            ress.append([skills, self.query(prompts)])
+            ress.append([skills, self.query(prompts, MODELS[model])])
         return ress
 
     def query(self, 
               messages:List[Dict[str, str]],
               model: str="gpt-4"):
+        
+        #######
         print("-"*100)
         for message in messages:
             print(message["content"])
+        #######
+
         try:
             response = openai.ChatCompletion.create(
                 model=model, messages=messages, request_timeout=20
@@ -212,9 +231,9 @@ class DatasetGenerator():
         
 
         ## basic system prompt to get in the role
-        system_prompt = PROMPT_TEMPLATE[mode]["role_instruction"]
+        system_prompt = self.prepare_prompt(PROMPT_TEMPLATE[mode]["role_instruction"], skills)
         ## only one sample for now
-        instruction_field = PROMPT_TEMPLATE[mode]["instruction"].format(N_EXAMPLES=1)
+        instruction_field = self.prepare_prompt(PROMPT_TEMPLATE[mode]["instruction"], skills)
 
         messages = [
             {
@@ -242,6 +261,33 @@ class DatasetGenerator():
         return messages
 
 
+    def prepare_prompt(self, prompt_tf:str, skills: List[str]):
+        argnames = re.findall('{(.+?)}', prompt_tf)
+        print("prompts arguments > ", argnames)
+        args = {}
+
+        for argname in argnames:
+            if(argname == "typeOfAdditionalInfo"):
+                argval = "Alternative names (you may discard this information if irrelevant)"
+            elif(argname == "nExamples"):
+                argval = "five" ## full leter in the paper
+            elif(argname == "implicitCount"):
+                argval = "two"
+            elif(argname == "additionalInfo"):
+                ## for alt names :
+                argval = ""
+                for i, skill in enumerate(skills):
+                    # if(skill in self.additional_infos and len(self.additional_infos[skill]["altLabels"]) > 0):
+                    argval += f"{i + 1}) {skill} : can also be referred as : {self.additional_infos[skill]['altLabels']} and described as : {self.additional_infos[skill]['description']}."
+                    # else : 
+                    #     argval += f"{i + 1} {skill} : {skill}, "
+            else :
+                print("> Argument not found : {", argname, "}")
+                argval = ""
+            args[argname] = argval
+
+        return prompt_tf.format(**args)
+
 
 
     def generate_specific_few_shots(self, skills, n_shots, sim_treshold):
@@ -254,12 +300,12 @@ class DatasetGenerator():
         if(top_sims.shape[0] == 0):
             print("> no shots found the within the threshold")
             return []
-        print("#"*50)
-        print((-np.sort(-sims))[:n_shots])
-        print("input skills : ", skills)
-        print("top sim ids : ", top_sims)
-        print(list(self.references.iloc[top_sims]["skill+sentence"].apply(lambda x : "skills: " + str(x.split(" : ")[0]) +"\nJob Opening : " + str(x.split(" : ")[1])+".\n").values))
-        print("#"*50)
+        # print("#"*50)
+        # print((-np.sort(-sims))[:n_shots])
+        # print("input skills : ", skills)
+        # print("top sim ids : ", top_sims)
+        # print(list(self.references.iloc[top_sims]["skill+sentence"].apply(lambda x : "skills: " + str(x.split(" : ")[0]) +"\nJob Opening : " + str(x.split(" : ")[1])+".\n").values))
+        # print("#"*50)
         return list(self.references.iloc[top_sims]["skill+sentence"].apply(lambda x : "skills: " + str(x.split(" : ")[0]) +"\nJob Opening : " + str(x.split(" : ")[1])+".\n").values)
 
         

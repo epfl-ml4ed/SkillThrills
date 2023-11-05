@@ -1,0 +1,150 @@
+skills : ['manage open publications', 'monitor ICT research']
+"We seek a proactive Information and Communication Technology (ICT) Research Manager for managing open publications and consistently tracking advancements in the ICT field."
+----------------------------------------------------------------------------------------------------
+skills : ['copyright and licenses related to digital content']
+"We are seeking a Digital Content Licensing Specialist adept at managing copyrights and licenses related to digital content for our esteemed organization."
+----------------------------------------------------------------------------------------------------
+skills : ['manage database']
+"We're seeking an individual with strong database management skills to maintain and improve our company's digital information infrastructure."
+----------------------------------------------------------------------------------------------------
+skills : ['collection management software']
+"We're seeking a Library Database Manager to maintain and enhance our collection management software to ensure efficient and seamless access to resources."
+----------------------------------------------------------------------------------------------------
+skills : ['artificial neural networks']
+"We are seeking an AI Specialist with expertise in designing, developing, and optimizing Artificial Neural Networks to solve complex business problems."
+----------------------------------------------------------------------------------------------------
+skills : ['use internet to increase sales', 'e-commerce systems']
+"We are seeking an E-Commerce Specialist who can enhance online sales using inbound marketing strategies and manage our web-based transaction systems adeptly."
+----------------------------------------------------------------------------------------------------
+skills : ['normalise data']
+Job Opening: Data Analyst responsible for constructing and sustaining reliable data pipelines to normalise data and maintain the uniformity, accuracy, and confidentiality of all company data.
+----------------------------------------------------------------------------------------------------
+skills : ['data analytics', 'data mining methods', 'perform data analysis', 'apply statistical analysis techniques', 'inspect data', 'use analytics for commercial purposes']
+"We are seeking a Data Analyst proficient in data mining, able to perform, inspect, and apply statistical analysis techniques on data, and utilizing this analytics expertise for commercial applications."
+----------------------------------------------------------------------------------------------------
+skills : ['plan marketing campaigns', 'plan digital marketing', 'plan social media marketing campaigns']
+"We are looking for a Marketing Specialist proficient in strategizing and implementing marketing, digital marketing, and social media marketing campaigns to boost our company's online presence and sales."
+----------------------------------------------------------------------------------------------------
+skills : ['design chassis', 'create 3D CAD footwear prototypes']
+"We are seeking a talented Footwear Design Engineer to design high-performance footwear chassis and create intricate 3D CAD prototypes."
+----------------------------------------------------------------------------------------------------
+skills : ['search engine optimisation']
+"We are seeking an SEO Specialist to improve our online presence by analyzing, reviewing, and implementing changes to our website so it is optimized for search engines."
+----------------------------------------------------------------------------------------------------
+skills : ['Drupal', 'Joomla', 'WebCMS', 'WordPress']
+"We are seeking a knowledgeable Web Content Management Specialist proficient in Drupal, Joomla, WordPress, and other WebCMS platforms to effectively run and maintain our websites."
+----------------------------------------------------------------------------------------------------
+skills : ['publishing strategy']
+Job Opening: Seeking an expert to develop and refine our publishing strategy with a focus on driving growth and engagement across various platforms.
+----------------------------------------------------------------------------------------------------
+skills : ['maintain data entry requirements']
+Job Opening: "Seeking meticulous individuals for a data administrator role where excellent data entry maintenance is a key requirement."
+----------------------------------------------------------------------------------------------------
+skills : ['rig 3D characters']
+"We are seeking a skilled animator to meticulously rig 3D characters for our upcoming animation projects."
+----------------------------------------------------------------------------------------------------
+skills : ['printed circuit boards testing methods', 'hardware testing methods', 'test hardware']
+Job Opening: Seeking an efficient Hardware Tester well-versed in printed circuit boards testing methods and experienced in applying diverse hardware testing methods to evaluate and improve test hardware.
+----------------------------------------------------------------------------------------------------
+skills : ['perform computer analyses of geotechnical structures']
+Job Opening: Seeking a Geotechnical Engineer to perform comprehensive computer analyses of geotechnical structures and provide valuable solutions for our ongoing projects.
+----------------------------------------------------------------------------------------------------
+skills : ['perform virtual simulation ']
+"We are seeking a Simulation Engineer to perform and analyze virtual simulations for various projects within our company."
+----------------------------------------------------------------------------------------------------
+skills : ['e-tailoring']
+"We're in need of an E-tailor to design, build, and maintain our online store, optimizing user experience to improve our online sale conversions."
+----------------------------------------------------------------------------------------------------
+skills : ['electronic locks']
+"We seek a skilled locksmith with expertise in electronic locks for the role of Senior Security Technician, responsible for installing, maintaining and troubleshooting all electronic lock mechanisms across our facilities."
+----------------------------------------------------------------------------------------------------
+skills : ['use CADD software']
+"We are looking for a skilled professional proficient in using CADD software for rendering technical drawings and designs."
+----------------------------------------------------------------------------------------------------
+skills : ['collect real-time geolocation information']
+"We are seeking a Geospatial Data Analyst to efficiently collect and process real-time geolocation information for strategic planning and operational efficiency."
+----------------------------------------------------------------------------------------------------
+skills : ['penetration testing tool', 'Parrot Security OS', 'WhiteHat Sentinel', 'THC Hydra', 'Metasploit']
+"We are in search of a Security Specialist with expertise in penetration testing using tools such as THC Hydra, Metasploit, WhiteHat Sentinel within Parrot Security OS environment."
+----------------------------------------------------------------------------------------------------
+skills : ['ICT system user requirements', 'analyse ICT system', 'identify ICT user needs', "assess users' interaction with ICT applications"]
+Job Opening: "We are seeking an ICT Analyst who will be responsible for understanding user requirements, analyzing and improving our ICT systems, and evaluating user interactions to ensure our application interfaces meet identified needs."
+----------------------------------------------------------------------------------------------------
+skills : ['develop digital educational materials', 'deliver online training']
+Job Opening: Seeking an innovative Online Educational Specialist with strong capabilities to develop digital educational materials and deliver online training effectively.
+----------------------------------------------------------------------------------------------------
+skills : ['Jenkins (tools for software configuration management)']
+"We are seeking an experienced Configuration Manager to oversee, manage, and streamline our software configurations using Jenkins, ensuring efficient build and integration processes."
+----------------------------------------------------------------------------------------------------
+skills : ['implement spam protection']
+Job Opening: Looking for a tech-savvy individual able to implement advanced spam protection measures to secure our digital infrastructure.
+----------------------------------------------------------------------------------------------------
+skills : ['record multi-track sound']
+"Seeking a Audio Engineer to skillfully handle our complex multi-track recording needs within a fast-paced, dynamic environment."
+----------------------------------------------------------------------------------------------------
+skills : ['collect data using GPS']
+Job Opening: Seeking a dedicated field officer proficient in collecting and logging data using GPS technology for our research department.
+----------------------------------------------------------------------------------------------------
+skills : ['database development tools', 'R']
+"We are seeking a Database Developer skilled in deploying robust database development tools and proficient in statistical programming with R."
+----------------------------------------------------------------------------------------------------
+skills : ['operate radar equipment', 'use radar navigation']
+"We are seeking a skilled Radar Operator experienced in operating radar equipment and using radar navigation systems for maritime and aviation applications."
+----------------------------------------------------------------------------------------------------
+skills : ['Hadoop', 'MarkLogic', 'data extraction, transformation and loading tools']
+"Seeking a Big Data Specialist capable of utilizing Hadoop and MarkLogic with expertise in data extraction, transformation, and loading tools for optimal database management."
+----------------------------------------------------------------------------------------------------
+skills : ['mobile device management']
+"We are seeking a Mobile Device Management Specialist to oversee, optimize, and implement device procedures and policies within our organization."
+----------------------------------------------------------------------------------------------------
+skills : ['output electronic files']
+Job Description: Seeking a meticulous and tech-savvy individual to produce and manage output electronic files.
+----------------------------------------------------------------------------------------------------
+skills : ['manage ICT virtualisation environments']
+We're seeking an experienced professional adept in managing ICT virtualisation environments to maintain and optimize our virtual systems for maximum efficiency and security.
+----------------------------------------------------------------------------------------------------
+skills : ['product data management']
+Job Opening: Seeking a determined individual to oversee our product lifecycle, including creation, updates, and discontinuation, through efficient product data management.
+----------------------------------------------------------------------------------------------------
+skills : ['perform ICT troubleshooting']
+"We are seeking an ICT Specialist who can efficiently perform troubleshooting tasks to resolve any technical issues and ensure seamless functioning of our information and communication technologies."
+----------------------------------------------------------------------------------------------------
+skills : ['create risk maps']
+Job Opening: Seeking a Risk Mapping Specialist to develop comprehensive risk maps to identify and address potential threats to our organization.
+----------------------------------------------------------------------------------------------------
+skills : ['advise customers on type of computer equipment']
+Job Opening: Tech Support Specialist responsible for advising customers on types of computer equipment to meet their needs.
+----------------------------------------------------------------------------------------------------
+skills : ['manage radiology information system']
+"We are looking for a Radiology Information System Manager to oversee and ensure the smooth operation of our in-house radiology software solutions."
+----------------------------------------------------------------------------------------------------
+skills : ['operate automated process control']
+Job Opening: Seeking a Process Control Specialist to operate and improve our automated process control system, optimizing efficacy and productivity.
+----------------------------------------------------------------------------------------------------
+skills : ['analyse information systems', 'manage data collection systems']
+Job Opening: We are looking for a Systems Analyst who can efficiently manage and optimize data collection systems and conduct comprehensive analysis of information systems.
+----------------------------------------------------------------------------------------------------
+skills : ['social media marketing techniques', 'plan social media marketing campaigns', 'digital marketing techniques']
+Job Posting: "Seeking a Digital Marketing Specialist with a strong background in social media marketing techniques and experience in planning comprehensive social media campaigns."
+----------------------------------------------------------------------------------------------------
+skills : ['Visual Studio .NET']
+"We're seeking a Visual Studio .NET Developer to create and manage software applications, with an expertise in writing clean, scalable code using the .NET programming suite."
+----------------------------------------------------------------------------------------------------
+skills : ['create 3D texture map', 'use performance 3D visualisation techniques ']
+"We are seeking a 3D Artist skilled in creating detailed texture maps and employing advanced performance optimization techniques for 3D visualizations."
+----------------------------------------------------------------------------------------------------
+skills : ['create digital game characters', 'specify digital game scenes']
+"We're seeking a talented Game Designer capable of conceptualizing and creating immersive digital game characters, and specifying vivid and engaging game scenes."
+----------------------------------------------------------------------------------------------------
+skills : ['evaluate information services using metrics']
+"We are seeking a Metrics Analyst who will monitor, analyze, and optimize the performance of our information services based on defined metrics."
+----------------------------------------------------------------------------------------------------
+skills : ['perform software recovery testing', 'execute software tests']
+Job Opening: Seeking an experienced Quality Assurance Engineer to perform advanced software recovery testing and execute detailed software tests ensuring optimal system performance.
+----------------------------------------------------------------------------------------------------
+skills : ['sensors']
+"We are seeking a Sensor Engineer experienced in developing, testing, and troubleshooting sensor systems for real-world applications."
+----------------------------------------------------------------------------------------------------
+skills : ['conduct radiotherapy computer planning']
+Job Opening: Seeking a detail-oriented Radiotherapy Planner with expertise in conducting computer-aided radiotherapy planning to ensure precise and safe treatment procedures.
+----------------------------------------------------------------------------------------------------

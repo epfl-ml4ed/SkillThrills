@@ -1,0 +1,31 @@
+skills : ['Unity (digital game creation systems)', 'Unreal Engine', 'Source (digital game creation systems)', 'id Tech']
+Job Opening: Seeking a skilled UI/UX designer to craft intuitive and user-friendly application interfaces in our fast-paced tech company.
+
+----------------------------------------------------------------------------------------------------
+skills : ['develop statistical software']
+Job Opening: Seeking a dedicated ICT QA Analyst proficient in using and developing tools for automated software testing.
+----------------------------------------------------------------------------------------------------
+skills : ['develop ICT test suite']
+Job Opening : Your role involves interpreting and analysing test result data to facilitate decision making and improve future tests.
+----------------------------------------------------------------------------------------------------
+skills : ['Gamemaker Studio', 'Unreal Engine', 'HeroEngine', 'develop virtual game engine']
+Job Opening : Seeking a Web Application Interface Designer to create visually compelling and user-friendly interfaces for our emerging products.
+----------------------------------------------------------------------------------------------------
+skills : ['data analytics']
+Job Opening: Seeking a Finance Analyst to conduct financial forecasting, reporting, and operational metrics tracking.
+----------------------------------------------------------------------------------------------------
+skills : ['reed sensors']
+Job Opening: Seeking an experienced Web Designer knowledgeable in ICT accessibility standards, committed to crafting user-friendly applications in accordance to World Wide Web Consortium standards.
+----------------------------------------------------------------------------------------------------
+skills : ['Canvas (learning management systems)', 'Absorb (learning management systems)', 'LAMS', 'Engrade', 'Moodle', 'Taleo']
+Job Opening: Seeking an ERP Manager to oversee technical support, administration, and management of our enterprise resource planning system.
+----------------------------------------------------------------------------------------------------
+skills : ["create a product's virtual model", 'create digital images']
+Job Opening: Seeking a UI designer responsible for designing engaging and visually appealing interfaces to optimize user interaction and experience.
+----------------------------------------------------------------------------------------------------
+skills : ['locate fossils']
+Job Opening: Position available for a problem-solving specialist adept at pinpointing and addressing business challenges.
+----------------------------------------------------------------------------------------------------
+skills : ['observe celestial objects']
+Job Opening: Looking for a dedicated professional proficient in advanced mathematics for a quantitative analyst role.
+----------------------------------------------------------------------------------------------------
