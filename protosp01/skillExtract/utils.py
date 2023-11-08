@@ -626,7 +626,7 @@ def select_candidates_from_taxonomy(
     sample["skill_candidates"] = {}
     if len(sample["extracted_skills"]) > 0:
         for extracted_skill in sample["extracted_skills"]:
-            #print("extracted skill:", extracted_skill)
+            # print("extracted skill:", extracted_skill)
 
             if method == "rules" or method == "mixed":
                 # print("checking for matches in name+definition")
