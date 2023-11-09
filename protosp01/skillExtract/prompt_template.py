@@ -30,15 +30,23 @@ course_shots_extr_wlevels = [
 ]
 
 ### extracts skills and their corresponding mastery levels and required/optional as {skill: [level, req_status]} pairs
-job_shots_extr_wreqs = [
-    'Sentence: Wir suchen einen Teamleiter mit ausgeprägten Kommunikationskompetenzen, um die Zusammenarbeit und den Informationsaustausch innerhalb des Teams zu fördern.\nAnswer: {"Kommunikationskompetenzen": ("expert", "unknown")}',
-    'Sentence: Die Fähigkeit zur interdisziplinären Zusammenarbeit ist ein Schlüsselkriterium für diese Position. \nAnswer: {"Fähigkeit zur interdisziplinären Zusammenarbeit": ("unknown", "unknown")}',
-    'Sentence: Als Java Senior Software Engineer mit Erfahrung wirst du Mitglied eines Scrum-Teams. \nAnswer: {"Java Senior Software Engineer": ("expert", "unknown")}',
-    "Sentence: Du arbeitst eng mit unserem erfahrenen Team zusammen und trägst aktiv zum Erfolg des Unternehmens bei. \nAnswer: {}",
-    'Sentence: Du hast sehr gute Kenntnisse in digitaler Schaltungstechnik und Regelkreisen. \nAnswer: {"digitaler Schaltungstechnik": ("expert", "unknown"), "Regelkreisen": ("expert", "unknown")}',
-    'Sentence: Nebst guten Kenntnisse in moderner, agiler Softwareentwicklung und deren Konzepte, hast du auch noch ein grundlegendes Wissen in der Testautomatisierung. \nAnswer: {"agiler Softwareentwicklung": ("expert", "unknown"), "Testautomatisierung": ("beginner", "unknown")}',
-]
+# job_shots_extr_wreqs = [
+#     'Sentence: Wir suchen einen Teamleiter mit ausgeprägten Kommunikationskompetenzen, um die Zusammenarbeit und den Informationsaustausch innerhalb des Teams zu fördern.\nAnswer: {"Kommunikationskompetenzen": ("expert", "unknown")}',
+#     'Sentence: Die Fähigkeit zur interdisziplinären Zusammenarbeit ist ein Schlüsselkriterium für diese Position. \nAnswer: {"Fähigkeit zur interdisziplinären Zusammenarbeit": ("unknown", "unknown")}',
+#     'Sentence: Als Java Senior Software Engineer mit Erfahrung wirst du Mitglied eines Scrum-Teams. \nAnswer: {"Java Senior Software Engineer": ("expert", "unknown")}',
+#     "Sentence: Du arbeitst eng mit unserem erfahrenen Team zusammen und trägst aktiv zum Erfolg des Unternehmens bei. \nAnswer: {}",
+#     'Sentence: Du hast sehr gute Kenntnisse in digitaler Schaltungstechnik und Regelkreisen. \nAnswer: {"digitaler Schaltungstechnik": ("expert", "unknown"), "Regelkreisen": ("expert", "unknown")}',
+#     'Sentence: Nebst guten Kenntnisse in moderner, agiler Softwareentwicklung und deren Konzepte, hast du auch noch ein grundlegendes Wissen in der Testautomatisierung. \nAnswer: {"agiler Softwareentwicklung": ("expert", "unknown"), "Testautomatisierung": ("beginner", "unknown")}',
+# ]
 
+course_shots_extr_wreqs = [
+    'Sentence: Digitale Kompetenzen einfacher einschätzen und besser erlernen können.\nAnswer: {"Selbsttransformation": ("unknown", "unknown")}',
+    'Sentence: Strategisches IT-GRC: IT-Governance, IT-Risk und Compliance Management als Bindeglied zwischen Business und IT.\nAnswer: {"Strategisches IT-GRC: IT-Governance, IT-Risk und Compliance Management als Bindeglied zwischen Business und IT": ("unknown", "unknown"), "IT-Risk und Compliance Management": ("unknown", "unknown")}',
+    'Sentence: Adaptives IT-Demand und -Projektportfolio Management: Arten von ITDPPM, Methoden und Toolunterstützung.\nAnswer: {"IT-Demand und -Projektportfolio Management": ("unknown", "unknown")}',
+    "Sentence: Die interkulturelle Dimension spielt in unserer globalisierten Zeit eine wichtige Rolle.\nAnswer: {}",
+    'Sentence: Sie erweitern Ihr Handlungsrepertoire als Coach und können Menschen aus unterschiedlichsten Kontexten kultursensibel und lösungsorientiert begleiten.\nAnswer: {"Menschen aus unterschiedlichsten Kontexten kultursensibel und lösungsorientiert begleiten": ("unknown", "unknown")}',
+    'Sentence: In unserem praxisnahen Lehrgang erfahren Sie, wie Sie solche Entwicklungsprozesse zielführend anleiten, mit wirkungsvollen Tools fördern und stimmig abschliessen.\nAnswer: {"Entwicklungsprozesse zielführend anleiten, mit wirkungsvollen Tools fördern und stimmig abschliessen": ("unknown", "unknown")}',
+]
 
 # send example to Marco to check on these
 # ask for matching examples
@@ -65,11 +73,9 @@ course_shots_match = [
 job_shots_match = course_shots_match
 
 course_shots_extr_skills = job_shots_extr_skills
-course_shots_extr_wreqs = job_shots_extr_wreqs
 
 cv_shots_extr_skills = job_shots_extr_skills
 cv_shots_extr_wlevels = job_shots_extr_wlevels
-cv_shots_extr_wreqs = job_shots_extr_wreqs
 cv_shots_match = job_shots_match
 
 ########### INSTRUCTIONS ###########
