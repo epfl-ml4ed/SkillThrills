@@ -61,6 +61,10 @@ class SkillsGenerator():
 
     @staticmethod
     def embedd_df(df: DataFrame, key_to_embed:str, model: Any, tokenizer: Any):
+        """
+            Embedds the entities of the dataframe in column key_to_embed
+            using the given model and tokenizer
+        """
         df["embeddings"] = df[key_to_embed]\
                     .apply(lambda st : \
                     model(**tokenizer(st, return_tensors="pt", max_length=768, padding=True, truncation=True))\
@@ -78,21 +82,26 @@ class SkillsGenerator():
         self.pairwise_sims = pairwise_sims
 
 
-    def get_combination_for_(self, skill: str, k: int, threshold: float, temperature: float=1, frequency_select: bool=False, temperature_sample_size: float=1, upper_bound_skill_matching:int = None):
+    def get_combination_for_(self, skill: str,
+                             k: int,
+                             threshold:float,
+                             temperature: float=1,
+                             frequency_select: bool=False,
+                             temperature_sample_size: float=1,
+                             upper_bound_skill_matching:int = None):
         """
             Creates combination of skill to pair with skill
 
-            skill : the skill we consider
-            k : the number of close neighbor of skill to consider
-            threshold : maximum allowed distance between skill and a candidate
-            temperature : flattening of the frequency distribution of the neighbors
+            skill            : the skill we consider
+            k                : the number of close neighbor of skill to consider
+            threshold        : maximum allowed distance between skill and a candidate
+            temperature      : flattening of the frequency distribution of the neighbors
             frequency_select : are the neighbors selected according to their frequency ?
 
         """
         skill_idx = self.label_to_idx[skill]
         sims_with_skill = self.pairwise_sims[skill_idx, :]
         kNN = (-sims_with_skill).argsort()[1:k+1]
-        (-sims_with_skill).argsort()
         kNN_skills = [self.idx_to_label[nn] for nn in kNN if self.pairwise_sims[skill_idx, nn] > threshold]
         
         if(len(kNN_skills) == 0):
@@ -107,17 +116,24 @@ class SkillsGenerator():
             return []
         if(frequency_select):
             F = np.array([self.popularity[nn] for nn in kNN_skills])
-            F = SkillsGenerator.softmax(F / F.sum(), T=temperature) ## we get a dist, potentially dumped
+            F = SkillsGenerator.softmax(-F, T=temperature) ## we get a dist, potentially dumped
             # with frequency dist
             kNN_skills = list(np.random.choice(kNN_skills, size=min(nb_associated_skills, len(kNN_skills)), replace=False, p=F))
+                
         else :
             # with uniform dist
             kNN_skills = list(np.random.choice(kNN_skills, size=min(nb_associated_skills, len(kNN_skills)), replace=False))
         return kNN_skills
     
+
     def get_combination_size(self, T):
+        """
+            Returns a realization of the distribution $\mathcal{N}$, of the combination size dist
+            flattened or skewed with the temperature T
+        """
         temp_dist = SkillsGenerator.softmax(self.combination_dist, T)
-        return np.random.choice(np.arange(1, len(self.combination_dist) + 1), p=temp_dist)
+        n = np.random.choice(np.arange(1, len(self.combination_dist) + 1), p=temp_dist) 
+        return n
 
     @staticmethod
     def softmax(X, T=1):
@@ -132,9 +148,22 @@ class SkillsGenerator():
                             temperature_sample_size=1,
                             frequency_select=True, 
                             upper_bound_skill_matching=None):
+        """
+            Creates a lazy iterator of combinations of entities in the taxonomy
+
+            parameters:
+                - total_generations          : 
+                - threshold                  : 
+                - beam_size                  : 
+                - temperature_skill          :   
+                - temperature pairing        : 
+                - temperature_sample_size    : 
+                - frequency_select           : 
+                - upper_bound_skill_matching : 
+        """
         all_skills = list(self.label_to_idx.keys())
         F = np.array([self.popularity[sk] for sk in self.label_to_idx.keys()])
-        F = SkillsGenerator.softmax(F / F.sum(), temperature_skill)
+        F = SkillsGenerator.softmax(-F, temperature_skill)
         
         for gen in range(total_generations):
             skill = np.random.choice(all_skills, p=F) ## chosing the skill to generate
@@ -147,9 +176,89 @@ class SkillsGenerator():
                                                         upper_bound_skill_matching=upper_bound_skill_matching) ## get the tuple to generate
             yield combs
 
+    def balanced_iter(self, 
+                        skills_to_use='all', 
+                        threshold=0.0,
+                        beam_size=20,
+                        temperature_pairing=1,
+                        temperature_sample_size=1,
+                        frequency_select=True, 
+                        upper_bound_skill_matching=None):
+        """
+            Creates a list of combinations of entities in the taxonomy
 
-    def deterministic_iter(self):
-        pass
+            parameters:
+                - total_generations          : 
+                - threshold                  : 
+                - beam_size                  :   
+                - temperature pairing        : 
+                - temperature_sample_size    : 
+                - frequency_select           : 
+                - upper_bound_skill_matching : 
+        """
+        ## check of skills_to_use
+        if((type(skills_to_use) != "int" and skills_to_use != "all")
+           or (skills_to_use > len(self.emb_tax.index))):
+            raise ValueError("'skills_to_use' must be an int smaller than the number of considered skills or 'all'")
+    
+        if(skills_to_use == "all"):
+            skills_to_use = len(self.emb_tax.index)
+        all_skills = list(self.label_to_idx.keys())
+        
+        skills_to_generate = np.random.choice(all_skills, size=skills_to_use, replace=False)
+        
+        all_gens = []
+        for skill in skills_to_generate:
+            all_gens.append([skill] + self.get_combination_for_(skill, 
+                                                        threshold=threshold,
+                                                        k=beam_size,
+                                                        temperature=temperature_pairing,
+                                                        frequency_select=frequency_select,
+                                                        temperature_sample_size=temperature_sample_size,
+                                                        upper_bound_skill_matching=upper_bound_skill_matching) ## get the tuple to generate
+            )
+        return all_gens
+    
+    def balanced_nbred_iter(self, 
+                            nb_generation=5000, 
+                            threshold=0.0,
+                            beam_size=20,
+                            temperature_pairing=1,
+                            temperature_sample_size=1,
+                            frequency_select=True, 
+                            upper_bound_skill_matching=None):
+            """
+            Creates a lazy iterator of combinations of entities in the taxonomy
+
+            parameters:
+                - total_generations          : 
+                - threshold                  : 
+                - beam_size                  : 
+                - temperature pairing        : 
+                - temperature_sample_size    : 
+                - frequency_select           : 
+                - upper_bound_skill_matching : 
+            """
+            
+            all_skills = list(self.emb_tax.name.unique())
+            
+            
+            
+            
+            for i in range(nb_generation):
+                skill = np.random.choice(all_skills, size=1)[0]
+                all_skills.remove(skill)
+                if(len(all_skills) == 0):
+                    ## continue the generation
+                    all_skills = list(self.emb_tax.name.unique())
+                yield [skill] + self.get_combination_for_(skill, 
+                                                            threshold=threshold,
+                                                            k=beam_size,
+                                                            temperature=temperature_pairing,
+                                                            frequency_select=frequency_select,
+                                                            temperature_sample_size=temperature_sample_size,
+                                                            upper_bound_skill_matching=upper_bound_skill_matching) ## get the tuple to generate
+
 
 MODELS = {
     'gpt-3.5' : "gpt-3.5-turbo",
@@ -178,6 +287,11 @@ class DatasetGenerator():
         ## additional info regarding the skills for finer prompt
         self.additional_infos = additional_info
 
+        self.compute_sim_matrix()
+
+        self.idx_to_label = {k: v for k, v in enumerate(emb_tax.name.values)}
+        self.label_to_idx = {v: k for k, v in enumerate(emb_tax.name.values)}
+
 
     def generate_ds(self,
                     skill_generator,
@@ -185,16 +299,19 @@ class DatasetGenerator():
                     nb_few_shots=None,
                     shot_sim_threshold=0.0,
                     model="gpt-3",
-                    gen_mode="baseline"):
+                    gen_mode="baseline",
+                    prompt_args={}):
         ress = []
         for skills in tqdm(skill_generator):
             prompts = self.create_prompt_for(skills=skills,
-                                             mode=gen_mode,
+                                             mode=gen_mode, ## simple sentence generation for complete single skills
                                              specific_few_shots=specific_few_shots,
                                              number_few_shots=nb_few_shots,
-                                             shot_sim_threshold=shot_sim_threshold)
+                                             shot_sim_threshold=shot_sim_threshold,
+                                             prompt_args=prompt_args)
             ress.append([skills, self.query(prompts, MODELS[model])])
         return ress
+
 
     def query(self, 
               messages:List[Dict[str, str]],
@@ -217,23 +334,25 @@ class DatasetGenerator():
             APIError,
             Timeout,
         ) as e:  # Exception
-            print(f"Timed out {e}. Waiting for 5 seconds.")
+            print(f"Timed out {e}. Waiting for 10 seconds.")
             time.sleep(10)
 
 
     def create_prompt_for(self, 
-                          mode:str,
+                          mode: str,
                           skills: List[str],
-                          specific_few_shots:bool,
-                          number_few_shots:int,
-                          shot_sim_threshold:float):
+                          specific_few_shots: bool,
+                          number_few_shots: int,
+                          shot_sim_threshold: float, 
+                          prompt_args: Dict[str, str]):
+        
         (system_prompt, instruction_field, shots_field) = (..., ..., ...)
         
 
         ## basic system prompt to get in the role
-        system_prompt = self.prepare_prompt(PROMPT_TEMPLATE[mode]["role_instruction"], skills)
+        system_prompt = self.prepare_prompt(PROMPT_TEMPLATE[mode]["role_instruction"], skills, prompt_args)
         ## only one sample for now
-        instruction_field = self.prepare_prompt(PROMPT_TEMPLATE[mode]["instruction"], skills)
+        instruction_field = self.prepare_prompt(PROMPT_TEMPLATE[mode]["instruction"], skills, prompt_args)
 
         messages = [
             {
@@ -261,31 +380,64 @@ class DatasetGenerator():
         return messages
 
 
-    def prepare_prompt(self, prompt_tf:str, skills: List[str]):
+    def prepare_prompt(self, prompt_tf:str, skills: List[str], prompt_args: Dict[str, str]):
         argnames = re.findall('{(.+?)}', prompt_tf)
         print("prompts arguments > ", argnames)
         args = {}
 
         for argname in argnames:
-            if(argname == "typeOfAdditionalInfo"):
-                argval = "Alternative names (you may discard this information if irrelevant)"
-            elif(argname == "nExamples"):
-                argval = "five" ## full leter in the paper
-            elif(argname == "implicitCount"):
-                argval = "two"
-            elif(argname == "additionalInfo"):
-                ## for alt names :
-                argval = ""
-                for i, skill in enumerate(skills):
-                    # if(skill in self.additional_infos and len(self.additional_infos[skill]["altLabels"]) > 0):
-                    argval += f"{i + 1}) {skill} : can also be referred as : {self.additional_infos[skill]['altLabels']} and described as : {self.additional_infos[skill]['description']}."
-                    # else : 
-                    #     argval += f"{i + 1} {skill} : {skill}, "
+            if(argname in prompt_args):
+                argval = prompt_args[argname]
             else :
-                print("> Argument not found : {", argname, "}")
-                argval = ""
-            args[argname] = argval
+                if(argname == "skillList"):
+                    argval = str(skills)
 
+                elif(argname == "typeOfAdditionalInfo"):
+                    argval = "Alternative names (you may discard this information if irrelevant)"
+
+                elif(argname == "nExamples"):
+                    argval = "five" ## full leter in the paper
+                    
+                elif(argname == "implicitCount"):
+                    argval = "two"
+                    
+                elif(argname == "additionalInfo"):
+                    ## for alt names :
+                    argval = ""
+                    for i, skill in enumerate(skills):
+                        argval += f"{i + 1}) {skill} : can also be referred as : {self.additional_infos[skill]['altLabels']} and described as : {self.additional_infos[skill]['description']}."
+
+                elif(argname == "minNbSentences"):
+                    ## for GEN-B1 PROTOTYPE
+                    nb_sentence = str(max(1, len(skills) - 2))
+                    argval = nb_sentence + (" sentence" if nb_sentence == "1" else " sentences")
+                    
+                elif(argname == "maxNbSentences"):
+                    argval = str(len(skills) + 1)
+                elif(argname == "wordsToAvoid"):
+                    
+
+                    ## computation of kNN of skills :
+                    kNN_skills = []
+                    print(skills)
+                    for skill in skills:
+                        skill_idx = self.label_to_idx[skill]
+                        sims_with_skill = self.pairwise_sims[skill_idx, :]
+                        kNN = (-sims_with_skill).argsort()[1:2+1] ## 2NN
+                        kNN_skills += [self.idx_to_label[nn] for nn in kNN if self.pairwise_sims[skill_idx, nn] if self.idx_to_label[nn] not in skills]
+                    
+                    if(len(kNN_skills) > 0):
+                        argval = "You must not use any of these ESCO skills in the job description : "
+                        argval += ", ".join(list(set(kNN_skills)))
+                        argval += ". "
+                    else :
+                        argval = ""
+                    
+                else :
+                    print("> Argument not found : {", argname, "}")
+                    argval = ""
+            args[argname] = argval
+        print("prompt args :", args)    
         return prompt_tf.format(**args)
 
 
@@ -300,16 +452,17 @@ class DatasetGenerator():
         if(top_sims.shape[0] == 0):
             print("> no shots found the within the threshold")
             return []
-        # print("#"*50)
-        # print((-np.sort(-sims))[:n_shots])
-        # print("input skills : ", skills)
-        # print("top sim ids : ", top_sims)
-        # print(list(self.references.iloc[top_sims]["skill+sentence"].apply(lambda x : "skills: " + str(x.split(" : ")[0]) +"\nJob Opening : " + str(x.split(" : ")[1])+".\n").values))
-        # print("#"*50)
         return list(self.references.iloc[top_sims]["skill+sentence"].apply(lambda x : "skills: " + str(x.split(" : ")[0]) +"\nJob Opening : " + str(x.split(" : ")[1])+".\n").values)
 
         
-        
-        
+    def compute_sim_matrix(self):
+        """
+            Creates a new field in the class = the pairwise
+            similarity matrix between all skill embeddings
+        """
+        skills_embeddings = torch.cat(list(self.emb_tax["embeddings"].values)).numpy()
+        pairwise_sims = cosine_similarity(skills_embeddings, skills_embeddings)
+        self.pairwise_sims = pairwise_sims
+
         
 
