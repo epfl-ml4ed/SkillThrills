@@ -82,35 +82,12 @@ def up_skilling_job_advice(learner, job, skills_attractiveness):
     return up_skilling_advice
 
 
-def up_skilling_market_advice(learner, skills_attractiveness):
+def up_skilling_market_advice(learner, learnable_skills, skills_attractiveness):
     """Return the up-skilling advice for a learner to increase their overall attractiveness.
 
     Args:
         learner (dict): Learner's profile including possessed skills and levels.
-        skills_attractiveness (dict): Attractiveness of all skills for each mastery level.
-
-    Returns:
-        tuple: A tuple of the skill and level to up-skill to.
-    """
-    up_skilling_advice = None
-
-    learner_attractiveness = sum(
-        [
-            skills_attractiveness[skill, level]
-            for skill, level in learner["possessed_skills"].items()
-        ]
-    )
-    print(learner_attractiveness)
-
-    return up_skilling_advice
-
-
-def up_skilling_market_advice(learner, skills, skills_attractiveness):
-    """Return the up-skilling advice for a learner to increase their overall attractiveness.
-
-    Args:
-        learner (dict): Learner's profile including possessed skills and levels.
-        skills (list): List of all skills.
+        learnable_skills (list): List of all (skills,levels) that can be learned by the learner.
         skills_attractiveness (dict): Attractiveness of all skills for each mastery level.
 
     Returns:
@@ -123,31 +100,17 @@ def up_skilling_market_advice(learner, skills, skills_attractiveness):
     )
     learner_attractiveness = original_learner_attractiveness
 
-    # Up-skilling, checking how much attractiveness increases with the next level
-    for skill, level in learner["possessed_skills"].items():
-        if (skill, level + 1) in skills_attractiveness:
-            tmp_learner = deepcopy(learner)
-            tmp_learner["possessed_skills"][skill] = level + 1
-            tmp_learner_attractiveness = sum(
-                [
-                    skills_attractiveness[(s, l)]
-                    for s, l in tmp_learner["possessed_skills"].items()
-                ]
-            )
-            if tmp_learner_attractiveness > learner_attractiveness:
-                learner_attractiveness = tmp_learner_attractiveness
-                up_skilling_advice = (skill, level + 1)
-
-    # New skill, checking how much attractiveness increases with a new skill
-    for skill in skills:
-        if skill not in learner["possessed_skills"]:
-            tmp_learner = deepcopy(learner)
-            tmp_learner["possessed_skills"][skill] = 1
-            tmp_learner_attractiveness = (
-                original_learner_attractiveness + skills_attractiveness[(skill, 1)]
-            )
-            if tmp_learner_attractiveness > learner_attractiveness:
-                learner_attractiveness = tmp_learner_attractiveness
-                up_skilling_advice = (skill, 1)
+    for skill, level in learnable_skills:
+        tmp_learner = deepcopy(learner)
+        tmp_learner["possessed_skills"][skill] = level
+        tmp_learner_attractiveness = sum(
+            [
+                skills_attractiveness[(s, l)]
+                for s, l in tmp_learner["possessed_skills"].items()
+            ]
+        )
+        if tmp_learner_attractiveness > learner_attractiveness:
+            learner_attractiveness = tmp_learner_attractiveness
+            up_skilling_advice = (skill, level)
 
     return up_skilling_advice

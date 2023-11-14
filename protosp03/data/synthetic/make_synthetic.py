@@ -1,6 +1,11 @@
+import os
+import random
+import yaml
+import argparse
+import json
+
 import pandas as pd
 import numpy as np
-import random
 
 
 def read_taxonomy(path):
@@ -127,7 +132,7 @@ def get_random_learner(
     """
     n_skills = random.randint(min_n_skills, max_n_skills)
     possessed = {
-        skill: level
+        skill: level.item()
         for skill, level in zip(
             np.random.choice(
                 skills, n_skills, p=skills_normalized_probabilities, replace=False
@@ -140,7 +145,7 @@ def get_random_learner(
             ),
         )
     }
-    year = np.random.choice(years, 1, p=years_normalized_probabilities)[0]
+    year = np.random.choice(years, 1, p=years_normalized_probabilities)[0].item()
     return {"possessed_skills": possessed, "year": year}
 
 
@@ -213,7 +218,7 @@ def get_random_job(
     """
     n_skills = random.randint(min_n_skills, max_n_skills)
     required = {
-        skill: level
+        skill: level.item()
         for skill, level in zip(
             np.random.choice(
                 skills, n_skills, p=skills_normalized_probabilities, replace=False
@@ -227,7 +232,7 @@ def get_random_job(
         )
     }
     year = np.random.choice(years, 1, p=years_normalized_probabilities)[0]
-    return {"required_skills": required, "year": year}
+    return {"required_skills": required, "year": year.item()}
 
 
 def get_all_jobs(
@@ -328,7 +333,7 @@ def get_random_course(
     """
     n_required_skills = random.randint(min_n_required_skills, max_n_required_skills)
     required = {
-        skill: level
+        skill: level.item()
         for skill, level in zip(
             np.random.choice(skills, n_required_skills, replace=False),
             np.random.choice(mastery_levels, n_required_skills, replace=True),
@@ -380,7 +385,7 @@ def get_all_courses(
 
 
 def get_job_market(
-    path="../data/taxonomy/taxonomy_V4.csv",
+    taxonomy_path="../data/taxonomy/taxonomy_V4.csv",
     mastery_levels=[1, 2, 3, 4],
     years=[i for i in range(2023, 2017, -1)],
     learner_min_n_skills=5,
@@ -398,14 +403,14 @@ def get_job_market(
     """Creates a job market with random learners and jobs.
 
     Args:
-        path (str, optional): path of the taxonomy. Defaults to "../data/taxonomy/taxonomy_V4.csv".
+        taxonomy_path (str, optional): path of the taxonomy. Defaults to "../data/taxonomy/taxonomy_V4.csv".
         mastery_levels (list, optional): list of mastery levels. Defaults to [1, 2, 3, 4].
         years (list, optional): list of years. Defaults to [i for i in range(2023, 2017, -1)].
 
     Returns:
         list, list, list: a list of skills, a list of learners and a list of jobs
     """
-    taxonomy = read_taxonomy(path)
+    taxonomy = read_taxonomy(taxonomy_path)
     mastery_levels_normalized_probabilities = get_mastery_levels_proba(mastery_levels)
     skills, skills_normalized_probabilities = get_skills(taxonomy)
     years_normalized_probabilities = get_years_proba(years)
@@ -444,3 +449,37 @@ def get_job_market(
     )
 
     return skills, learners, jobs, courses
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--config")
+    args = parser.parse_args()
+
+    config = args.config
+    with open(config, "r") as f:
+        config = yaml.load(f, Loader=yaml.FullLoader)
+
+    dataset_path = config.pop("dataset_path")
+
+    seed = config.pop("seed")
+    random.seed(seed)
+
+    skills, learners, jobs, courses = get_job_market(**config)
+
+    data_to_save = {
+        "skills.json": skills,
+        "mastery_levels.json": config["mastery_levels"],
+        "years.json": config["years"],
+        "learners.json": learners,
+        "jobs.json": jobs,
+        "courses.json": courses,
+    }
+
+    for json_file, data in data_to_save.items():
+        with open(os.path.join(dataset_path, json_file), "w") as f:
+            json.dump(data, f)
+
+
+if __name__ == "__main__":
+    main()

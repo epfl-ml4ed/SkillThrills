@@ -1,3 +1,7 @@
+import os
+import json
+import argparse
+
 from collections import Counter
 
 
@@ -198,6 +202,25 @@ def get_learner_attractiveness(learner, years, skill_supply, skill_demand):
     return learner_attractiveness
 
 
+def get_all_learners_attractiveness(learners, years, skill_supply, skill_demand):
+    """Calculate the attractiveness of all learners for each skill.
+
+    Args:
+        learners (list): list of learners
+        years (list): list of years
+        skill_supply (dict): dictionary of Counter for each year with skills and their supply
+        skill_demand (dict): dictionary of Counter for each year with skills and their demand
+
+    Returns:
+        list: attractiveness of all learners for each skill they possess"""
+    learners_attractiveness = []
+    for learner in learners:
+        learners_attractiveness.append(
+            get_learner_attractiveness(learner, years, skill_supply, skill_demand)
+        )
+    return learners_attractiveness
+
+
 def get_all_skills_attractiveness(
     skills, mastery_levels, years, skill_supply, skill_demand
 ):
@@ -241,4 +264,76 @@ def get_all_market_metrics(skills, mastery_levels, learners, jobs, years):
     skills_attractiveness = get_all_skills_attractiveness(
         skills, mastery_levels, years, skill_supply, skill_demand
     )
-    return skill_supply, skill_demand, skill_trends, skills_attractiveness
+    learners_attractiveness = get_all_learners_attractiveness(
+        learners, years, skill_supply, skill_demand
+    )
+
+    return (
+        skill_supply,
+        skill_demand,
+        skill_trends,
+        skills_attractiveness,
+        learners_attractiveness,
+    )
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dataset_path")
+    args = parser.parse_args()
+
+    dataset_path = args.dataset_path
+
+    with open(os.path.join(dataset_path, "skills.json")) as f:
+        skills = json.load(f)
+
+    with open(os.path.join(dataset_path, "mastery_levels.json")) as f:
+        mastery_levels = json.load(f)
+
+    with open(os.path.join(dataset_path, "years.json")) as f:
+        years = json.load(f)
+
+    with open(os.path.join(dataset_path, "learners.json")) as f:
+        learners = json.load(f)
+
+    with open(os.path.join(dataset_path, "jobs.json")) as f:
+        jobs = json.load(f)
+
+    with open(os.path.join(dataset_path, "courses.json")) as f:
+        courses = json.load(f)
+
+    filenames = [
+        "skills.json",
+        "mastery_levels.json",
+        "years.json",
+        "learners.json",
+        "jobs.json",
+        "courses.json",
+    ]
+
+    data = [json.load(open(os.path.join(dataset_path, fname))) for fname in filenames]
+
+    skills, mastery_levels, years, learners, jobs, courses = data
+
+    (
+        skill_supply,
+        skill_demand,
+        skill_trends,
+        skills_attractiveness,
+    ) = get_all_market_metrics(skills, mastery_levels, learners, jobs, years)
+
+    data_to_save = {
+        "skill_supply.json": skill_supply,
+        "skill_demand.json": skill_demand,
+        "skill_trends.json": skill_trends,
+        "skills_attractiveness.json": skills_attractiveness,
+    }
+
+    for json_file, data in data_to_save.items():
+        print(f"Saving {json_file}...")
+        with open(os.path.join(dataset_path, json_file), "w") as f:
+            json.dump(data, f)
+
+
+if __name__ == "__main__":
+    main()

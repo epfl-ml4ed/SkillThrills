@@ -16,7 +16,6 @@ def get_course_recommendation(learner, enrollable_courses, up_skilling_advice):
     matching = 0
     for course in enrollable_courses:
         if up_skilling_advice in course["provided_skills"].items():
-            print("Course", course["provided_skills"], "is recommended.")
             tmp_matching = matchings.learner_course_matching(learner, course)
             if tmp_matching > matching:
                 matching = tmp_matching
