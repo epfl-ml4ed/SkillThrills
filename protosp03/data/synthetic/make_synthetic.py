@@ -478,7 +478,7 @@ def main():
 
     for json_file, data in data_to_save.items():
         with open(os.path.join(dataset_path, json_file), "w") as f:
-            json.dump(data, f)
+            json.dump(data, f, indent=4)
 
 
 if __name__ == "__main__":

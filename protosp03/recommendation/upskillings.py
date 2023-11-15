@@ -82,7 +82,7 @@ def up_skilling_job_advice(learner, job, skills_attractiveness):
     return up_skilling_advice
 
 
-def up_skilling_market_advice(learner, learnable_skills, skills_attractiveness):
+def up_skilling_advice_attractiveness(learner, learnable_skills, skills_attractiveness):
     """Return the up-skilling advice for a learner to increase their overall attractiveness.
 
     Args:
@@ -95,10 +95,9 @@ def up_skilling_market_advice(learner, learnable_skills, skills_attractiveness):
     """
     up_skilling_advice = None
 
-    original_learner_attractiveness = sum(
+    learner_attractiveness = sum(
         [skills_attractiveness[(s, l)] for s, l in learner["possessed_skills"].items()]
     )
-    learner_attractiveness = original_learner_attractiveness
 
     for skill, level in learnable_skills:
         tmp_learner = deepcopy(learner)
@@ -111,6 +110,34 @@ def up_skilling_market_advice(learner, learnable_skills, skills_attractiveness):
         )
         if tmp_learner_attractiveness > learner_attractiveness:
             learner_attractiveness = tmp_learner_attractiveness
+            up_skilling_advice = (skill, level)
+
+    return up_skilling_advice
+
+
+def up_skilling_advice_applicability(learner, learnable_skills, jobs, threshold):
+    """Return the up-skilling advice for a learner to increase thenumber of jobs they can apply to.
+
+    Args:
+        learner (dict): Learner's profile including possessed skills and levels.
+        learnable_skills (list): List of all (skills,levels) that can be learned by the learner.
+        jobs (list): List of all jobs.
+
+    Returns:
+        tuple: A tuple of the skill and level to up-skill to.
+    """
+    up_skilling_advice = None
+
+    nb_applicable_jobs = matchings.get_nb_applicable_jobs(learner, jobs, threshold)
+
+    for skill, level in learnable_skills:
+        tmp_learner = deepcopy(learner)
+        tmp_learner["possessed_skills"][skill] = level
+        tmp_nb_applicable_jobs = matchings.get_nb_applicable_jobs(
+            tmp_learner, jobs, threshold
+        )
+        if tmp_nb_applicable_jobs > nb_applicable_jobs:
+            nb_applicable_jobs = tmp_nb_applicable_jobs
             up_skilling_advice = (skill, level)
 
     return up_skilling_advice

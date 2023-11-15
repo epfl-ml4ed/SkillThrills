@@ -11,7 +11,7 @@ n_learners: 1000
 job_min_n_skills: 2
 job_max_n_skills: 5
 job_n_jobs: 1000
-course_min_n_required_skills: 1
+course_min_n_required_skills: 0
 course_max_n_required_skills: 5
 course_min_n_provided_skills: 1
 course_max_n_provided_skills: 2
