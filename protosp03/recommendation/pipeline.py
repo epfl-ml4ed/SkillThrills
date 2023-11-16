@@ -1,6 +1,7 @@
 import os
 import json
 import argparse
+import logging
 
 import market
 import matchings
@@ -45,21 +46,8 @@ def get_avg_applicable_jobs(learners, jobs, threshold):
 
 
 def greedy_recommendation(
-    skills,
-    mastery_levels,
-    years,
-    learners,
-    jobs,
-    courses,
-    threshold,
-    optimize="attractiveness",
+    skills, mastery_levels, years, learners, jobs, courses, threshold, optimize, k=1
 ):
-    allowed_optimize = {"attractiveness", "applicability"}
-    if optimize not in allowed_optimize:
-        raise ValueError(
-            f"Invalid optimize value. Allowed types are: {allowed_optimize}"
-        )
-
     (
         skill_supply,
         skill_demand,
@@ -72,13 +60,13 @@ def greedy_recommendation(
         learners_attractiveness
     )
 
-    print(
+    logging.info(
         f"The average attractiveness of the learners is {avg_learners_attractiveness:.2f}"
     )
 
     avg_applicable_jobs = get_avg_applicable_jobs(learners, jobs, threshold)
 
-    print(
+    logging.info(
         f"The average number of applicable jobs per learner is {avg_applicable_jobs:.2f}"
     )
 
@@ -143,23 +131,23 @@ def greedy_recommendation(
                 ):
                     learner["possessed_skills"][skill] = level
 
-    print(
+    logging.debug(
         f"{no_enrollable_courses} learners ({no_enrollable_courses / len(learners) * 100:.2f}%) have no enrollable courses."
     )
 
-    print(
+    logging.debug(
         f"The average number of enrollable courses per learner is {avg_nb_enrollable_courses / len(learners):.2f}"
     )
 
-    print(
+    logging.debug(
         f"{no_learnable_skills} learners ({no_learnable_skills / len(learners) * 100:.2f}%) have no learnable skills."
     )
 
-    print(
+    logging.debug(
         f"{no_up_skilling_advice} learners ({no_up_skilling_advice / len(learners) * 100:.2f}%) have no advice."
     )
 
-    print(
+    logging.debug(
         f"{no_recommendation} learners ({no_recommendation / len(learners) * 100:.2f}%) have no course recommendation."
     )
 
@@ -171,13 +159,13 @@ def greedy_recommendation(
         new_learners_attractiveness
     )
 
-    print(
+    logging.info(
         f"The new average attractiveness of the learners is {avg_learners_attractiveness:.2f}"
     )
 
     avg_applicable_jobs = get_avg_applicable_jobs(learners, jobs, threshold)
 
-    print(
+    logging.info(
         f"The new average number of applicable jobs per learner is {avg_applicable_jobs:.2f}"
     )
 
@@ -185,11 +173,26 @@ def greedy_recommendation(
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset_path")
-    parser.add_argument("--threshold", type=float, default=0.8)
+    parser.add_argument("--threshold", type=float, default=0.75)
+    parser.add_argument(
+        "--optimize",
+        type=str,
+        default="attractiveness",
+        choices=["attractiveness", "applicability"],
+    )
+    parser.add_argument(
+        "--log-level",
+        default="INFO",
+        choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+    )
     args = parser.parse_args()
 
     dataset_path = args.dataset_path
     threshold = args.threshold
+    optimize = args.optimize
+    log_level = args.log_level
+
+    logging.basicConfig(level=log_level)
 
     skills, mastery_levels, years, learners, jobs, courses = get_dataset(dataset_path)
 
@@ -203,7 +206,7 @@ def main():
         jobs,
         courses,
         threshold,
-        optimize="attractiveness",
+        optimize,
     )
 
 
