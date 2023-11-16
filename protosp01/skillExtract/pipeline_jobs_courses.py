@@ -109,6 +109,11 @@ def main():
                 f"../data/taxonomy/taxonomy{tax_v}_embeddings{emb_sh}.pkl", "rb"
             ) as f:
                 emb_tax = pickle.load(f)
+
+            # assert it's the same taxonomy
+            assert (emb_tax["unique_id"] == taxonomy["unique_id"]).all()
+            assert (emb_tax["name+definition"] == taxonomy["name+definition"]).all()
+
         except:
             print(f"Loading failed, generating embedded taxonomy for {word_emb}")
             emb_tax = embed_taxonomy(taxonomy, word_emb_model, word_emb_tokenizer)
@@ -116,6 +121,8 @@ def main():
                 f"../data/taxonomy/taxonomy{tax_v}_embeddings{emb_sh}.pkl", "wb"
             ) as f:
                 pickle.dump(emb_tax, f)
+
+    breakpoint()
 
     if args.candidates_method == "mixed":
         emb_sh = "_mixed"

@@ -30,14 +30,14 @@ course_shots_extr_wlevels = [
 ]
 
 ### extracts skills and their corresponding mastery levels and required/optional as {skill: [level, req_status]} pairs
-# job_shots_extr_wreqs = [
-#     'Sentence: Wir suchen einen Teamleiter mit ausgeprägten Kommunikationskompetenzen, um die Zusammenarbeit und den Informationsaustausch innerhalb des Teams zu fördern.\nAnswer: {"Kommunikationskompetenzen": ("expert", "unknown")}',
-#     'Sentence: Die Fähigkeit zur interdisziplinären Zusammenarbeit ist ein Schlüsselkriterium für diese Position. \nAnswer: {"Fähigkeit zur interdisziplinären Zusammenarbeit": ("unknown", "unknown")}',
-#     'Sentence: Als Java Senior Software Engineer mit Erfahrung wirst du Mitglied eines Scrum-Teams. \nAnswer: {"Java Senior Software Engineer": ("expert", "unknown")}',
-#     "Sentence: Du arbeitst eng mit unserem erfahrenen Team zusammen und trägst aktiv zum Erfolg des Unternehmens bei. \nAnswer: {}",
-#     'Sentence: Du hast sehr gute Kenntnisse in digitaler Schaltungstechnik und Regelkreisen. \nAnswer: {"digitaler Schaltungstechnik": ("expert", "unknown"), "Regelkreisen": ("expert", "unknown")}',
-#     'Sentence: Nebst guten Kenntnisse in moderner, agiler Softwareentwicklung und deren Konzepte, hast du auch noch ein grundlegendes Wissen in der Testautomatisierung. \nAnswer: {"agiler Softwareentwicklung": ("expert", "unknown"), "Testautomatisierung": ("beginner", "unknown")}',
-# ]
+job_shots_extr_wreqs = [
+    'Sentence: Wir suchen einen Teamleiter mit ausgeprägten Kommunikationskompetenzen, um die Zusammenarbeit und den Informationsaustausch innerhalb des Teams zu fördern.\nAnswer: {"Kommunikationskompetenzen": ("expert", "unknown")}',
+    'Sentence: Die Fähigkeit zur interdisziplinären Zusammenarbeit ist ein Schlüsselkriterium für diese Position. \nAnswer: {"Fähigkeit zur interdisziplinären Zusammenarbeit": ("unknown", "unknown")}',
+    'Sentence: Als Java Senior Software Engineer mit Erfahrung wirst du Mitglied eines Scrum-Teams. \nAnswer: {"Java Senior Software Engineer": ("expert", "unknown")}',
+    "Sentence: Du arbeitst eng mit unserem erfahrenen Team zusammen und trägst aktiv zum Erfolg des Unternehmens bei. \nAnswer: {}",
+    'Sentence: Du hast sehr gute Kenntnisse in digitaler Schaltungstechnik und Regelkreisen. \nAnswer: {"digitaler Schaltungstechnik": ("expert", "unknown"), "Regelkreisen": ("expert", "unknown")}',
+    'Sentence: Nebst guten Kenntnisse in moderner, agiler Softwareentwicklung und deren Konzepte, hast du auch noch ein grundlegendes Wissen in der Testautomatisierung. \nAnswer: {"agiler Softwareentwicklung": ("expert", "unknown"), "Testautomatisierung": ("beginner", "unknown")}',
+]
 
 course_shots_extr_wreqs = [
     'Sentence: Digitale Kompetenzen einfacher einschätzen und besser erlernen können.\nAnswer: {"Selbsttransformation": ("unknown", "unknown")}',
@@ -78,12 +78,17 @@ cv_shots_extr_skills = job_shots_extr_skills
 cv_shots_extr_wlevels = job_shots_extr_wlevels
 cv_shots_match = job_shots_match
 
+
+job_shots_tl = [
+    'Ich spreche sehr gut Java und Deutsch.\n Answer: {"agiler Softwareentwicklung": ("expert", "unknown"), "Testautomatisierung": ("beginner", "unknown")}',
+]
+
 ########### INSTRUCTIONS ###########
 job_inst_extr_wlevels = "You are given a sentence from a job description in German. Extract all skills, competencies, and tasks that are required from the candidate applying for the job (make sure that the extracted skills are substrings of the sentence) and infer the corresponding mastery skill level (beginner, intermediate, expert, or unknown). Return the output as only a json file with the skill as key and mastery level as value.\n"
-job_inst_extr_wreqs = job_inst_extr_wlevels
+job_inst_extr_wreqs = 'You are given a sentence from a job description in German. Extract all skills and competencies that are required from the candidate applying for the job (make sure that the extracted skills are substrings of the sentence) and infer the corresponding mastery skill level as well as if the skill or task is mandatory for the job or optional (nice-to-have). Return the output as a json file with the extracted skill as key and a tuple of ("mastery level", "requirement status") as the value. Mastery level should be either "expert", "intermediate", "beginner", or "unknown" and requirement status should be either "required", "optional", or "unknown" based on the context.\n'
 
 course_inst_extr_wlevels = "You are given a sentence from a job description in German. Extract all skills and competencies that are mentioned in the course description sentence (make sure that the extracted skills are substrings of the sentence) and infer the corresponding mastery skill level (beginner, intermediate, expert, or unknown). Return the output as only a json file with the skill as key and mastery level as value.\n"
-course_inst_extr_wreqs = 'You are given a sentence from a course description in German. Extract all skills and competencies that are mentioned in the course description sentence (make sure that the extracted skills are substrings of the sentence) and infer the corresponding mastery skill level as well as if the skill or task is mandatory for the course or optional (nice-to-have). Return the output as a json file with the extracted skill as key and a list of ["mastery level", "requirement status"] as the value. Mastery level should be either "expert", "intermediate", "beginner", or "unknown" and requirement status should be either "required", "optional", or "unknown" based on the context.\n'
+# course_inst_extr_wreqs = 'You are given a sentence from a course description in German. Extract all skills and competencies that are mentioned in the course description sentence (make sure that the extracted skills are substrings of the sentence) and infer the corresponding mastery skill level as well as if the skill or task is mandatory for the course or optional (nice-to-have). Return the output as a json file with the extracted skill as key and a tuple of ("mastery level", "requirement status") as the value. Mastery level should be either "expert", "intermediate", "beginner", or "unknown" and requirement status should be either "required", "optional", or "unknown" based on the context.\n'
 
 ########### PROMPT TEMPLATES ###########
 
@@ -109,6 +114,10 @@ PROMPT_TEMPLATES = {
             "instruction": "You are an expert human resource manager. You are given a sentence from a job description in German, and a skill extracted from this sentence. Choose from the list of options the one that best match the skill in the context. Answer with the associated letter.\n",
             "shots": job_shots_match,
         },
+        "tech_lang": {
+            "instruction": 'You are an expert human resource manager. You are given a sentence from a job description in German, and technology or language skills from this sentence. Help me double check the skill is actually the sentence and correct the skill was not accurate and the corresponding mastery skill level as well as if the skill or task is mandatory for the job or optional (nice-to-have). Return the output as a json file with the correct skill as key and a tuple of ("mastery level", "requirement status", "job") as the value. Mastery level should be either "expert", "intermediate", "beginner", or "unknown" and requirement status should be either "required", "optional", or "unknown" based on the context.\n',
+            "shots": job_shots_tl,
+        },
     },
     "course": {
         "system": "You are looking for an online course.",
@@ -122,8 +131,8 @@ PROMPT_TEMPLATES = {
                 "shots": course_shots_extr_wlevels,
             },
             "wreqs": {
-                "instruction": course_inst_extr_wreqs,
-                "shots": course_shots_extr_wreqs,
+                "instruction": course_inst_extr_wlevels,  # courses don't need requirements
+                "shots": course_shots_extr_wlevels,  # courses don't need requirements
             },
         },
         "matching": {
