@@ -26,8 +26,8 @@ job_shots_match = [
 ## SKILL EXTRACTION IN JOB OPENING PROMPTS IN ENGLISH
 en_job_shots_extr_skills = [
     "Sentence: We are looking for a team leader with strong communication skills to foster collaboration and information sharing within the team.\nAnswer: We are looking for a team leader with strong @@communication skills## to foster collaboration and information sharing within the team.",
-    "Sentence: the ability to work collaboratively across disciplines is a key criterion for this position. \n Answer: @@ability to collaborate across disciplines## is a key criterion for this position.",
-    "Sentence: As a Java Senior Software Engineer with experience, you will be a member of a Scrum team. \n Answer: As a Java Senior Software Engineer with experience, you will be a member of a Scrum team.",
+    "Sentence: the ability to work collaboratively across disciplines is a key criterion for this position. \nAnswer: @@ability to collaborate across disciplines## is a key criterion for this position.",
+    "Sentence: As a Java Senior Software Engineer with experience, you will be a member of a Scrum team. \nAnswer: As a Java Senior Software Engineer with experience, you will be a member of a Scrum team.",
     "Sentence: In her role as a team leader, she has continuously supported the professional development of her employees. \nAnswer: In her role as a team leader, she has continuously fostered the professional @@development of her employees##.",
     "Sentence: He is a resilient employee who has been able to set proper priorities and organize tasks thoughtfully during periods of heavy workload. \nAnswer: He is a resilient employee who has been able to set @@correct priorities and organize tasks thoughtfully## during periods of high workload.",
     "Sentence: Highly qualified, flexible employees from the insurance and IT industry develop them further. \nAnswer: Highly qualified, flexible employees from the insurance and IT industries continue to develop them.",
@@ -35,7 +35,7 @@ en_job_shots_extr_skills = [
     ]
 
 en_job_shots_match = [
-    'Sentence: Understand basic provisions of copyright and privacy. \nSkill: Data protection. \nOptions: \nA: "Respect privacy principles." \nB: "Understand data protection" \nC: "Ensure data protection in aviation operations" \nD: "Data protection." \nAnswer: "Understanding data protection", "Data protection".\n',
+    'Sentence: Understand basic provisions of copyright and privacy. \nSkill: Data protection. \nOptions: \nA: "Respect privacy principles." \nB: "Understand data protection" \nC: "Ensure data protection in aviation operations" \nD: "Data protection." \nAnswer: b, d.\n',
     ]
 
 course_shots_extr_skills = job_shots_extr_skills
