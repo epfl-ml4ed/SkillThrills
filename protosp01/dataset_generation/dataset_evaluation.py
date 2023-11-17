@@ -3,7 +3,7 @@ sys.path.append("../skillExtract/")
 import pandas as pd
 from transformers import (AutoModel, AutoTokenizer)
 from utils import load_taxonomy
-from SkillThrills.protosp01.dataset_generation.generation.api_key import API_KEY
+from api_key import API_KEY
 import pickle
 from utils import embed_taxonomy
 from tqdm.notebook import tqdm
@@ -11,7 +11,7 @@ tqdm.pandas()
 from utils import (OPENAI,
                    Splitter,
                    select_candidates_from_taxonomy)
-from SkillThrills.protosp01.dataset_generation.generation.api_key import API_KEY
+from api_key import API_KEY
 import evaluate
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.metrics import (precision_score, 
@@ -19,35 +19,16 @@ from sklearn.metrics import (precision_score,
 import numpy as np
 
 
-word_emb = "jjzha/jobbert-base-cased"
-word_emb_model = AutoModel.from_pretrained(word_emb)
-word_emb_tokenizer = AutoTokenizer.from_pretrained(word_emb)
-
-
-## loading the taxonomy's embeddings
-## label set 
-emb_sh = "_jbEn"
-with open(f"../../data/taxonomy/taxonomy_embeddings{emb_sh}.pkl", "rb") as f:
-    emb_tax = pickle.load(f)
-    emb_tax["name"] = emb_tax["name+definition"].apply(lambda x : x.split(" : ")[0]) ## added to see if it goes in result records
-
-
-
-def fidelity(dataset, model_id='jjzha/jobbert-base-cased'):
-    perplexity = evaluate.load("perplexity", module_type="metric")
-    results = perplexity.compute(model_id=model_id,
-                                add_start_token=False,
-                                predictions=dataset)
-    return results
-
+ESCO_DIR = "../../esco/"
 
 class Args():
     def __init__(self):
-        self.taxonomy = "../../../esco/skills_en.csv" 
+        self.taxonomy = ESCO_DIR + "tech_managment_taxonomy.csv" 
 
         ## RELATED TO PROMPT CREATION
         self.datapath = "remote-annotated-en"
-        self.candidates_method = "embeddings"  ## putting "rules" doesn't give the embeddings
+        # self.candidates_method = "embeddings"  ## putting "rules" doesn't give the embeddings
+        self.candidates_method = "mixed"
         self.shots = 6
         self.prompt_type = "skills"
         self.data_type = "en_job"
@@ -60,6 +41,41 @@ class Args():
         self.top_p = 1             ## default val
         self.frequency_penalty = 0 ## default val
         self.presence_penalty = 0  ## default val
+
+args = Args()
+
+## Loading the embedded taxonomy
+emb_sh = "_jbEn"
+with open(f"../../data/taxonomy/taxonomy_embeddings{emb_sh}.pkl", "rb") as f:
+    emb_tax = pickle.load(f)
+    emb_tax["name"] = emb_tax["name+definition"].apply(
+        lambda x : x.split(" : ")[0]
+    )
+
+## ESCO technical skills
+ESCO_DIR = "../../../esco/"
+tech_skills = pd.read_csv(ESCO_DIR + "tech_managment_taxonomy_narrow.csv")
+tech_skills_names = list(tech_skills.name.unique())
+tech_skills["name+definition"] = tech_skills["name+defintion"]
+tech_skills["Example"] = tech_skills["altLabels"]
+
+with open(ESCO_DIR + "embedded_tech_management_tax.pkl", "rb") as emb:
+    tech_emb_tax = pickle.load(emb)
+
+word_emb = "jjzha/jobbert-base-cased"
+word_emb_model = AutoModel.from_pretrained(word_emb)
+word_emb_tokenizer = AutoTokenizer.from_pretrained(word_emb)
+
+
+
+
+def fidelity(dataset, model_id='jjzha/jobbert-base-cased'):
+    perplexity = evaluate.load("perplexity", module_type="metric")
+    results = perplexity.compute(model_id=model_id,
+                                add_start_token=False,
+                                predictions=dataset)
+    return results
+
 
 
 
@@ -75,18 +91,14 @@ def sentence_level_quality(dataset, label_key="label"):
             label_embedding = emb_tax[emb_tax["name"] == label]["embeddings"].values[0].detach().numpy()
             return cosine_similarity(sentence_embedding, label_embedding)[0][0]
 
-
-    emb_tax["name"] = emb_tax["name+definition"].apply(lambda x : x.split(":")[0][:-1])
-    known_label_set = set(emb_tax["name"].values)
-    
-
+    known_label_set = set(emb_tax["name"].values)    
     ## compute the embeddings of the sentences
     dataset["embeddings"] = dataset["sentence"]\
                     .progress_apply(lambda st : \
-                    word_emb_model(**word_emb_tokenizer(st, return_tensors="pt", max_length=768, padding=True, truncation=True))\
+                    word_emb_model(**word_emb_tokenizer(st, return_tensors="pt", max_length=512, padding=True, truncation=True))\
                     .last_hidden_state[:, 0, :]\
+                    .detach()
                     )
-    dataset["embeddings"] = dataset["embeddings"].apply(lambda x : x.detach())
     dataset["sim"] = dataset[["embeddings", label_key]].progress_apply(compute_cos_sim, axis=1)
 
     return dataset
@@ -98,14 +110,14 @@ def entity_level_quality_1_to_1(predictions, label_key):
     for tpred_item in tqdm(predictions):
         pred_item = tpred_item[0]
         tbp.append([pred_item[label_key], list(pred_item["matched_skills"].keys())])
-        for label in pred_item[label_key]:
+        labels = eval(pred_item[label_key]) if type(pred_item[label_key]) == "str" else pred_item[label_key]
+        for label in labels:
             if(label not in ["LABEL NOT PRESENT", "UNDERSPECIFIED"]):
                 
                 # ONE ENTRY PER LABEL
                 predicted_labels = [
-                                        x["name+definition"].split(" : ")[0]
-                                        for x in list(pred_item["matched_skills"].values())
-                    ]
+                    x["name+definition"].split(" : ")[0] for x in pred_item["matched_skills"].values()
+                ]
                 if(label in predicted_labels):
                     # print("-"*45)
                     # print("we have a match for :", label)
@@ -173,22 +185,7 @@ def pipeline_prediction(dataset):
     args = Args()
 
     ## loading embeddings taxonomy less
-    cols = ["conceptType", "skillType", "reuseLevel", "preferredLabel", "altLabels", "description"]
-    tax = pd.read_csv(args.taxonomy)[cols]
-    tax = tax.reset_index()
-    tax.columns = ["unique_id",
-                "Type Level 1",
-                "Type Level 2",
-                "Type Level 3",
-                "name",
-                "Example",
-                "Definition"
-                ]
-    tax["name+definition"] = tax[["name", "Definition"]].apply(lambda x : x["name"] + " : " + x["Definition"], axis=1)
     
-    emb_tax["Example"] = "" ## /!\ WHAT TO DO WITH THAT
-    
-
     extraction_cost = 0
     matching_cost = 0
     ress = []
@@ -207,25 +204,24 @@ def pipeline_prediction(dataset):
             for idxx, sample in enumerate(sentences_res_list):
                 sample = select_candidates_from_taxonomy(
                     sample,
-                    tax,
+                    tech_skills,
                     splitter,
                     word_emb_model,
                     word_emb_tokenizer,
                     max_candidates,
                     method=args.candidates_method,
-                    emb_tax=emb_tax,
+                    emb_tax=None if args.candidates_method == "rules" else tech_emb_tax,
                 )
                 sentences_res_list[idxx] = sample
 
-        ## MATCHING
+
         if("skill_candidates" in sentences_res_list[0]):
             api = OPENAI(args, sentences_res_list)
             sentences_res_list, cost = api.do_prediction("matching")
-            print("sentence res list : ", sentences_res_list)
             matching_cost += cost
 
 
 
         ress.append(sentences_res_list)
-    return ress, extraction_cost, matching_cost
+    return ress
 
