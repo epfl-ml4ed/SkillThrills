@@ -37,7 +37,7 @@ def learner_job_matching(learner, job):
                     - "year": Year associated with the job's data.
 
     Returns:
-        float: Matching score between the learner and the job, ranging from 0 to 100.
+        float: Matching score between the learner and the job, ranging from 0 to 1.
 
     Example:
         learner = {
@@ -69,8 +69,7 @@ def learner_job_matching(learner, job):
                 learner["possessed_skills"][skill], job["required_skills"][skill]
             )
 
-    # Convert total similarity into percentage form
-    matching = 100 * matching / len(job["required_skills"])
+    matching = matching / len(job["required_skills"])
 
     return matching
 
@@ -183,8 +182,7 @@ def learner_job_group_matching(learner, job, groups_dict, levels_dict):
                     job["required_skills"][job_skill],
                 ) / (min_distance + 1)
 
-        # Convert total similarity into percentage form
-        matching = 100 * matching / len(job["required_skills"])
+        matching = matching / len(job["required_skills"])
         group_matchings[group_name] = matching
     return group_matchings
 
@@ -199,6 +197,10 @@ def learner_course_required_matching(learner, course):
     Returns:
         float: matching value between 0 and 1
     """
+
+    if not course["required_skills"]:
+        return 1.0
+
     required_matching = 0
     for skill in course["required_skills"]:
         if skill in learner["possessed_skills"]:
@@ -249,7 +251,7 @@ def learner_course_matching(learner, course):
     return required_matching / (provided_matching + 1)
 
 
-def get_nb_applicable_jobs(learner, jobs, applicability_threshold=80):
+def get_nb_applicable_jobs(learner, jobs, applicability_threshold=0.8):
     """Computes the number of jobs that the learner can apply to, based on the applicability threshold.
 
     Args:
@@ -269,7 +271,7 @@ def get_nb_applicable_jobs(learner, jobs, applicability_threshold=80):
 
 
 def get_increased_nb_applicable_jobs(
-    learner, jobs, up_skilling_advice, applicability_threshold=80
+    learner, jobs, up_skilling_advice, applicability_threshold=0.8
 ):
     """Computes the number of jobs that the learner can apply to after up-skilling.
 

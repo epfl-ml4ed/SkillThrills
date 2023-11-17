@@ -322,6 +322,8 @@ class OPENAI:
             prediction = (
                 self.run_gpt_sample(messages, max_tokens=max_tokens).lower().strip()
             )
+            if self.args.data_type == "job" and self.args.prompt_type == "wreqs":
+                self.args.prompt_type = "wlevels"
             if self.args.prompt_type == "wlevels":
                 # extracted_skills would be the keys and mastery level would be the values
                 # keep only the dictionary
@@ -333,11 +335,23 @@ class OPENAI:
                     prediction = {}
                 extracted_skills = list(prediction.keys())
                 levels = list(prediction.values())
+            elif self.args.prompt_type == "wreqs":
+                try:
+                    prediction = eval(prediction)
+                except:
+                    print("Error parsing json:", prediction)
+                    prediction = {}
+                extracted_skills = list(prediction.keys())
+                # levels the same as == "wlevels" but it's now the first element of a tuple (level, requirement)
+                levels = [level[0] for level in list(prediction.values())]
+                reqs = [req[1] for req in list(prediction.values())]
             else:
                 extracted_skills = re.findall(pattern, prediction)
             sample["extracted_skills"] = extracted_skills  # AD: removed duplicates
-            if self.args.prompt_type == "wlevels":
+            if self.args.prompt_type != "skills":
                 sample["extracted_skills_levels"] = levels
+            if self.args.prompt_type == "wreqs":
+                sample["extracted_skills_reqstatus"] = reqs
             self.data[idx] = sample
             # cost = compute_cost(input_, prediction, self.args.model)
             # costs += cost
@@ -626,7 +640,7 @@ def select_candidates_from_taxonomy(
     sample["skill_candidates"] = {}
     if len(sample["extracted_skills"]) > 0:
         for extracted_skill in sample["extracted_skills"]:
-            #print("extracted skill:", extracted_skill)
+            # print("extracted skill:", extracted_skill)
 
             if method == "rules" or method == "mixed":
                 # print("checking for matches in name+definition")
