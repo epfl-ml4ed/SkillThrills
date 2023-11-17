@@ -20,6 +20,8 @@ from tqdm.notebook import tqdm
 import time
 import re
 from collections import defaultdict
+import json
+from math import ceil
 
 class SkillsGenerator():
 
@@ -265,6 +267,9 @@ MODELS = {
     'gpt-4'   : "gpt-4"
 }
 
+UPB_DENSE_GEN = 4
+LB_SPARSE_GEN = 3
+
 class DatasetGenerator():
 
 
@@ -300,27 +305,108 @@ class DatasetGenerator():
                     shot_sim_threshold=0.0,
                     model="gpt-3",
                     gen_mode="baseline",
-                    prompt_args={}):
+                    prompt_args={},
+                    autosave=False,
+                    autosave_file=None,
+                    checkpoints_freq=100):
         ress = []
-        for skills in tqdm(skill_generator):
-            prompts = self.create_prompt_for(skills=skills,
-                                             mode=gen_mode, ## simple sentence generation for complete single skills
-                                             specific_few_shots=specific_few_shots,
-                                             number_few_shots=nb_few_shots,
-                                             shot_sim_threshold=shot_sim_threshold,
-                                             prompt_args=prompt_args)
-            ress.append([skills, self.query(prompts, MODELS[model])])
+        for i, skills in tqdm(enumerate(skill_generator)):
+            if(gen_mode == "PROTOTYPE"):
+                if(len(skills) <= UPB_DENSE_GEN):
+                    ## short skill list can use dense and sparse sentences
+                    prompts = self.create_prompt_for(skills=skills,
+                                                    mode="PROTO-GEN-A0", ## simple sentence generation for complete single skills
+                                                    specific_few_shots=specific_few_shots,
+                                                    number_few_shots=nb_few_shots,
+                                                    shot_sim_threshold=shot_sim_threshold,
+                                                    prompt_args=prompt_args)
+                    
+                    ress.append([skills, self.query(prompts, MODELS[model])])
+                if(len(skills) >= LB_SPARSE_GEN): 
+                    ## can't use dense sentences
+                    prompts = self.create_prompt_for(skills=skills,
+                                                    mode="PROTO-GEN-A1", ## simple sentence generation for complete single skills
+                                                    specific_few_shots=specific_few_shots,
+                                                    number_few_shots=nb_few_shots,
+                                                    shot_sim_threshold=shot_sim_threshold,
+                                                    prompt_args=prompt_args)
+                    
+                    ress.append([skills, self.query(prompts, MODELS[model])])
+            else:
+                ## can't use dense sentences
+                prompts = self.create_prompt_for(skills=skills,
+                                                mode=gen_mode, ## simple sentence generation for complete single skills
+                                                specific_few_shots=specific_few_shots,
+                                                number_few_shots=nb_few_shots,
+                                                shot_sim_threshold=shot_sim_threshold,
+                                                prompt_args=prompt_args)
+                
+                ress.append([skills, self.query(prompts, MODELS[model])])
+            if(autosave and autosave_file is not None):
+                if(i % checkpoints_freq == 0 and i != 0):
+                    with open(autosave_file, "w") as f:
+                        json.dump(ress, f)
+                    print(f"> saved checkpoint at {i}")
+
+
+        ress += self.augment_with_no_label_negative_sample(n=500)
         return ress
 
+
+    def augment_with_no_label_negative_sample(self, n=500, model="gpt-3"):
+        """
+            Query ChatGPT to generate samples that are linked to absolutely no samples 
+            ex : 
+                TYPE 1 : Company description
+                1) "Here, you'll have the chance to build a career as unique as you are, with the global scale, 
+                    support, inclusive culture and technology to become the best version of you"
+                2) "With 1500 employees from more than 30 countries and cultures working at 14 sites, our company
+                    provides air traffic control services for Switzerland and parts of neighbouring countries"
+                3) "L'OCCITANE Group is a global, natural and organic ingredient-based cosmetics and well-being
+                    products maker, producer and retailer"
+                
+                TYPE 2 : Salary and Perks
+                1) "We offer flexible working hours based on a 40-hour week, vacation entitlement: 25 days from
+                    the age of 20, 27 days from the age of 40 and 30 days from the age of 50."
+        """
+        
+        nExamples = 20 ## number of generated samples in one generation
+        samples = []
+        for gtype, ratio in [["TYPE-1", 0.8], ["TYPE-2", 0.2]]:
+            print(gtype)
+            print(ceil(ratio * n / nExamples))
+            for _ in range(ceil(ratio * n / nExamples)):
+                ## type 1
+                messages = [
+                    {
+                        'role': "system",
+                        "content": PROMPT_TEMPLATE["NO-LABELS"][gtype]["system"].format(nExamples=nExamples)
+                    },
+                    {
+                        "role": "user",
+                        "content": PROMPT_TEMPLATE["NO-LABELS"][gtype]["instruction"].format(nExamples=nExamples)
+                    }
+                ]
+                shots = PROMPT_TEMPLATE["NO-LABELS"][gtype]["shots"]
+            
+                for shot in shots:
+                    skills, posting,_ = shot.split("\n")
+                    messages.append({'role':'user', 'content':skills})
+                    messages.append({'role':'assistant', 'content':posting})
+
+                messages.append({'role': 'user', 'content': "description: "})
+                samples.append(self.query(messages, MODELS[model]))
+        return samples
+        
 
     def query(self, 
               messages:List[Dict[str, str]],
               model: str="gpt-4"):
         
         #######
-        print("-"*100)
-        for message in messages:
-            print(message["content"])
+        # print("-"*100)
+        # for message in messages:
+        #     print(message["content"])
         #######
 
         try:
@@ -382,7 +468,7 @@ class DatasetGenerator():
 
     def prepare_prompt(self, prompt_tf:str, skills: List[str], prompt_args: Dict[str, str]):
         argnames = re.findall('{(.+?)}', prompt_tf)
-        print("prompts arguments > ", argnames)
+        # print("prompts arguments > ", argnames)
         args = {}
 
         for argname in argnames:
@@ -419,7 +505,7 @@ class DatasetGenerator():
 
                     ## computation of kNN of skills :
                     kNN_skills = []
-                    print(skills)
+                    # print(skills)
                     for skill in skills:
                         skill_idx = self.label_to_idx[skill]
                         sims_with_skill = self.pairwise_sims[skill_idx, :]
@@ -437,7 +523,6 @@ class DatasetGenerator():
                     print("> Argument not found : {", argname, "}")
                     argval = ""
             args[argname] = argval
-        print("prompt args :", args)    
         return prompt_tf.format(**args)
 
 

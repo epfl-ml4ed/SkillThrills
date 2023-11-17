@@ -72,6 +72,26 @@ PROMPT_TEMPLATE = {
         "shots": [
             
         ]
-    }
+    },
 
+    "NO-LABELS":{ ## NEGATIVE SAMPLES
+        "TYPE-1": { ## COMPANY DESCRIPTIONS
+            "system": "You are the leading AI Writer at a large, multinational HR agency. You are considered as the world's best expert at writing introductions of job posting",
+            "instruction":"You are the leading AI Writer at a large, multinational HR agency. You are considered as the world's best expert at writing introductions of job posting. You should write {nExamples} examples of the first line of the job posting. It should consists in introducing the company, its localization, the number of employees, and any information relevant to a future candidates who wants to learn about the company. The description should be concise, specify the potential growth of the company and a domain of action. You shouldn't mentoin anything about the actual job, no skills required for the candidate and shouldn't mention the candidate at all. You should mention a wide range of company field, size, and localization in each of the examples.",
+            "shots": [
+                
+            ]
+        },
+        "TYPE-2": { ## SALARY AND PERKS
+            "system": "You are the leading AI Writer at a large, multinational HR agency. You are considered as the world's best expert at specifying administrative information in job posting",
+            "instruction": "You are the leading AI Writer at a large, multinational HR agency. You are considered as the world's best expert at specifying administrative information in job posting. You should produce {nExamples} descriptions of the salary and the perks a candidate to a certain job would have. You shouldn't mention the actual job and the candidate itself. You could add diversity by varying the salary and the perks.",
+            "shots": [
+                
+            ]
+
+        }
+    }
 }
+
+
+
