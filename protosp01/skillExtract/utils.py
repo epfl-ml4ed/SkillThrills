@@ -322,7 +322,7 @@ class OPENAI:
             prediction = (
                 self.run_gpt_sample(messages, max_tokens=max_tokens).lower().strip()
             )
-            if self.args.data_type == "job" and self.args.prompt_type == "wreqs":
+            if self.args.data_type == "course" and self.args.prompt_type == "wreqs":
                 self.args.prompt_type = "wlevels"
             if self.args.prompt_type == "wlevels":
                 # extracted_skills would be the keys and mastery level would be the values
@@ -335,6 +335,7 @@ class OPENAI:
                     prediction = {}
                 extracted_skills = list(prediction.keys())
                 levels = list(prediction.values())
+
             elif self.args.prompt_type == "wreqs":
                 try:
                     prediction = eval(prediction)

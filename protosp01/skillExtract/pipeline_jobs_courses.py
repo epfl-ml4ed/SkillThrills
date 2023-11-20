@@ -122,8 +122,6 @@ def main():
             ) as f:
                 pickle.dump(emb_tax, f)
 
-    breakpoint()
-
     if args.candidates_method == "mixed":
         emb_sh = "_mixed"
 
@@ -165,7 +163,6 @@ def main():
             "ects_points",
             "average_effort_per_week",
             "total_effort",
-            "structure_description",
             "application_process_description",
             "required_number_years_of_experience",
             "certificate_type",
@@ -182,6 +179,7 @@ def main():
             + acq_data["intro"].fillna("")
             + acq_data["key_benefits"].fillna("")
             + acq_data["learning_targets_description"].fillna("")
+            + acq_data["structure_description"].fillna("")
         )
         acq_data["skill_type"] = "to_acquire"
 
