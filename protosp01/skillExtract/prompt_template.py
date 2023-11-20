@@ -47,6 +47,20 @@ job_shots_match = [
     'Sentence: Grundlegende Bestimmungen von Urheberrecht und Datenschutz verstehen. \nSkill: Datenschutz. \nOptions: \nA: "Grundsätze des Datenschutzes respektieren" \nB: "Datenschutz verstehen" \nC: "Datenschutz im Luftfahrtbetrieb sicherstellen" \nD: "Datenschutz". \nAnswer: "Datenschutz verstehen", "Datenschutz".\n'
 ]
 
+## SKILL EXTRACTION IN JOB OPENING PROMPTS IN ENGLISH
+en_job_shots_extr_skills = [
+    "Sentence: We are looking for a team leader with strong communication skills to foster collaboration and information sharing within the team.\nAnswer: We are looking for a team leader with strong @@communication skills## to foster collaboration and information sharing within the team.",
+    "Sentence: the ability to work collaboratively across disciplines is a key criterion for this position. \nAnswer: @@ability to collaborate across disciplines## is a key criterion for this position.",
+    "Sentence: As a Java Senior Software Engineer with experience, you will be a member of a Scrum team. \nAnswer: As a Java Senior Software Engineer with experience, you will be a member of a Scrum team.",
+    "Sentence: In her role as a team leader, she has continuously supported the professional development of her employees. \nAnswer: In her role as a team leader, she has continuously fostered the professional @@development of her employees##.",
+    "Sentence: He is a resilient employee who has been able to set proper priorities and organize tasks thoughtfully during periods of heavy workload. \nAnswer: He is a resilient employee who has been able to set @@correct priorities and organize tasks thoughtfully## during periods of high workload.",
+    "Sentence: Highly qualified, flexible employees from the insurance and IT industry develop them further. \nAnswer: Highly qualified, flexible employees from the insurance and IT industries continue to develop them.",
+    "Sentence: Over the past few years, it has succeeded in continuously developing itself in a rapidly changing environment. \nAnswer: Over the past few years, he has succeeded in @@continuously developing## himself in a rapidly changing environment##.\n",
+    ]
+en_job_shots_match = [
+    'Sentence: Understand basic provisions of copyright and privacy. \nSkill: Data protection. \nOptions: \nA: "Respect privacy principles." \nB: "Understand data protection" \nC: "Ensure data protection in aviation operations" \nD: "Data protection." \nAnswer: b, d.\n',
+    ]
+
 course_shots_match = [
     """
     Sentence: Sie haben alle wichtigen Tools und Methoden in Ihrem Rucksack, um Entwicklungsprozesse im interkulturellen Umfeld zu begleiten, erfolgreich abzuschliessen und zu evaluieren.
@@ -85,6 +99,19 @@ course_inst_extr_wlevels = "You are given a sentence from a job description in G
 ########### PROMPT TEMPLATES ###########
 
 PROMPT_TEMPLATES = {
+    "en_job": {
+        "system": "You are an expert human resource manager. You need to analyse skills in a job posting.",
+        "extraction" : {
+            "skills":{
+                "instruction": "You are an expert human resource manager. You are given an extract from a job description. Highlight all the skills, competencies and tasks that are required from the candidate applying for the job, by surrounding them with tags '@@' and '##'. Make sure you don't highlight job titles, nor elements related to the company and not to the job itself.\n",
+                "shots": en_job_shots_extr_skills,
+            },
+        },
+        "matching" : {
+            "instruction" : "You are an expert human resource manager. You are given a sentence from a job description, and a skill extracted from this sentence. Choose from the list of options the one that best match the skill in the context. Answer with the associated letter.\n",
+            "shots": en_job_shots_match,
+        }
+    },
     "job": {
         "system": "You are an expert human resource manager. You need to analyse skills in a job posting.",
         "extraction": {
