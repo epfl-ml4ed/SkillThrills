@@ -55,11 +55,12 @@ def main():
     parser.add_argument("--do-extraction", action="store_true", help="Whether to do the extraction or directly the matching")
     parser.add_argument("--do-matching", action="store_true", help="Whether to do the matching or not")
     parser.add_argument("--load-extraction", type=str, help="Path to a file with intermediate extraction results", default="")
-    parser.add_argument("--word-emb-model", type=str, help="Word embedding model to use", default="agne/jobBERT-de")
+    # parser.add_argument("--word-emb-model", type=str, help="Word embedding model to use", default="agne/jobBERT-de")
     parser.add_argument("--debug", action="store_true", help="Keep only one sentence per job offer / course to debug")
     parser.add_argument("--detailed", action="store_true", help="Generate detailed output")
     parser.add_argument("--ids", type=str, help="Path to a file with specific ids to evaluate", default=None)
     parser.add_argument("--annotate", action="store_true", help="Whether to annotate the data or not")
+    parser.add_argument("--language", type=str, help="Language of the data", default="de")
     # fmt: on
 
     ###
@@ -77,10 +78,12 @@ def main():
     else:
         print("Error: Data source unknown")
 
+    if args.language != "de":
+        # append "en_" to args.data_type
+        args.data_type = args.language + "_" + args.data_type
+
     nsent = f"_{args.num_sentences}sent"
     nsamp = f"_n{args.num_samples}"
-    # dt = datetime.datetime.now().strftime("%y%m%d")
-    # tax_v = "_" + args.taxonomy.split("/")[-1].split(".")[0].split("_")[-1]
     dt = "231025"
     tax_v = f"_{args.taxonomy.split('/')[-1].split('.')[0].split('_')[-1]}"
 
@@ -89,7 +92,11 @@ def main():
     print("Output path", args.output_path)
 
     # Intitialize pretrained word embeddings
-    word_emb = args.word_emb_model
+    if args.language == "de":
+        word_emb = "agne/jobBERT-de"
+        # word_emb = "agne/jobGBERT"
+    if args.language == "en":
+        word_emb = "jjzha/jobbert-base-cased"
     word_emb_model = AutoModel.from_pretrained(word_emb)
     word_emb_tokenizer = AutoTokenizer.from_pretrained(word_emb)
 
@@ -102,6 +109,8 @@ def main():
             emb_sh = "_jBd"
         elif word_emb == "agne/jobGBERT":
             emb_sh = "_jGB"
+        elif word_emb == "jjzha/jobbert-base-cased":
+            emb_sh = "_jbEn"
 
         try:
             print(f"Loading embedded taxonomy for {word_emb}")
@@ -144,11 +153,11 @@ def main():
         data = read_json(args.datapath)[0]
 
     data = pd.DataFrame.from_records(data)
-    if args.data_type == "job":
+    if args.data_type.endswith("job"):
         data["fulltext"] = data["name"] + "\n" + data["description"]
         print("num jobs:", len(data))
 
-    elif args.data_type == "course":
+    elif args.data_type.endswith("course"):
         data = data[data["active"] == True]
         keep_ids = {1, 5, 9}
         data = data[data["study_ids"].apply(lambda x: bool(set(x) & keep_ids))]
@@ -194,7 +203,6 @@ def main():
 
     data["fulltext"] = data["fulltext"].apply(replace_html_tags)
     data = drop_short_text(data, "fulltext", 100)
-    # breakpoint()
 
     if args.ids is not None:
         data = data[data["id"].isin(ids)]
@@ -208,10 +216,39 @@ def main():
             args.output_path.replace(".json", f"{nsent}{emb_sh}{tax_v}_content.json"),
         )
     else:
-        # apply language detection
-        data["language"] = data["fulltext"].apply(detect_language)
-        print(data["language"].value_counts())
-        data = data[data["language"] == "de"]
+        try:
+            print(f"Loading language detection for data")
+            if args.data_type.endswith("course"):
+                with open(
+                    f"../data/processed/learning_opportunities_lang_latest.pkl",
+                    "rb",
+                ) as f:
+                    data_lang = pickle.load(f)
+            elif args.data_type.endswith("job"):
+                with open(f"../data/processed/vacanies_lang_latest.pkl", "rb") as f:
+                    data_lang = pickle.load(f)
+
+            # assert it's the same len as data and the first 10 elements of the first column are the same
+            assert set(data["id"]) <= set(data_lang["id"])
+
+            data = data.merge(data_lang[["id", "language"]], on="id", how="left")
+            print(data["language"].value_counts())
+            data = data[data["language"] == args.language]
+
+        except:
+            print(f"Loading language detection failed, re-detecting language for data")
+            data["language"] = data["fulltext"].apply(detect_language)
+            print(data["language"].value_counts())
+            data = data[data["language"] == args.language]
+            if args.data_type.endswith("course"):
+                with open(
+                    f"../data/processed/learning_opportunities_lang_latest.pkl",
+                    "wb",
+                ) as f:
+                    pickle.dump(data, f)
+            elif args.data_type.endswith("job"):
+                with open(f"../data/processed/vacanies_lang_latest.pkl", "wb") as f:
+                    pickle.dump(data, f)
 
     print("loaded data:", len(data), "elements")
 
@@ -238,12 +275,9 @@ def main():
 
     for i, item in tqdm(enumerate(data)):  # item is job or course in dictionary format
         print(f"*** Processing {i+1}/{len(data)} ***")
-        sentences = split_sentences(item["fulltext"], args.language)
+        sentences = split_sentences(item["fulltext"], language=args.language)
         # breakpoint()
         if args.debug:
-            # sentences = [sent for sent in sentences if len(sent.split())<80]
-            # if len(sentences)==0:
-            #    continue
             sentences = [random.choice(sentences)]
         sentences_res_list = []
 
@@ -269,10 +303,6 @@ def main():
         if args.do_extraction:
             print("Starting extraction")
             api = OPENAI(args, sentences_res_list)
-            # if max(api.get_num_tokens(sentences_res_list)) > 3000:
-            #     for ii, sent in enumerate(sentences_res_list):
-            #         with open("diag_sentences_too_long.txt", "a") as f:
-            #             f.write(f"\n\n {str(item['id'])}\n{sent['sentence']}")
             sentences_res_list, cost = api.do_prediction("extraction")
             extraction_cost += cost
 
@@ -280,7 +310,7 @@ def main():
             try:
                 sentences_res_list = (
                     detailed_results_dict[str(item["id"])][item["skill_type"]]
-                    if args.data_type == "course"
+                    if args.data_type.endswith("course")
                     else detailed_results_dict[str(item["id"])]
                 )
             except:
@@ -335,7 +365,7 @@ def main():
         # TODO find a way to correctly identify even common strings (eg 'R')! (AD: look in utils exact_match)
         # Idem for finding C on top of C# and C++
         # TODO update alternative names generation to get also shortest names (eg .Net, SQL etc) (Syrielle)
-        if args.data_type == "course":
+        if args.data_type.endswith("course"):
             skill_type = item["skill_type"]  # to acquire or prereq
             item_id = item["id"]  # number, first level of dict
             if item_id not in detailed_results_dict:
@@ -355,11 +385,6 @@ def main():
         detailed_results_dict_output = {
             key: remove_level_2(value) for key, value in detailed_results_dict.items()
         }
-        # save detailed results
-        # write_json(
-        #     detailed_results_dict, args.output_path.replace(".json", "_DEBBBUGGG.json")
-        # )
-        # breakpoint()
         write_json(
             detailed_results_dict_output,
             args.output_path.replace(
@@ -381,11 +406,11 @@ def main():
             "Certifications",
             "Certification_alternative_names",
         ]
-        if args.data_type != "course":
+        if not args.data_type.endswith("course"):
             categs.append("Languages")
         clean_output_dict = {}
 
-        if args.data_type == "course":
+        if args.data_type.endswith("course"):
             for item_id, skill_type_dict in detailed_results_dict.items():
                 for skill_type, detailed_res in skill_type_dict.items():
                     if item_id not in clean_output_dict:
@@ -456,5 +481,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-# %%
