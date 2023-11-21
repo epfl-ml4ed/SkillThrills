@@ -560,7 +560,13 @@ def load_taxonomy(args):
 
 
 def get_emb_inputs(text, tokenizer):
-    tokens = tokenizer(text, return_tensors="pt", padding=True, truncation=True)
+    tokens = tokenizer(
+        text,
+        return_tensors="pt",
+        padding=True,
+        truncation=True,
+        max_length=512,
+    )
     return tokens
 
 
