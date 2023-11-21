@@ -37,7 +37,7 @@ def main():
     # fmt: off
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--datapath", type=str, help="Path to source data", default = "../data/raw/vacancies.json")
+    parser.add_argument("--datapath", type=str, help="Path to source data", default = "../data/processed/job_evl_all.csv")
     parser.add_argument("--taxonomy", type=str, help="Path to taxonomy file in csv format", default = "../data/taxonomy/taxonomy_V4.csv")
     parser.add_argument("--api_key", type=str, help="openai keys", default = API_KEY)
     parser.add_argument("--model", type=str, help="Model to use for generation", default="gpt-3.5-turbo")
@@ -71,9 +71,10 @@ def main():
     args = parser.parse_args()
     if not os.path.exists(args.output_path):
         os.makedirs(args.output_path)
-    if args.datapath.split("/")[-1] == "vacancies.json":
+
+    if "job" in args.datapath.split("/")[-1]:
         args.data_type = "job"
-    elif args.datapath.split("/")[-1] == "learning_opportunities.json":
+    elif "course" in args.datapath.split("/")[-1]:
         args.data_type = "course"
     else:
         print("Error: Data source unknown")
@@ -146,63 +147,13 @@ def main():
         print("Evaluating only ids:", ids)
         args.output_path = args.output_path.replace(".json", f"_ids.json")
 
+    data = pd.read_csv(args.datapath, encoding="utf-8")
+
+    if args.language != "all" and args.ids is None:
+        data = data[data["language"] == args.language]
+
     if args.num_samples > 0:
-        data = read_json(args.datapath, lastN=args.num_samples)
-        data = data[0][-args.num_samples :]
-    else:
-        data = read_json(args.datapath)[0]
-
-    data = pd.DataFrame.from_records(data)
-    if args.data_type.endswith("job"):
-        data["fulltext"] = data["name"] + "\n" + data["description"]
-        print("num jobs:", len(data))
-
-    elif args.data_type.endswith("course"):
-        data = data[data["active"] == True]
-        keep_ids = {1, 5, 9}
-        data = data[data["study_ids"].apply(lambda x: bool(set(x) & keep_ids))]
-
-        print("num courses with ids 1,5,9:", len(data))
-
-        # drop cols that are not needed
-        drop_cols = [
-            "type",
-            "active",
-            "pricing_description",
-            "ects_points",
-            "average_effort_per_week",
-            "total_effort",
-            "application_process_description",
-            "required_number_years_of_experience",
-            "certificate_type",
-            "currency",
-            "pricing_type",
-            "transaction_type",
-        ]
-        data.drop(columns=drop_cols, inplace=True)
-
-        # to keep an indicator for the type of skill (to acquire or prereq), we will run the skill extraction/matching pipeline twice
-        acq_data = data.copy()
-        acq_data["fulltext"] = (
-            acq_data["name"]
-            + acq_data["intro"].fillna("")
-            + acq_data["key_benefits"].fillna("")
-            + acq_data["learning_targets_description"].fillna("")
-            + acq_data["structure_description"].fillna("")
-        )
-        acq_data["skill_type"] = "to_acquire"
-
-        req_data = data.copy()
-        req_data["fulltext"] = req_data["admission_criteria_description"].fillna(
-            ""
-        ) + req_data["target_group_description"].fillna("")
-        req_data["skill_type"] = "required"
-
-        data = pd.concat([acq_data, req_data], ignore_index=True)
-        # replace every 10 tags with a period to avoid too long sentences
-
-    data["fulltext"] = data["fulltext"].apply(replace_html_tags)
-    data = drop_short_text(data, "fulltext", 100)
+        data = data[-args.num_samples :]
 
     if args.ids is not None:
         data = data[data["id"].isin(ids)]
@@ -215,40 +166,6 @@ def main():
             ids_content,
             args.output_path.replace(".json", f"{nsent}{emb_sh}{tax_v}_content.json"),
         )
-    else:
-        try:
-            print(f"Loading language detection for data")
-            if args.data_type.endswith("course"):
-                with open(
-                    f"../data/processed/learning_opportunities_lang_latest.pkl",
-                    "rb",
-                ) as f:
-                    data_lang = pickle.load(f)
-            elif args.data_type.endswith("job"):
-                with open(f"../data/processed/vacanies_lang_latest.pkl", "rb") as f:
-                    data_lang = pickle.load(f)
-
-            # assert it's the same len as data and the first 10 elements of the first column are the same
-            assert set(data["id"]) <= set(data_lang["id"])
-
-            data = data.merge(data_lang[["id", "language"]], on="id", how="left")
-            print(data["language"].value_counts())
-            data = data[data["language"] == args.language]
-
-        except:
-            print(f"Loading language detection failed, re-detecting language for data")
-            data["language"] = data["fulltext"].apply(detect_language)
-            print(data["language"].value_counts())
-            data = data[data["language"] == args.language]
-            if args.data_type.endswith("course"):
-                with open(
-                    f"../data/processed/learning_opportunities_lang_latest.pkl",
-                    "wb",
-                ) as f:
-                    pickle.dump(data, f)
-            elif args.data_type.endswith("job"):
-                with open(f"../data/processed/vacanies_lang_latest.pkl", "wb") as f:
-                    pickle.dump(data, f)
 
     print("loaded data:", len(data), "elements")
 
