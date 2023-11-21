@@ -72,6 +72,20 @@ en_job_shots_match = [
     'Sentence: Understand basic provisions of copyright and privacy. \nSkill: Data protection. \nOptions: \nA: "Respect privacy principles." \nB: "Understand data protection" \nC: "Ensure data protection in aviation operations" \nD: "Data protection." \nAnswer: b, d.\n',
 ]
 
+en_course_shots_match = [
+    """
+    Sentence: "You have all the important tools and methods in your backpack to accompany, successfully complete, and evaluate development processes in an intercultural environment."
+    \nSkill: "To accompany development processes in an intercultural environment, successfully complete, and evaluate them."
+    \nOptions: \nA: "Cognitive Skill: Attention: Switching focus between two or more activities or sources of information (e.g., language, sounds, touches, or other sources)."
+    \nB: "Social Skill: Skills to achieve goals in collaboration with other people."
+    \nC: "Performance Orientation: The person strives to achieve personal goals and to be competent in their own work."
+    \nD: "Communication: The competence to successfully communicate with individuals from different cultural backgrounds by respecting cultural differences, showing understanding and sensitivity, and fostering an open and inclusive communication environment."
+    \nE: "Collaboration: Collaboration in interdisciplinary teams: The competence to successfully work with members from different professional groups or disciplines by respecting and integrating different expertise, perspectives, and work methods to achieve common goals."
+    \nF: "Communication: The competence to empathetically engage with the other party (usually clients) in coaching and counseling situations, clarifying their concerns to build a trusting relationship and provide supportive advice."
+    \nAnswer: "Communication: The competence to successfully communicate with individuals from different cultural backgrounds by respecting cultural differences, showing understanding and sensitivity, and fostering an open and inclusive communication environment." "Communication: The competence to empathetically engage with the other party (usually clients) in coaching and counseling situations, clarifying their concerns to build a trusting relationship and provide supportive advice."
+    """
+]
+
 course_shots_match = [
     """
     Sentence: Sie haben alle wichtigen Tools und Methoden in Ihrem Rucksack, um Entwicklungsprozesse im interkulturellen Umfeld zu begleiten, erfolgreich abzuschliessen und zu evaluieren.
@@ -88,6 +102,7 @@ course_shots_match = [
 
 ### TEMP HOLDERS BELOW ###
 job_shots_match = course_shots_match
+en_job_shots_match = en_course_shots_match
 
 course_shots_extr_skills = job_shots_extr_skills
 
