@@ -62,7 +62,6 @@ en_job_shots_extr_skills = [
 en_job_shots_extr_wlevels = [
     'Sentence: We are looking for a team leader with strong communication skills to foster collaboration and information sharing within the team. \nAnswer: {"communication skills": "expert"}',
     'Sentence: the ability to work collaboratively across disciplines is a key criterion for this position. \nAnswer: {"ability to collaborate across disciplines": "unknown"}',
-    'Sentence: As a Java Senior Software Engineer with experience, you will be a member of a Scrum team. \nAnswer: {"Java Senior Software Engineer": "expert"}',
     'Sentence: In her role as a team leader, she has continuously supported the professional development of her employees. \nAnswer: {"development of her employees": "unknown"}',
     'Sentence: He is a resilient employee who has been able to set proper priorities and organize tasks thoughtfully during periods of heavy workload. \nAnswer: {"correct priorities and organize tasks thoughtfully": "unknown"}',
     'Sentence: You have very good knowledge of digital circuit technology and control circuits. \nAnswer: {"digital circuit technology": "expert", "control loops": "expert"}',
@@ -104,9 +103,15 @@ job_shots_tl = [
 ########### INSTRUCTIONS ###########
 job_inst_extr_wlevels = "You are given a sentence from a job description in German. Extract all skills, competencies, and tasks that are required from the candidate applying for the job (make sure that the extracted skills are substrings of the sentence) and infer the corresponding mastery skill level (beginner, intermediate, expert, or unknown). Return the output as only a json file with the skill as key and mastery level as value.\n"
 job_inst_extr_wreqs = 'You are given a sentence from a job description in German. Extract all skills and competencies that are required from the candidate applying for the job (make sure that the extracted skills are substrings of the sentence) and infer the corresponding mastery skill level as well as if the skill or task is mandatory for the job or optional (nice-to-have). Return the output as a json file with the extracted skill as key and a list of ("mastery level", "requirement status") as the value. Mastery level should be either "expert", "intermediate", "beginner", or "unknown" and requirement status should be either "required", "optional", or "unknown" based on the context.\n'
-
+job_inst_extr_skills = (
+    "You are an expert human resource manager. You are given an extract from a job description in German. Highlight all the skills, competencies and tasks that are required from the candidate applying for the job, by surrounding them with tags '@@' and '##'. Make sure you don't highlight job titles, nor elements related to the company and not to the job itself.\n",
+)
 course_inst_extr_wlevels = "You are given a sentence from a job description in German. Extract all skills and competencies that are mentioned in the course description sentence (make sure that the extracted skills are substrings of the sentence) and infer the corresponding mastery skill level (beginner, intermediate, expert, or unknown). Return the output as only a json file with the skill as key and mastery level as value.\n"
 # course_inst_extr_wreqs = 'You are given a sentence from a course description in German. Extract all skills and competencies that are mentioned in the course description sentence (make sure that the extracted skills are substrings of the sentence) and infer the corresponding mastery skill level as well as if the skill or task is mandatory for the course or optional (nice-to-have). Return the output as a json file with the extracted skill as key and a list of ("mastery level", "requirement status") as the value. Mastery level should be either "expert", "intermediate", "beginner", or "unknown" and requirement status should be either "required", "optional", or "unknown" based on the context.\n'
+
+
+en_job_inst_extr_skills = "You are an expert human resource manager. You are given an extract from a job description. Highlight all the skills, competencies and tasks that are required from the candidate applying for the job, by surrounding them with tags '@@' and '##'. Make sure you don't highlight job titles, nor elements related to the company and not to the job itself.\n"
+en_job_inst_extr_wlevels = "You are given a sentence from a job description. Extract all skills and competencies that are required from the candidate applying for the job (make sure that the extracted skills are substrings of the sentence) and infer the corresponding mastery skill level (beginner, intermediate, expert, or unknown). Return the output as only a json file with the skill as key and mastery level as value.\n"
 
 ########### PROMPT TEMPLATES ###########
 
@@ -115,8 +120,12 @@ PROMPT_TEMPLATES = {
         "system": "You are an expert human resource manager. You need to analyse skills in a job posting.",
         "extraction": {
             "skills": {
-                "instruction": "You are an expert human resource manager. You are given an extract from a job description. Highlight all the skills, competencies and tasks that are required from the candidate applying for the job, by surrounding them with tags '@@' and '##'. Make sure you don't highlight job titles, nor elements related to the company and not to the job itself.\n",
+                "instruction": en_job_inst_extr_skills,
                 "shots": en_job_shots_extr_skills,
+            },
+            "wlevels": {
+                "instruction": en_job_inst_extr_wlevels,
+                "shots": en_job_shots_extr_wlevels,
             },
         },
         "matching": {
@@ -128,7 +137,7 @@ PROMPT_TEMPLATES = {
         "system": "You are an expert human resource manager. You need to analyse skills in a job posting.",
         "extraction": {
             "skills": {
-                "instruction": "You are an expert human resource manager. You are given an extract from a job description in German. Highlight all the skills, competencies and tasks that are required from the candidate applying for the job, by surrounding them with tags '@@' and '##'. Make sure you don't highlight job titles, nor elements related to the company and not to the job itself.\n",
+                "instruction": job_inst_extr_skills,
                 # "instruction": "You are given a sentence from a job description in German. Highlight all the skills and competencies that are required from the candidate, by surrounding them with tags '@@' and '##'.\n"
                 "shots": job_shots_extr_skills,
             },
