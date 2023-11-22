@@ -16,7 +16,7 @@ nlp_model.add_pipe("language_detector", last=True)
 
 
 def detect_language(text):
-    maximum = max(len(text), 150)
+    maximum = min(len(text), 500)
     doc = nlp_model(text[:maximum])
     detect_language = doc._.language
     return detect_language["language"]
@@ -53,6 +53,7 @@ def load_data(type, lang="de", sample_size=100):
             + df["intro"].fillna("")
             + df["key_benefits"].fillna("")
             + df["learning_targets_description"].fillna("")
+            + df["structure_description"].fillna("")
             + "\n REQUIRED: "
             + df["admission_criteria_description"].fillna("")
             + df["target_group_description"].fillna("")
@@ -89,3 +90,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# %%
