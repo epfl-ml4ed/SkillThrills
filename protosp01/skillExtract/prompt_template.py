@@ -126,7 +126,7 @@ course_inst_extr_wlevels = "You are given a sentence from a job description in G
 
 
 en_job_inst_extr_skills = "You are an expert human resource manager. You are given an extract from a job description. Highlight all the skills, competencies and tasks that are required from the candidate applying for the job, by surrounding them with tags '@@' and '##'. Make sure you don't highlight job titles, nor elements related to the company and not to the job itself.\n"
-en_job_inst_extr_wlevels = "You are given a sentence from a job description. Extract all skills and competencies that are required from the candidate applying for the job (make sure that the extracted skills are substrings of the sentence) and infer the corresponding mastery skill level (beginner, intermediate, expert, or unknown). Return the output as only a json file with the skill as key and mastery level as value.\n"
+en_job_inst_extr_wlevels = "You are given a sentence from a job description. Extract all skills and competencies that are required from the candidate applying for the job (make sure that the extracted skills are exact substrings of the sentence) and infer the corresponding mastery skill level (beginner, intermediate, expert, or unknown). Return the output as only a json file with the skill as key and mastery level as value.\n"
 
 ########### PROMPT TEMPLATES ###########
 
