@@ -28,7 +28,6 @@ from spacy.language import Language
 from spacy_language_detection import LanguageDetector
 import torch
 import torch.nn.functional as F
-from googletrans import Translator
 from fuzzywuzzy import fuzz
 
 
@@ -82,7 +81,7 @@ def write_json(data, path):
 
 
 def detect_language(text):
-    max_len = min(len(text), 150)
+    max_len = min(len(text), 500)
     doc = nlp_model(text[:max_len])
     detect_language = doc._.language
     return detect_language["language"]
@@ -906,20 +905,3 @@ def remove_duplicates(dic):
         elif isinstance(value, dict):
             remove_duplicates(value)
 
-
-def translate_text(text, src_lang="de", dest_lang="en"):
-    """
-    Translates text from one language to another.
-    text (str): Text to be translated.
-    src_lang (str): Source language.
-    dest_lang (str): Target language.
-    """
-    translator = Translator()
-    try:
-        translation = translator.translate(text, src=src_lang, dest=dest_lang)
-    except:
-        print("Time out error. Waiting for 10 seconds...")
-        time.sleep(10)
-        translator = Translator()
-        translation = translator.translate(text, src=src_lang, dest=dest_lang)
-    return translation.text

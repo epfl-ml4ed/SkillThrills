@@ -46,7 +46,7 @@ def load_taxonomy(level="lowest"):
         list_levels = list(set(df.apply(get_lowest_level, axis=1)))
     if level == "level2":
         list_levels = list(set(df["Type Level 2"]))
-    list_levels = list_levels + ["NONE", "ADD_NEW"]
+    list_levels = list_levels + ["NONE", "ADD_NEW", "KNOWLEDGE"]
 
     return list_levels
 
@@ -172,6 +172,21 @@ def matching_step(extraction_widget, doc_idx, text_input, jc, DOCUMENTS):
                 disabled=False,
             )
 
+            # add checkbox default not selected but can check called implicit
+            implicit = widgets.Checkbox(
+                value=False,
+                description="Implicit",
+                disabled=False,
+                indent=False,
+            )
+
+            unsure = widgets.Checkbox(
+                value=False,
+                description="Unsure",
+                disabled=False,
+                indent=False,
+            )
+
             match_1 = widgets.Combobox(
                 options=TAX_ELEMENTS,
                 placeholder="Select or type to add",
@@ -221,10 +236,12 @@ def matching_step(extraction_widget, doc_idx, text_input, jc, DOCUMENTS):
             match_2_.layout.width = "80%"
             match_3_.layout.width = "80%"
 
+            checkbox_group = VBox([implicit, unsure])
+            options_group = HBox([req_v_optional, checkbox_group])
             widget_group = VBox(
                 [
                     text_widget,
-                    req_v_optional,
+                    options_group,
                     match_1,
                     match_1_,
                     match_2,
@@ -241,6 +258,8 @@ def matching_step(extraction_widget, doc_idx, text_input, jc, DOCUMENTS):
                     "text": item["text"],
                     "widgets": (
                         req_v_optional,
+                        implicit,
+                        unsure,
                         match_1,
                         match_1_,
                         match_2,
@@ -255,6 +274,8 @@ def matching_step(extraction_widget, doc_idx, text_input, jc, DOCUMENTS):
 
     label_keys = [
         "req_status",
+        "implicit",
+        "unsure",
         "match_1",
         "match_1s",
         "match_2",
