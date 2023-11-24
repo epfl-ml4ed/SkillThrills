@@ -39,6 +39,14 @@ course_shots_extr_wlevels = [
     'Sentence: In unserem praxisnahen Lehrgang erfahren Sie, wie Sie solche Entwicklungsprozesse zielführend anleiten, mit wirkungsvollen Tools fördern und stimmig abschliessen.\nAnswer: {"Entwicklungsprozesse zielführend anleiten, mit wirkungsvollen Tools fördern und stimmig abschliessen": "unknown"}',
 ]
 
+en_course_shots_extr_wlevels = [
+    'Sentence: Assess digital skills more easily and learn them better.\nAnswer: {"Assess skills more easily and learn them better": "unknown"}',
+    'Sentence: Strategic IT GRC: IT governance, IT risk and compliance management as a link between business and IT.\nAnswer: {"IT governance, IT risk and compliance management": "unknown", "Link between business and IT": "unknown"}',
+    'Sentence: Adaptive IT demand and project portfolio management: types of ITDPPM, methods and tool support.\nAnswer: {"IT demand and project portfolio management": "unknown"}',
+    "Sentence: The intercultural dimension plays an important role in our globalized times.\nAnswer: {}",
+    'Sentence: You expand your repertoire of actions as a coach and can accompany people from a wide variety of contexts in a culturally sensitive and solution-oriented manner.\nAnswer: {"Accompanying people from a wide variety of contexts in a culturally sensitive and solution-oriented manner": "unknown"}',
+    'Sentence: In our practice-oriented course, you will learn how to guide such development processes in a goal-oriented manner, promote them with effective tools and conclude them in a coherent manner.\nAnswer: {"Guiding development processes in a goal-oriented manner, promoting them with effective tools and concluding them in a coherent manner": "unknown"}',
+]
 
 # send example to Marco to check on these
 # ask for matching examples
@@ -105,6 +113,7 @@ job_shots_match = course_shots_match
 en_job_shots_match = en_course_shots_match
 
 course_shots_extr_skills = job_shots_extr_skills
+en_course_shots_extr_skills = en_job_shots_extr_skills
 
 cv_shots_extr_skills = job_shots_extr_skills
 cv_shots_extr_wlevels = job_shots_extr_wlevels
@@ -128,6 +137,8 @@ course_inst_extr_wlevels = "You are given a sentence from a job description in G
 en_job_inst_extr_skills = "You are an expert human resource manager. You are given an extract from a job description. Highlight all the skills, competencies and tasks that are required from the candidate applying for the job, by surrounding them with tags '@@' and '##'. Make sure you don't highlight job titles, nor elements related to the company and not to the job itself.\n"
 en_job_inst_extr_wlevels = "You are given a sentence from a job description. Extract all skills and competencies that are required from the candidate applying for the job (make sure that the extracted skills are exact substrings of the sentence) and infer the corresponding mastery skill level (beginner, intermediate, expert, or unknown). Return the output as only a json file with the skill as key and mastery level as value.\n"
 
+en_course_inst_extr_skills = "You are given a sentence from a course description. Highlight all the skills and competencies that are learned when following the course described in the sentence, by surrounding them with tags '@@' and '##'.\n"
+en_course_inst_extr_wlevels = "You are given a sentence from a course description. Extract all skills and competencies that are mentioned in the course description sentence (make sure that the extracted skills are exact substrings of the sentence) and infer the corresponding mastery skill level (beginner, intermediate, expert, or unknown). Return the output as only a json file with the skill as key and mastery level as value.\n"
 ########### PROMPT TEMPLATES ###########
 
 PROMPT_TEMPLATES = {
@@ -193,6 +204,23 @@ PROMPT_TEMPLATES = {
         "matching": {
             "instruction": "You are looking for an online course. You are given a sentence from a course description in German, and a skill extracted from this sentence. Choose from the list of options the one that best match the skill in the context. Answer with the associated letter.\n",
             "shots": course_shots_match,
+        },
+    },
+    "en_course": {
+        "system": "You are looking for an online course.",
+        "extraction": {
+            "skills": {
+                "instruction": en_course_inst_extr_skills,
+                "shots": en_course_shots_extr_skills,
+            },
+            "wlevels": {
+                "instruction": en_course_inst_extr_wlevels,
+                "shots": en_course_shots_extr_wlevels,
+            },
+        },
+        "matching": {
+            "instruction": "You are looking for an online course. You are given a sentence from a course description, and a skill extracted from this sentence. Choose from the list of options the one that best match the skill in the context. Answer with the associated letter.\n",
+            "shots": en_course_shots_match,
         },
     },
     "cv": {

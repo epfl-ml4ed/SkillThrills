@@ -109,6 +109,7 @@ def split_sentences(text, language):
 
 
 def drop_short_text(df, text_col, min_length=100):
+    # drop short texts under 100 words
     df["text_length"] = df[text_col].apply(lambda x: len(x.split()))
     df = df[df["text_length"] > min_length].drop(columns=["text_length"])
 

@@ -74,8 +74,10 @@ def main():
 
     if "job" in args.datapath.split("/")[-1]:
         args.data_type = "job"
+        print("data type:" + args.data_type)
     elif "course" in args.datapath.split("/")[-1]:
         args.data_type = "course"
+        print("data type:" + args.data_type)
     else:
         print("Error: Data source unknown")
 
