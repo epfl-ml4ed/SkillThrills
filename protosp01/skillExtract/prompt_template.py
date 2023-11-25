@@ -119,6 +119,10 @@ cv_shots_extr_skills = job_shots_extr_skills
 cv_shots_extr_wlevels = job_shots_extr_wlevels
 cv_shots_match = job_shots_match
 
+en_cv_shots_extr_skills = en_course_shots_extr_skills
+en_cv_shots_extr_wlevels = en_course_shots_extr_wlevels
+en_cv_shots_match = en_course_shots_match
+
 
 job_shots_tl = [
     'Ich spreche sehr gut Java und Deutsch.\n Answer: {"agiler Softwareentwicklung": ["expert", "unknown"], "Testautomatisierung": ["beginner", "unknown"]}',
@@ -139,6 +143,10 @@ en_job_inst_extr_wlevels = "You are given a sentence from a job description. Ext
 
 en_course_inst_extr_skills = "You are given a sentence from a course description. Highlight all the skills and competencies that are learned when following the course described in the sentence, by surrounding them with tags '@@' and '##'.\n"
 en_course_inst_extr_wlevels = "You are given a sentence from a course description. Extract all skills and competencies that are mentioned in the course description sentence (make sure that the extracted skills are exact substrings of the sentence) and infer the corresponding mastery skill level (beginner, intermediate, expert, or unknown). Return the output as only a json file with the skill as key and mastery level as value.\n"
+
+en_cv_inst_extr_skills = "You are an expert human resource manager. You are given text from a CV or resume. Highlight all the skills, competencies and tasks that the candidate has, by surrounding them with tags '@@' and '##'. Make sure you don't highlight job titles.\n"
+en_cv_inst_extr_wlevels = "You are an expert human resource manager. You are given a sentence from a CV or resume. Extract all skills and competencies that are mentioned in the CV sentence (make sure that the extracted skills are exact substrings of the sentence) and infer the corresponding mastery skill level (beginner, intermediate, expert, or unknown). Return the output as only a json file with the skill as key and mastery level as value.\n"
+
 ########### PROMPT TEMPLATES ###########
 
 PROMPT_TEMPLATES = {
@@ -238,6 +246,23 @@ PROMPT_TEMPLATES = {
         "matching": {
             "instruction": "You are an expert human resource manager. From a given German sentence from a CV, and a skill extracted from this sentence, choose from the options one or several items that best match the skill in the context. Answer with the associated letter(s).\n",
             "shots": cv_shots_match,
+        },
+    },
+    "en_cv": {
+        "system": "You are an expert human resource manager. You need to analyse skills in a CV.",
+        "extraction": {
+            "skills": {
+                "instruction": en_cv_inst_extr_skills,
+                "shots": en_cv_shots_extr_skills,
+            },
+            "wlevels": {
+                "instruction": en_cv_inst_extr_wlevels,
+                "shots": en_cv_shots_extr_wlevels,
+            },
+        },
+        "matching": {
+            "instruction": "You are an expert human resource manager. From a given sentence from a CV, and a skill extracted from this sentence, choose from the options one or several items that best match the skill in the context. Answer with the associated letter(s).\n",
+            "shots": en_cv_shots_match,
         },
     },
 }

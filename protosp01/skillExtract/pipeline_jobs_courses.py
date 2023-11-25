@@ -78,6 +78,9 @@ def main():
     elif "course" in args.datapath.split("/")[-1]:
         args.data_type = "course"
         print("data type:" + args.data_type)
+    elif "cv" in args.datapath.split("/")[-1]:
+        args.data_type = "cv"
+        print("data type:" + args.data_type)
     else:
         print("Error: Data source unknown")
 
@@ -145,6 +148,8 @@ def main():
             args.data_type = "job"
         elif "learning_opportunities" in ids[0]:
             args.data_type = "course"
+        elif "resume" in ids[0]:
+            args.data_type = "cv"
         ids = [int(id.split("/")[-1]) for id in ids]
         print("Evaluating only ids:", ids)
         args.output_path = args.output_path.replace(".json", f"_ids.json")
