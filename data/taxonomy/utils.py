@@ -173,16 +173,30 @@ def matching_step(extraction_widget, doc_idx, text_input, jc, DOCUMENTS):
             )
 
             # add checkbox default not selected but can check called implicit
-            implicit = widgets.Checkbox(
+            implicit_skill = widgets.Checkbox(
                 value=False,
-                description="Implicit",
+                description="Implicit Skill",
                 disabled=False,
                 indent=False,
             )
 
-            unsure = widgets.Checkbox(
+            unsure_skill = widgets.Checkbox(
                 value=False,
-                description="Unsure",
+                description="Unsure about Skill",
+                disabled=False,
+                indent=False,
+            )
+
+            implicit_level = widgets.Checkbox(
+                value=False,
+                description="Implicit Level",
+                disabled=False,
+                indent=False,
+            )
+
+            unsure_level = widgets.Checkbox(
+                value=False,
+                description="Unsure about Level",
                 disabled=False,
                 indent=False,
             )
@@ -236,8 +250,15 @@ def matching_step(extraction_widget, doc_idx, text_input, jc, DOCUMENTS):
             match_2_.layout.width = "80%"
             match_3_.layout.width = "80%"
 
-            checkbox_group = VBox([implicit, unsure])
-            options_group = HBox([req_v_optional, checkbox_group])
+            checkbox_skill_group = VBox([implicit_skill, unsure_skill])
+            checkbox_level_group = VBox([implicit_level, unsure_level])
+            options_group = HBox(
+                [
+                    req_v_optional,
+                    checkbox_skill_group,
+                    checkbox_level_group,
+                ]
+            )
             widget_group = VBox(
                 [
                     text_widget,
@@ -258,8 +279,10 @@ def matching_step(extraction_widget, doc_idx, text_input, jc, DOCUMENTS):
                     "text": item["text"],
                     "widgets": (
                         req_v_optional,
-                        implicit,
-                        unsure,
+                        implicit_skill,
+                        unsure_skill,
+                        implicit_level,
+                        unsure_level,
                         match_1,
                         match_1_,
                         match_2,
@@ -274,8 +297,10 @@ def matching_step(extraction_widget, doc_idx, text_input, jc, DOCUMENTS):
 
     label_keys = [
         "req_status",
-        "implicit",
-        "unsure",
+        "implicit_skill",
+        "unsure_skill",
+        "implicit_level",
+        "unsure_level",
         "match_1",
         "match_1s",
         "match_2",
