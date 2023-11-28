@@ -2,6 +2,11 @@
 
 Prototype of the SubProject 01 for the SCESC Innosuisse Project.
 
+## Environment Setup
+A good starting point for a conda environment is the file [`environment_proto.yml`](../environment_proto.yml).
+
+Note: there might still be some package dependencies that are problematic depending on the environment. 
+
 ## Data Input
 
 ### 1. Skills Data
@@ -18,6 +23,17 @@ Jobs and courses are downloaded and updated regularly from EvrLearn platform, us
 ```bash
 bash update_platform_data.sh
 ```
+
+#### 1.1 Pre-processing
+
+To pre-process the job and course files, run from the current **protosp01** directory:
+
+```shell
+python skillExtract/preprocess_jobs_courses.py
+```
+
+Key arguments: 
+* `--datatype` # choose between job_evl or course_evl
 
 ### 2. Taxonomy Data
 
@@ -60,8 +76,32 @@ From the current **protosp01** directory, run:
 python skillExtract/pipeline_jobs_courses.py
 ```
 
+Key arguments for the pipeline:
+- `--do-extraction` # do step 1: skill extraction
+- `--candidates_method mixed` # do step 2: mixed method is rule-based+embedding-based
+- `--do-matching`# do step 3: skill matching
+- `--detailed` # this is just our output format (detailed output has the most info)
+- `--max_tokens 1000` # for chatgpt
+- `--num_sentences 2` # number of sentences to process at a time
+- `--prompt_type wreqs` # choose between skills, wlevels, wreqs for skill-only, skills+mastery level and skills+mastery level+mandatory/optional extraction
+- `--num-samples 0` select number of documents to process (0 for all)
+- `--language de` # language of the documents to process (currently supports only de end-to-end)
+- `--taxonomy ../data/taxonomy/taxonomy_V4.csv` # taxonomy file to use for matching
+- `--datapath ../data/processed/job_evl_all.csv` # the job or course file to process
 
-## TODOs:
+Points to note:
+* The job or course file is generated using the step 1.1 above.
+
+* The taxonomy file is generated using the 2.1 and 2.2 above, but is already in the repo.
+
+Sample run command:
+
+```shell script
+python skillExtract/pipeline_jobs_courses.py --num-sentences 2 --do-extraction --do-matching --detailed --candidates_method mixed --max_tokens 2000  --prompt_type wreqs --taxonomy ../data/taxonomy/taxonomy_V4.csv --datapath ../data/processed/job_evl_all.csv --num-samples 0 --language de
+```
+
+
+## TODOs (out of date - ignore by Alex):
 
 high-level TODOs
 look for low-level TODOs in the code.

@@ -164,6 +164,7 @@ def chat_completion(messages, model="gpt-3.5-turbo", return_text=True, model_arg
             if isinstance(e, InvalidRequestError):
                 print("Invalid request error")
                 print("Messages:", messages)
+                break
             else:
                 print(f"Timed out {e}. Waiting for 5 seconds.")
                 time.sleep(5)
@@ -211,6 +212,7 @@ def chat_completion(messages, model="gpt-3.5-turbo", return_text=True, model_arg
             if isinstance(e, InvalidRequestError):
                 print("Invalid request error")
                 print("Messages:", messages)
+                break
             else:
                 print(f"Timed out {e}. Waiting for 5 seconds.")
                 time.sleep(5)
@@ -241,6 +243,7 @@ def text_completion(
             if isinstance(e, InvalidRequestError):
                 print("Invalid request error")
                 print("Prompt:", prompt)
+                break
             else:
                 print(f"Timed out {e}. Waiting for 5 seconds.")
                 time.sleep(5)
