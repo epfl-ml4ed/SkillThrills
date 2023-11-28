@@ -30,7 +30,8 @@ import torch
 import torch.nn.functional as F
 from googletrans import Translator
 from fuzzywuzzy import fuzz
-
+encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
+max_tokens = 3996
 
 def get_lang_detector(nlp, name):
     return LanguageDetector(seed=42)  # We use the seed 42
@@ -142,29 +143,6 @@ def compute_cost(input, output, model):
     return input_len * COSTS[model]["input"] + output_len * COSTS[model]["output"]
 
 
-def chat_completion(messages, model="gpt-3.5-turbo", return_text=True, model_args=None):
-    if model_args is None:
-        model_args = {}
-
-    while True:
-        try:
-            response = openai.ChatCompletion.create(
-                model=model, messages=messages, request_timeout=20, **model_args
-            )
-            if return_text:
-                return response["choices"][0]["message"]["content"].strip()
-            return response
-        except (
-            RateLimitError,
-            ServiceUnavailableError,
-            APIError,
-            Timeout,
-        ) as e:  # Exception
-            print(f"Timed out {e}. Waiting for 5 seconds.")
-            time.sleep(10)
-            continue
-
-
 # async def batch_chat_completion(
 #     messages, model="gpt-3.5-turbo", return_text=True, model_args=None
 # ):
@@ -184,6 +162,9 @@ def chat_completion(messages, model="gpt-3.5-turbo", return_text=True, model_arg
 def chat_completion(messages, model="gpt-3.5-turbo", return_text=True, model_args=None):
     if model_args is None:
         model_args = {}
+    total_tokens = sum(len(encoding.encode(message["content"])) for message in messages)
+    if total_tokens > max_tokens:
+        return "None"
 
     while True:
         try:
@@ -322,6 +303,10 @@ class OPENAI:
             prediction = (
                 self.run_gpt_sample(messages, max_tokens=max_tokens).lower().strip()
             )
+            if prediction == None:
+                sample["extracted_skills"] = []
+                self.data[idx] = sample
+                continue
             if self.args.prompt_type == "wlevels":
                 # extracted_skills would be the keys and mastery level would be the values
                 # keep only the dictionary
@@ -400,6 +385,8 @@ class OPENAI:
                 prediction = (
                     self.run_gpt_sample(messages, max_tokens=10).lower().strip()
                 )
+                if prediction == "":
+                    continue
 
                 chosen_letter = prediction[0].upper()
                 # TODO match this with the list of candidates, in case no letter was generated! (AD: try to ask it to output first line like "Answer is _")

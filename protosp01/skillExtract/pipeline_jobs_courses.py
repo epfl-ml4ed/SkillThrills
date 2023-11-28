@@ -50,7 +50,7 @@ def main():
     parser.add_argument("--candidates_method", type=str, help="How to select candidates: rules, mixed or embeddings. Default is embeddings", default="embeddings")
     parser.add_argument("--output_path", type=str, help="Output for evaluation results", default="results/")
     parser.add_argument("--prompt_type", type=str, help="Prompt type, from the prompt_template.py file. For now, only \"skills\" and \"wlevels\". default is wlevels.", default="wlevels")
-    parser.add_argument("--num-samples", type=int, help="Last N elements to evaluate (the new ones)", default=10)
+    parser.add_argument("--num-samples", type=int, help="Last N elements to evaluate (the new ones)", default=0)
     parser.add_argument("--num-sentences", type=int, help="by how many sentences to split the corpus", default=2)
     parser.add_argument("--do-extraction", action="store_true", help="Whether to do the extraction or directly the matching")
     parser.add_argument("--do-matching", action="store_true", help="Whether to do the matching or not")
@@ -129,7 +129,7 @@ def main():
         elif "learning_opportunities" in ids[0]:
             args.data_type = "course"
         ids = [int(id.split("/")[-1]) for id in ids]
-        print("Evaluating only ids:", ids)
+        print("Evaluating only ids:", len(ids))
         args.output_path = args.output_path.replace(".json", f"_ids.json")
 
     if args.num_samples > 0:
@@ -341,6 +341,16 @@ def main():
                 detailed_results_dict[item_id][skill_type].extend(sentences_res_list)
         else:
             detailed_results_dict[item["id"]] = sentences_res_list
+        
+
+        if i%10==0:
+            # save intermediate results
+            write_json(
+                detailed_results_dict,
+                args.output_path.replace(
+                    ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}_intermediate.json"
+                ),
+            )
 
     if args.debug:
         args.output_path = args.output_path.replace(
