@@ -1,0 +1,467 @@
+skills : ['colour grade images with digital intermediate', 'render 3D images', 'edit digital moving images', 'edit negatives', 'perform image editing', 'apply 3D imaging techniques']
+1. Seeking a skilled graphic designer with expertise in colour grading images with digital intermediate to enhance the visual appeal of our marketing materials.
+2. We are looking for a talented 3D artist who can render stunning, lifelike images for our gaming industry clients.
+3. Join our team of video editors and work on editing digital moving images to create compelling and engaging content for our online platforms.
+4. Are you skilled at editing negatives and bringing out the best in photographs? Join our photography studio as a negative editor.
+5. We need a detail-oriented individual with experience in performing image editing to ensure our product images are perfectly refined and ready for publication.
+6. Apply your expertise in 3D imaging techniques to create visually impactful architectural renderings for our esteemed clients in the construction industry.
+7. Looking for a photo editing specialist to enhance and retouch negatives for our fashion magazine's latest editorial spread.
+8. Join our dynamic post-production team and use your creativity to edit digital moving images to tell compelling stories through videos.
+9. We are seeking a digital content creator who is proficient in performing image editing to develop visually appealing social media posts and website banners.
+10. Are you skilled in applying 3D imaging techniques for product design? Join our innovative team as a 3D imaging specialist.
+11. Wanted: talented graphic designer with experience in color grading images with D.I. to create visually stunning visuals for our advertising campaigns.
+12. Are you a skilled 3D artist who can render photorealistic images? Join our animation studio and bring characters and scenes to life.
+13. We are hiring video editors who excel at editing digital moving images for promotional videos, documentaries, and short films.
+14. Join our photo editing team and utilize your expertise to edit negatives and produce high-quality prints for our customers.
+15. Seeking a highly creative individual with a strong background in image editing to help us maintain a consistent and professional visual aesthetic across all our marketing materials.
+16. We are looking for a 3D imaging specialist who can apply cutting-edge techniques to create immersive virtual reality experiences.
+17. Join our photography studio and showcase your skills in editing digital moving images to produce stunning wedding videos.
+18. Are you passionate about image editing and have experience in editing negatives? Join our design agency and work on exciting client projects.
+19. Seeking a detail-oriented individual with expertise in performing image editing to ensure our e-commerce product images are visually appealing and consistent.
+20. We are hiring an experienced professional with a deep understanding of 3D imaging techniques to lead our product development team.
+21. Wanted: photo editor proficient in color grading images with DI to create vibrant and visually compelling visuals for our magazine.
+22. Join our animation studio and use your skills in rendering 3D images to bring characters and environments to life in our animated films.
+23. We are looking for talented video editors who can edit digital moving images to create compelling and engaging content for our online streaming platform.
+24. Seeking a negative editor with a keen eye for detail to retouch and enhance our collection of vintage photographs.
+25. Are you a skilled image editor who can perform advanced image editing techniques? Join our creative team and work on exciting client projects.
+26. We are hiring a 3D imaging specialist to apply cutting-edge techniques and transform ideas into stunning visual concepts for our virtual reality experiences.
+27. Join our photography studio and utilize your expertise in editing digital moving images to create breathtaking visuals for our fashion editorials.
+28. Seeking an experienced professional with a background in photo editing and expertise in editing negatives to restore and enhance old family photographs.
+29. Wanted: a talented image editing specialist to transform raw product images into visually stunning visuals for our online store.
+30. We are looking for a creative and innovative individual with a strong foundation in 3D imaging techniques to drive our augmented reality projects forward.
+31. Join our video production team and put your expertise in editing digital moving images to create captivating content for our clients.
+32. Seeking a skilled negative editor to enhance and retouch film negatives for our archive of historical photographs.
+33. Are you passionate about image editing and have experience in performing various image editing techniques? Join our marketing team as an image editing expert.
+34. We are hiring a 3D imaging specialist with a focus on applying state-of-the-art techniques to create immersive visual experiences for our gaming industry clients.
+35. Join our photography studio as a digital moving image editor and use your skills to create compelling and emotionally engaging videos.
+36. Seeking a talented photo editor with expertise in editing negatives to create visually stunning photographs for our clients.
+37. Are you a skilled image editor with an eye for detail? Join our design agency and help us create visually appealing graphics for our website and social media platforms.
+38. We are looking for a 3D imaging specialist who can apply advanced techniques to visualize architectural designs and create realistic virtual representations.
+39. Join our video editing team as a digital moving image editor and utilize your skills to create polished and professional videos for our clients.
+40. Seeking a negative editor with expertise in retouching and enhancing film negatives to restore and preserve our collection of historical photographs.
+----------------------------------------------------------------------------------------------------
+skills : ['CADD software', 'CAD for garment manufacturing', 'CAD software', 'Adobe Photoshop', 'create 3D CAD footwear prototypes', 'produce textile designs']
+1. Proficiency in CADD software is required for this role as you will be responsible for creating detailed architectural drawings.
+2. The ideal candidate should have a strong background in CAD for garment manufacturing to design and develop clothing collections using computer-aided design techniques.
+3. Familiarity with various CAD software applications such as AutoCAD and SolidWorks is essential for this position.
+4. We are seeking a candidate with advanced skills in Adobe Photoshop to create visually stunning graphics and enhance digital images for our marketing campaigns.
+5. As part of the footwear design team, you will utilize your expertise to create 3D CAD prototypes, bringing innovative design concepts to life.
+6. The successful candidate will have a proven ability to produce intricate textile designs, combining creativity with technical knowledge to deliver visually appealing patterns.
+7. Proficient in using CADD software to develop accurate engineering drawings for mechanical components and structures.
+8. Experience in CAD for garment manufacturing is required, including patternmaking, grading, and sample development.
+9. We are looking for someone with strong technical skills in CAD software, who can efficiently translate design ideas into precise and detailed drawings.
+10. The candidate should be highly skilled in Adobe Photoshop, with a solid understanding of photo editing, graphic design, and digital manipulation.
+11. In this role, you will have the opportunity to showcase your ability to create 3D CAD footwear prototypes that meet both aesthetic and functional requirements.
+12. The candidate should possess excellent artistic skills and be able to produce captivating textile designs for various fabric types and printing techniques.
+13. Proficiency in CADD software is necessary to generate accurate and detailed electrical schematics for industrial machinery.
+14. Knowledge of CAD for garment manufacturing is essential to develop patterns and specifications for clothing production.
+15. The ability to work with different CAD software platforms, including AutoCAD and SolidWorks, is crucial to effectively design and engineer mechanical components.
+16. We are seeking a talented individual with expertise in Adobe Photoshop to create visually appealing graphics for our website and social media platforms.
+17. You will be responsible for creating 3D CAD footwear prototypes using cutting-edge software, ensuring that designs are manufacturable and meet quality standards.
+18. The successful candidate will demonstrate proficiency in producing textile designs that align with current fashion trends and market demands.
+19. Proficiency in CADD software is required to produce accurate and detailed architectural drawings for residential and commercial projects.
+20. Experience in CAD for garment manufacturing is necessary to develop technical specifications and patterns for clothing production.
+21. The candidate should have a solid understanding of different CAD software tools, such as AutoCAD and SolidWorks, and be able to create precise engineering drawings.
+22. Advanced knowledge of Adobe Photoshop is required to edit and enhance product images for our e-commerce platform.
+23. As a footwear designer, you will utilize your expertise in creating 3D CAD prototypes to bring innovative and stylish shoes to the market.
+24. The ideal candidate will possess a creative flair and be able to produce captivating textile designs that resonate with our target audience.
+25. Proficient in CADD software, you will have the responsibility of developing accurate and detailed drawings for mechanical systems and components.
+26. A strong background in CAD for garment manufacturing is essential to create and modify patterns and prototypes for apparel production.
+27. The candidate should have a deep understanding of CAD software, including knowledge of industry-standard tools such as AutoCAD and SolidWorks.
+28. Proficiency in Adobe Photoshop is necessary to retouch and enhance product images, ensuring they meet our brand standards.
+29. You will utilize your skills in creating 3D CAD footwear prototypes to bring innovative designs to the market, collaborating with our product development team.
+30. The successful candidate will demonstrate creativity and expertise in producing textile designs that are both visually appealing and commercially viable.
+31. Proficiency in CADD software is crucial for generating accurate and detailed architectural drawings, ensuring design integrity and compliance with regulations.
+32. Knowledge of CAD for garment manufacturing is required to develop patterns, perform fittings, and oversee the production process.
+33. The candidate should be skilled in using various CAD software applications and be able to create detailed engineering drawings to support product development.
+34. Proficiency in Adobe Photoshop is essential for creating visually stunning graphics and images that enhance our marketing materials.
+35. As a footwear designer, you will leverage your ability to create 3D CAD prototypes to explore new design concepts and develop innovative footwear.
+36. The ideal candidate will possess strong artistic skills and a keen eye for detail to produce eye-catching textile designs that meet client requirements.
+37. Proficient in CADD software, you will collaborate with engineers and architects to develop accurate and detailed drawings for construction projects.
+38. Experience in CAD for garment manufacturing is necessary to create patterns, perform fittings, and optimize designs for production efficiency.
+39. The candidate should have a comprehensive understanding of CAD software and be able to use it effectively to create precise and detailed engineering drawings.
+40. Proficiency in Adobe Photoshop is required to edit and manipulate images, create digital artwork, and enhance visual content for our various platforms.
+----------------------------------------------------------------------------------------------------
+skills : ['tools for ICT test automation', 'develop ICT test suite']
+1. We are seeking a highly skilled candidate who is proficient in using test automation tools such as Selenium to streamline our ICT testing processes.
+2. The ideal candidate will have experience in developing and implementing ICT test suites to ensure the highest level of software quality and reliability.
+3. Familiarity with a wide range of test automation tools is a must-have skill for this position to effectively perform ICT testing tasks.
+4. As a Test Automation Engineer, you will be responsible for utilizing various tools to automate the testing of our ICT systems, ensuring their stability and functionality.
+5. The successful candidate will demonstrate a strong knowledge of test automation frameworks and be able to develop and maintain test scripts for ICT test suites.
+6. In this role, you will utilize your expertise in utilizing test automation tools to create and execute comprehensive test plans for ICT projects.
+7. We are looking for a candidate who can effectively utilize test automation tools and frameworks to develop and maintain test suites for our ICT applications.
+8. The ideal candidate will have proven experience in using test automation tools to create, execute, and analyze test cases for ICT systems.
+9. As a Test Automation Specialist, you will be responsible for designing and implementing automated test suites using industry-leading tools and technologies.
+10. Proficiency in using test automation tools, such as Selenium, is essential for this position to ensure efficient and accurate testing of our ICT solutions.
+11. In this role, you will collaborate with the development team to design and implement an efficient and reliable test suite for our ICT projects.
+12. The successful candidate will possess a deep understanding of test automation tools and be able to provide technical support and guidance in their usage.
+13. We are seeking a candidate with a strong background in developing ICT test suites and utilizing test automation tools to ensure the quality and reliability of our software applications.
+14. As a Test Automation Engineer, you will play a crucial role in implementing and maintaining test suites using cutting-edge tools and technologies.
+15. The ideal candidate will have hands-on experience in using test automation tools such as Selenium WebDriver to develop and execute test scripts for ICT systems.
+16. We are looking for a skilled professional who can effectively utilize test automation tools and frameworks to design and execute comprehensive test plans for our ICT solutions.
+17. The successful candidate will possess a solid understanding of software testing principles and be able to utilize test automation tools to develop and maintain test suites for our ICT applications.
+18. Proficiency in using test automation tools and frameworks, such as Selenium and Cucumber, is required for this position to ensure efficient and accurate testing of our ICT projects.
+19. In this role, you will be responsible for developing and maintaining test suites for our ICT systems, using advanced test automation tools and techniques to improve testing efficiency.
+20. The ideal candidate will have a proven track record of utilizing test automation tools to design and execute test suites, ensuring the quality and reliability of our ICT solutions.
+21. We are seeking a candidate who can effectively leverage test automation tools and frameworks to create and maintain test cases for our ICT projects.
+22. As a Test Automation Specialist, you will be responsible for developing and implementing test suites using industry-leading tools and technologies, ensuring the accuracy and efficiency of our ICT testing processes.
+23. The successful candidate will have strong problem-solving skills and be able to develop and execute test scripts using various test automation tools for our ICT systems.
+24. Proficiency in using test automation tools, such as Selenium and Jenkins, is crucial for this position to ensure the successful implementation and execution of ICT test suites.
+25. In this role, you will collaborate with cross-functional teams to identify and implement the most suitable test automation tools and frameworks for our ICT applications.
+26. We are looking for a candidate with a solid understanding of software testing methodologies and experience in utilizing test automation tools to design and execute test suites for our ICT solutions.
+27. As a Test Automation Engineer, you will be responsible for developing, maintaining, and executing test cases using various test automation tools for our ICT projects.
+28. The ideal candidate will have a strong background in using test automation tools and frameworks, such as Selenium and Cucumber, to create and manage test suites for our ICT systems.
+29. We are seeking a candidate who can effectively utilize test automation tools and methodologies to develop and implement comprehensive test suites for our ICT applications.
+30. In this role, you will leverage your expertise in using test automation tools to design and execute test cases for our ICT projects, ensuring the reliability and functionality of our software applications.
+31. The successful candidate will possess a deep understanding of test automation principles and be able to develop and maintain test suites using industry-leading tools for our ICT solutions.
+32. Proficiency in using test automation tools, such as Selenium WebDriver and JUnit, is essential for this position to ensure the accuracy and efficiency of our ICT testing processes.
+33. As a Test Automation Specialist, you will play a vital role in identifying and implementing the best test automation tools and technologies for our ICT systems, improving testing effectiveness and efficiency.
+34. The ideal candidate will have hands-on experience in using test automation tools and frameworks to develop and execute test scripts for our ICT applications, ensuring their reliability and quality.
+35. We are looking for a highly motivated candidate who can effectively utilize test automation tools and methodologies to design and manage test suites for our ICT projects.
+36. The successful candidate will possess strong analytical skills and be able to develop and execute test cases using various test automation tools and frameworks for our ICT solutions.
+37. Proficiency in using test automation tools, such as Selenium and Appium, is a must-have skill for this position to ensure accurate and efficient testing of our ICT systems.
+38. In this role, you will collaborate with the quality assurance team to define and implement test automation strategies and frameworks for our ICT applications.
+39. We are seeking a candidate with a proven track record of utilizing test automation tools and methodologies to develop and maintain test suites for our ICT projects.
+40. As a Test Automation Engineer, you will be responsible for designing and executing automated test scripts using industry-leading tools and technologies for our ICT solutions.
+----------------------------------------------------------------------------------------------------
+skills : ['observe celestial objects']
+1) Seeking an experienced astronomer to observe celestial objects using state-of-the-art telescopes and advanced imaging techniques.
+
+2) The ideal candidate will have a strong passion for stargazing and the ability to accurately identify and observe celestial objects.
+
+3) As part of the job responsibilities, the successful candidate will be required to document and analyze data obtained from observing celestial objects.
+
+4) We are looking for someone with a keen eye for detail and the ability to observe celestial objects with precision and accuracy.
+
+5) The candidate should possess a deep understanding of astronomy and be able to interpret the findings derived from observing celestial objects.
+
+6) The selected candidate will be responsible for operating complex equipments in order to accurately observe and document celestial objects.
+
+7) The role requires the candidate to keep up-to-date with the latest advancements in astronomical technology to observe celestial objects effectively.
+
+8) The successful applicant should be able to use software programs and tools to enhance the observation and analysis of celestial objects.
+
+9) The candidate should have experience in conducting night-time observations to capture images of celestial objects.
+
+10) The ability to communicate scientific findings derived from observing celestial objects to a non-technical audience is a crucial skill for this role.
+
+11) Attention to detail is paramount when observing celestial objects, as even slight discrepancies can lead to significant scientific discoveries.
+
+12) Extensive knowledge of different types of telescopes and their capabilities is necessary for accurately observing celestial objects in varying conditions.
+
+13) The candidate must be able to adapt to changing weather conditions and employ suitable methods to observe celestial objects accordingly.
+
+14) A thorough understanding of celestial coordinates and how to use them to locate and observe celestial objects is required.
+
+15) The candidate should be able to effectively collaborate with other astronomers to coordinate observations and share insights on observed celestial objects.
+
+16) Experience in astrophotography techniques would be advantageous for capturing detailed images of observed celestial objects.
+
+17) The candidate must possess excellent analytical skills to interpret the complex data derived from observing celestial objects.
+
+18) Strong problem-solving abilities are essential in troubleshooting and maintaining observation equipment used for studying celestial objects.
+
+19) The successful candidate should be able to accurately classify and categorize observed celestial objects based on their characteristics.
+
+20) The ability to properly calibrate observation instruments to ensure accurate data collection from observed celestial objects is necessary.
+
+21) The candidate should be capable of independently managing observation schedules to optimize the chance of observing rare celestial objects.
+
+22) The successful applicant will need to have a solid understanding of relevant scientific theories and concepts that influence the behavior of celestial objects.
+
+23) The position requires a meticulous approach to record-keeping and documentation of observations made on various celestial objects.
+
+24) Familiarity with different astronomical databases and catalogues is necessary for cross-referencing observed celestial objects with existing knowledge.
+
+25) The ideal candidate will have experience in identifying and distinguishing observational artifacts from genuine celestial objects.
+
+26) The ability to adapt observational techniques for different types of celestial objects, such as stars, planets, and galaxies, is essential for this role.
+
+27) The candidate should be able to contribute to the development of new observation methodologies to better understand celestial objects.
+
+28) Experience with image processing software is highly desirable to enhance and analyze images captured during the observation of celestial objects.
+
+29) The candidate should possess strong organizational skills to prioritize observation targets and manage multiple observation projects simultaneously.
+
+30) The ability to work in remote or isolated locations for extended periods, where observing conditions are optimal, is a requirement for this job.
+
+31) The candidate must be able to effectively communicate and collaborate with colleagues in order to plan and execute joint observation projects on celestial objects.
+
+32) The successful candidate should have experience in conducting spectroscopic observations to study the chemical composition of celestial objects.
+
+33) Adapting observation techniques and instruments to account for light pollution in urban areas is a skill that will be valuable when observing celestial objects.
+
+34) The candidate should be able to troubleshoot and fix technical issues that arise with observation equipment during the study of celestial objects.
+
+35) Knowledge of astrometry and the calculation of precise celestial coordinates is crucial for accurately capturing and documenting celestial objects.
+
+36) Experience in classifying and cataloging observed celestial objects according to existing taxonomies and nomenclatures is a necessary skill for this role.
+
+37) The candidate must be able to analyze observational data to identify patterns and trends in the behavior and characteristics of observed celestial objects.
+
+38) The successful applicant should have a strong background in physics and mathematics, as these disciplines are fundamental to the study of celestial objects.
+
+39) The ability to adapt observation techniques to variable atmospheric conditions, such as humidity and turbulence, is crucial for clear and precise observation of celestial objects.
+
+40) The candidate should be familiar with statistical analysis and data visualization methods to effectively present findings derived from observing celestial objects.
+----------------------------------------------------------------------------------------------------
+skills : ['manage data, information and digital content']
+1. Proficient in organizing and maintaining digital files, ensuring proper categorization and easy access.
+2. Experienced in data analysis and interpretation to identify patterns and trends to support decision-making.
+3. Skilled in managing large volumes of data, ensuring accuracy and integrity at all times.
+4. Familiarity with content management systems to upload, update, and delete digital content efficiently.
+5. Adept at using data management software to store, retrieve, and manipulate information effectively.
+6. Demonstrated ability to develop and implement data governance policies and procedures to ensure data quality and security.
+7. Proven track record in managing digital assets and metadata, ensuring consistency and relevance across platforms.
+8. Knowledge of data privacy regulations and compliance requirements to safeguard sensitive information.
+9. Proficient in using data visualization tools to present complex information in a visually appealing and understandable manner.
+10. Strong attention to detail in managing data entry and verification processes to maintain accuracy and completeness.
+11. Skilled in conducting data audits and cleansing activities to identify and rectify any inconsistencies or errors.
+12. Experience in creating and maintaining comprehensive data documentation, including data dictionaries and data flow diagrams.
+13. Excellent analytical skills to identify data gaps, conduct data mining, and generate actionable insights.
+14. Familiarity with digital asset management software to organize, archive, and retrieve digital assets efficiently.
+15. Proficient in using data analytics tools and techniques to identify trends and patterns for business optimization.
+16. Knowledge of information management best practices, including data classification, retention, and disposal.
+17. Proven ability to collaborate with cross-functional teams to define data requirements and ensure data accuracy.
+18. Skilled in developing and implementing data quality assessment frameworks to measure and improve data reliability.
+19. Experience in data migration and database management, ensuring seamless transition and minimal disruption.
+20. Familiarity with data governance frameworks and frameworks to establish data standards and guidelines.
+21. Proficient in using data visualization software to create interactive dashboards for effective data-driven decision-making.
+22. Strong problem-solving skills to identify data-related issues and implement appropriate solutions.
+23. Experience in managing digital content across multiple platforms, including websites, social media, and digital marketing channels.
+24. Knowledge of data storage and retrieval systems to maintain efficient access to relevant information.
+25. Skilled in data modeling and database design to ensure efficient data organization and retrieval.
+26. Proficient in conducting data quality assessments and implementing corrective actions to maintain data accuracy.
+27. Experience in managing digital archives and repositories, ensuring proper indexing and retrieval mechanisms.
+28. Familiarity with data protection protocols and encryption methods to safeguard sensitive information.
+29. Strong communication skills to collaborate with stakeholders and present complex data concepts and findings.
+30. Knowledge of information security principles and best practices to ensure data confidentiality and integrity.
+31. Proficient in using data analytics tools to perform statistical analysis and generate data-driven insights.
+32. Skilled in data cleansing techniques to improve data accuracy and consistency.
+33. Experience in developing and implementing data backup and recovery strategies to minimize data loss risk.
+34. Familiarity with digital preservation techniques to ensure long-term accessibility and readability of digital content.
+35. Proficient in data entry and verification processes to ensure data completeness and accuracy.
+36. Demonstrated ability to develop and maintain data dictionaries and data standards for efficient data management.
+37. Knowledge of data extraction and transformation techniques to support business intelligence initiatives.
+38. Skilled in data profiling and data cleansing techniques to identify and rectify data quality issues.
+39. Experience in managing data access and permissions to ensure data privacy and compliance.
+40. Familiarity with data visualization principles to create meaningful visual representations of data insights.
+----------------------------------------------------------------------------------------------------
+skills : ['install automation components']
+1) Seeking an experienced technician to install and integrate automation components into our manufacturing process. 
+2) Proficiency in the installation of automation components, such as sensors, actuators, and control panels, is required for this role. 
+3) The ideal candidate should have a strong background in fitting and installing automation components in industrial settings. 
+4) Knowledge of electrical wiring and circuitry is essential to successfully install automation components in our production line. 
+5) Must have hands-on experience with automation component installation and troubleshooting in a fast-paced manufacturing environment. 
+6) We are looking for a detail-oriented individual with a proven track record of accurately fitting and installing automation components. 
+7) Ability to read and interpret technical drawings and schematics is necessary for the successful installation of automation components. 
+8) Prior experience in installing automation components in the automotive industry will be highly valued for this position. 
+9) The selected candidate will be responsible for the complete installation and testing of automation components in our clients' facilities. 
+10) Strong problem-solving skills are required to identify and resolve any issues that may arise during the installation of automation components. 
+
+11) Join our team and play a crucial role in the installation process of automation components, ensuring flawless operations. 
+12) We are seeking an automation technician with a solid understanding of fitting automation components according to established guidelines. 
+13) The successful candidate will be responsible for installing and maintaining various automation components, including PLCs and HMIs. 
+14) familiarity with the latest industry standards and practices for fitting and installing automation components is preferred. 
+15) Excellent knowledge of mechanical systems is essential to install automation components accurately and efficiently. 
+16) The ability to effectively communicate with cross-functional teams is vital when coordinating the installation of automation components. 
+17) Experience with programming and configuring automation components will be an added advantage for this role. 
+18) Must be able to work independently on multiple projects simultaneously, ensuring timely installation of automation components. 
+19) Attention to detail and adherence to safety protocols are paramount when handling and fitting automation components. 
+20) The installation of automation components requires a high level of technical expertise and precision. 
+
+21) Assembling and fitting automation components to ensure seamless operation of machinery. 
+22) Collaborating with the engineering team to design and implement automation components for our clients. 
+23) Properly documenting the installation process of automation components for future reference and troubleshooting. 
+24) Troubleshooting and resolving any issues related to the installation of automation components. 
+25) Keeping up-to-date with the latest advancements and technologies in the field of automation component installation. 
+26) Providing training and guidance to junior technicians on the proper installation techniques for automation components. 
+27) Conducting quality checks and inspections to ensure the correct installation of automation components. 
+28) Collaborating with vendors and suppliers to source high-quality automation components for installation. 
+29) Developing and maintaining standard operating procedures for the installation of automation components. 
+30) Implementing preventive maintenance procedures to maximize the lifespan of installed automation components.
+
+31) Adhering to safety protocols and guidelines when installing automation components in hazardous environments. 
+32) Assisting in the selection and procurement of automation components based on project requirements. 
+33) Conducting tests and simulations to validate the performance and functionality of installed automation components. 
+34) Collaborating with the research and development team to evaluate and implement new automation components. 
+35) Collaborating with project managers and other stakeholders to ensure timely installation and integration of automation components. 
+36) Participating in the design and development of custom automation components for specialized applications. 
+37) Troubleshooting and repairing automation components to minimize downtime and production disruptions. 
+38) Documenting installation procedures and providing comprehensive reports on the installation of automation components. 
+39) Conducting training sessions for end-users to familiarize them with the functionality of installed automation components. 
+40) Continuously improving and optimizing the installation process of automation components to enhance efficiency and effectiveness.
+----------------------------------------------------------------------------------------------------
+skills : ['programmable logic controller']
+1. We are seeking a candidate with expertise in PLC technology to join our team of automation engineers.
+2. Knowledge of computer control systems, particularly PLCs, is essential for this role.
+3. The ideal candidate will have a strong background in the technology of PLCs and their application in industrial automation.
+4. Experience with programming and troubleshooting programmable logic controllers is a must-have for this position.
+5. We are looking for someone who is familiar with the operation and maintenance of programmable logic controllers (PLCs) and can effectively manage their programming and configuration.
+6. The successful candidate should have a deep understanding of PLCs and possess the ability to design and implement logic controllers that are programmable.
+7. Proficiency in programming and debugging programmable logic controllers is a core requirement for this role.
+8. The candidate should be skilled in working with PLC-based control systems and be able to develop, implement, and maintain effective logic control solutions.
+9. Practical knowledge of programming and troubleshooting various programmable logic controllers (PLCs) is necessary for this role.
+10. The ideal candidate will have hands-on experience with the installation, configuration, and programming of PLCs in industrial settings.
+
+11. Understanding and proficiency in PLC technology is a critical skill needed for this position.
+12. The successful candidate must be able to utilize computer control systems, specifically PLCs, to optimize operational efficiency.
+13. The candidate should possess a strong background in the technology of PLCs and the logic control principles they employ.
+14. A thorough knowledge of programmable logic controllers and their programming languages is essential for this role.
+15. We are looking for someone who can troubleshoot and resolve issues with programmable logic controllers to ensure smooth operation of our manufacturing processes.
+16. Proficiency in PLC programming and the ability to design, implement, and test PLC-based control systems is required for this position.
+17. The candidate should have experience in developing and maintaining complex logic control solutions utilizing programmable logic controllers.
+18. Familiarity with industrial automation and expertise in programming programmable logic controllers are key requirements for this role.
+19. The successful candidate must possess in-depth knowledge of PLC technology and be able to apply it to solve complex industrial automation challenges.
+20. We are seeking a candidate who has a solid understanding of programmable logic controllers and can effectively program and modify PLC code.
+
+21. Demonstrated experience in PLC technology and the ability to work with computer control systems are essential for this role.
+22. The candidate should possess a deep understanding of the technology behind programmable logic controllers and should be able to develop innovative solutions using this technology.
+23. Proficiency in programming and configuring programmable logic controllers is a prerequisite for this position.
+24. The successful candidate must have a strong grasp of PLC technology and be able to troubleshoot and resolve issues related to their operation and programming.
+25. We are looking for someone with hands-on experience in programming and maintaining programmable logic controllers in a manufacturing environment.
+26. The candidate should be knowledgeable in the design and implementation of logic controllers utilizing programmable logic controllers.
+27. Proficiency in programming and debugging PLCs is a must-have skill for this role.
+28. The successful candidate will be responsible for developing and implementing PLC-based control systems, optimizing their performance, and troubleshooting any issues that arise.
+29. We require a candidate with expertise in PLC technology and the ability to design and configure complex logic control solutions using programmable logic controllers.
+30. The ideal candidate will have extensive experience in programming and troubleshooting programmable logic controllers in various industrial applications.
+
+31. We are seeking a skilled professional who can effectively utilize PLC technology to automate and optimize our manufacturing processes.
+32. In-depth knowledge of computer control systems, including PLCs, is necessary for this role.
+33. The candidate should possess a solid understanding of the technology behind PLCs and be able to program and maintain them effectively.
+34. Proficiency in PLC programming and the ability to integrate PLC-based control systems with existing manufacturing processes are crucial for this position.
+35. The successful candidate will be responsible for overseeing the installation, configuration, and programming of PLCs in our industrial facilities.
+36. We require a candidate who is well-versed in the design and implementation of logic controllers using programmable logic controllers.
+37. The candidate should have extensive programming experience with various PLCs and be able to optimize logic control solutions for efficient operation.
+38. Strong troubleshooting skills in programmable logic controllers, along with the ability to resolve complex technical issues, are imperative for this position.
+39. The ideal candidate will have a deep understanding of PLC technology and its application in industrial automation, as well as practical experience in programming and maintaining PLCs.
+40. We are looking for someone who can develop robust logic control solutions using programmable logic controllers while ensuring compatibility with existing systems and equipment.
+----------------------------------------------------------------------------------------------------
+skills : ['manage radiology information system']
+1) We are seeking a skilled professional with experience in managing radiology information systems. 
+2) The ideal candidate will have the ability to efficiently handle and distribute radiological images and data within the radiology information system. 
+3) Must possess a strong understanding of radiology information system management and be able to develop and maintain the system effectively. 
+4) Experience in managing radiology information systems in a healthcare setting is highly preferred. 
+5) The successful candidate will be responsible for overseeing the day-to-day operations of the radiology information system, ensuring its reliability and accuracy. 
+6) Knowledge of the latest advancements in radiology information system technology is a plus. 
+7) Candidates should possess excellent problem-solving skills when it comes to troubleshooting issues within the radiology information system. 
+8) Strong organizational skills are essential for managing and maintaining the radiology information system effectively. 
+9) The ability to work collaboratively with radiologists and IT professionals to ensure seamless integration of the radiology information system is required. 
+10) Required knowledge of data security protocols and compliance regulations within the radiology information system. 
+11) Experience in configuring and customizing radiology information systems to meet specific user needs is a plus. 
+12) The candidate should be able to identify inefficiencies within the radiology information system and propose solutions for improvement. 
+13) Excellent communication skills are necessary for providing training and support to users of the radiology information system. 
+14) Proficiency in troubleshooting hardware and software issues within the radiology information system is essential. 
+15) Strong attention to detail when inputting and retrieving data from the radiology information system is crucial to maintaining accuracy. 
+16) The candidate must possess a solid understanding of medical imaging procedures and their integration into the radiology information system. 
+17) Ability to adapt to new technologies and upgrades within the radiology information system is required. 
+18) Previous experience in managing radiology information system upgrades and migrations is highly desirable. 
+19) The candidate should have a deep understanding of the workflow processes within the radiology information system. 
+20) Conduct regular performance evaluations of the radiology information system to ensure optimal functionality. 
+21) Proven ability to train and educate end-users on the functionality and proper utilization of the radiology information system. 
+22) Collaborate with cross-functional teams to identify and implement system enhancements in the radiology information system. 
+23) Knowledge of PACS (Picture Archiving and Communication System) integration within the radiology information system is highly valued. 
+24) Stay updated with industry trends and advancements in radiology information system management. 
+25) Provide technical support and troubleshooting assistance to radiologists and other users of the radiology information system. 
+26) Develop and enforce data governance policies and procedures within the radiology information system. 
+27) Collaborate with vendors and IT professionals to ensure seamless integration and compatibility of hardware and software within the radiology information system. 
+28) Conduct regular system audits to ensure the integrity and security of data within the radiology information system. 
+29) Create and maintain documentation on system configurations, user manuals, and training materials for the radiology information system. 
+30) Lead the implementation of new modules and functionalities within the radiology information system. 
+31) Monitor and analyze system performance metrics to identify areas for improvement within the radiology information system. 
+32) Collaborate with IT team to develop and implement disaster recovery and business continuity plans for the radiology information system. 
+33) Keep abreast of regulatory requirements and industry standards for data management within the radiology information system. 
+34) Provide technical expertise and guidance to resolve complex issues related to the radiology information system. 
+35) Conduct regular training sessions and workshops to educate users on new features and updates within the radiology information system. 
+36) Evaluate and select appropriate software and hardware solutions to enhance the functionality and performance of the radiology information system. 
+37) Coordinate with other departments and stakeholders to implement system integrations and interfaces with the radiology information system. 
+38) Maintain system user access controls and permissions within the radiology information system. 
+39) Collaborate with IT security team to ensure the confidentiality and integrity of patient data within the radiology information system. 
+40) Stay up-to-date with industry best practices in radiology information system management and recommend process improvements accordingly.
+----------------------------------------------------------------------------------------------------
+skills : ['operate audio equipment', 'use audio reproduction software']
+1) Proficient in operating a wide range of audio equipment, including mixing consoles, amplifiers, and microphones.
+2) Demonstrated experience in effectively utilizing audio reproduction software to enhance sound quality and create engaging audio content.
+3) Skilled in operating broadcast studio controls to ensure smooth and seamless audio production during live broadcasts.
+4) Knowledgeable in applying audio technology, such as equalizers and compressors, to achieve optimal audio performance.
+5) Experience in setting up, operating, and troubleshooting audio equipment for events and performances.
+6) Proficient in using various audio reproduction software to edit, mix, and master audio recordings.
+7) Familiarity with audio engineering principles and techniques to capture and reproduce high-quality audio.
+8) Ability to operate audio equipment in adherence to industry standards and safety protocols.
+9) Strong understanding of signal flow and the ability to troubleshoot audio issues efficiently.
+10) Proven track record in managing audio production projects and ensuring timely delivery of high-quality audio content.
+11) Skilled in using audio reproduction software to synchronize audio with video for multimedia projects.
+12) Knowledge of different audio transmission technologies and their applications in audio equipment operation.
+13) Ability to collaborate with sound engineers and musicians to achieve the desired audio outcomes.
+14) Experience with audio editing software to clean up audio recordings and remove background noise.
+15) Proficient in operating audio equipment in a live event setting, maintaining sound levels and ensuring clear audio reproduction.
+16) Familiarity with audio mixing techniques to balance sound levels and create a cohesive audio experience.
+17) Knowledgeable in troubleshooting audio-related issues, including connectivity problems and signal interference.
+18) Ability to use audio reproduction software to manipulate audio effects and enhance recordings.
+19) Strong attention to detail and the ability to accurately operate audio equipment to achieve desired audio outcomes.
+20) Experience in setting up and operating audio equipment for conferences, meetings, and seminars.
+21) Proficient in using audio reproduction software for multi-track recording and editing.
+22) Understanding of audio acoustics and the ability to optimize sound quality in different environments.
+23) Skilled in operating audio equipment for live streaming and online broadcasting purposes.
+24) Knowledge of audio compression techniques and their impact on audio quality and file size.
+25) Ability to troubleshoot audio feedback and distortion issues in real-time during live performances.
+26) Experience in calibrating audio equipment to ensure accurate sound reproduction and consistent audio levels.
+27) Proficient in using audio reproduction software to create loops, samples, and other audio elements for music production.
+28) Familiarity with audio editing techniques to splice and merge audio clips seamlessly.
+29) Ability to operate audio equipment for theater productions, ensuring voice clarity and sound effects synchronization.
+30) Strong understanding of audio recording techniques and best practices for capturing high-quality sound.
+31) Knowledgeable in using audio reproduction software for audio restoration and noise reduction.
+32) Skilled in operating audio equipment in a recording studio environment, managing multiple inputs and outputs.
+33) Experience with audio mixing consoles and the ability to adjust audio levels and apply audio effects in real-time.
+34) Proficient in using audio reproduction software for podcast production and post-production editing.
+35) Familiarity with audio signal processing techniques, such as equalization and dynamic range compression.
+36) Knowledge of audio codecs and their impact on audio quality and file formats.
+37) Ability to operate audio equipment for live events, ensuring proper sound reinforcement and coverage for the audience.
+38) Strong understanding of audio routing and the ability to configure complex audio signal flows.
+39) Experience in using audio reproduction software for sound design and audio branding purposes.
+40) Proficient in operating audio equipment for radio broadcasting, including managing playlists and live interviews.
+----------------------------------------------------------------------------------------------------
+skills : ['check in guests']
+1. Register and welcome guests upon arrival, ensuring a smooth check-in process.
+2. Provide exceptional customer service by efficiently signing in guests and assisting with any inquiries.
+3. Responsible for checking in guests, ensuring accurate recording of personal information and preferences.
+4. Manage the check-in desk, greeting and guiding guests through the registration process.
+5. Assist guests with the check-in procedure, offering support and resolving any issues that may arise.
+6. Coordinate guest arrivals by efficiently check in guests and coordinating with other departments.
+7. Ensure a positive first impression for guests by efficiently checking them in and providing necessary information.
+8. Perform guest check-ins while maintaining a friendly and professional demeanor.
+9. Efficiently handle check-ins, processing guest information accurately and promptly.
+10. Welcome guests with a warm and friendly demeanor, checking them in and providing necessary assistance.
+11. Complete check-in procedures swiftly and accurately, providing a seamless experience for guests.
+12. Greet and check in guests in a timely manner, ensuring their needs and preferences are met.
+13. Provide excellent guest service during check-in, ensuring all necessary documents are completed.
+14. Process guest check-ins with attention to detail, following all established procedures.
+15. Assist with the registration process, ensuring all required information is recorded accurately.
+16. Maintain a neat and organized check-in area, creating a welcoming environment for guests.
+17. Collaborate with the reservations team to ensure smooth check-in processes for all arriving guests.
+18. Effectively manage the check-in process, prioritizing guest satisfaction and efficiency.
+19. Register guests promptly and efficiently, verifying all necessary information and documentation.
+20. Offer a warm welcome to guests, efficiently checking them in and providing relevant information.
+
+21. Create a welcoming atmosphere by facilitating the check-in process for guests.
+22. Provide support at the check-in desk, handling guest inquiries and resolving any issues that arise.
+23. Work collaboratively with the front desk team to ensure a seamless check-in experience for guests.
+24. Communicate effectively with guests during the check-in process, addressing any concerns or special requests.
+25. Utilize the hotel's check-in system to efficiently process and record guest information.
+26. Maintain professionalism while checking in guests, adhering to all policies and procedures.
+27. Utilize excellent organizational skills to manage multiple check-ins simultaneously.
+28. Demonstrate strong attention to detail when registering guests, ensuring accuracy of information.
+29. Adapt quickly to changing check-in demands, efficiently managing guest arrivals.
+30. Provide exceptional service to guests during the check-in process, going above and beyond to exceed their expectations.
+
+31. Uphold the hotel's standards by delivering a seamless and efficient check-in experience.
+32. Demonstrate excellent problem-solving skills when addressing guest concerns during check-in.
+33. Collaborate with the housekeeping team to ensure rooms are ready for guests upon check-in.
+34. Display a friendly and approachable demeanor while checking in guests, making them feel welcome.
+35. Keep abreast of hotel services and amenities to effectively communicate information to guests during check-in.
+36. Navigate and utilize the hotel's reservation system to efficiently manage guest check-ins.
+37. Proactively anticipate guest needs during the check-in process, providing personalized service.
+38. Ensure the confidentiality and security of guest information during the check-in process.
+39. Act as a point of contact for guests during the check-in process, addressing any concerns or requests.
+40. Maintain a positive and professional attitude when dealing with challenging check-in situations.
+----------------------------------------------------------------------------------------------------

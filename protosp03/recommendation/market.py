@@ -1,3 +1,7 @@
+import os
+import json
+import argparse
+
 from collections import Counter
 
 
@@ -198,6 +202,25 @@ def get_learner_attractiveness(learner, years, skill_supply, skill_demand):
     return learner_attractiveness
 
 
+def get_all_learners_attractiveness(learners, years, skill_supply, skill_demand):
+    """Calculate the attractiveness of all learners for each skill.
+
+    Args:
+        learners (list): list of learners
+        years (list): list of years
+        skill_supply (dict): dictionary of Counter for each year with skills and their supply
+        skill_demand (dict): dictionary of Counter for each year with skills and their demand
+
+    Returns:
+        list: attractiveness of all learners for each skill they possess"""
+    learners_attractiveness = []
+    for learner in learners:
+        learners_attractiveness.append(
+            get_learner_attractiveness(learner, years, skill_supply, skill_demand)
+        )
+    return learners_attractiveness
+
+
 def get_all_skills_attractiveness(
     skills, mastery_levels, years, skill_supply, skill_demand
 ):
@@ -241,4 +264,14 @@ def get_all_market_metrics(skills, mastery_levels, learners, jobs, years):
     skills_attractiveness = get_all_skills_attractiveness(
         skills, mastery_levels, years, skill_supply, skill_demand
     )
-    return skill_supply, skill_demand, skill_trends, skills_attractiveness
+    learners_attractiveness = get_all_learners_attractiveness(
+        learners, years, skill_supply, skill_demand
+    )
+
+    return (
+        skill_supply,
+        skill_demand,
+        skill_trends,
+        skills_attractiveness,
+        learners_attractiveness,
+    )

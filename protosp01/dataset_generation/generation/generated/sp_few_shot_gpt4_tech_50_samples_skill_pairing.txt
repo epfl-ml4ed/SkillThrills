@@ -1,0 +1,150 @@
+skills : ['Python (computer programming)', 'Visual Studio .NET', 'Scala', 'Common Lisp', 'Assembly (computer programming)', 'APL']
+Job Opening : Seeking a dynamic professional with experience in the entertainment industry.
+----------------------------------------------------------------------------------------------------
+skills : ['solve technical problems']
+Job Opening : Looking for a trustworthy communications officer to maintain and enhance our internal communication systems.
+----------------------------------------------------------------------------------------------------
+skills : ['design automation components']
+Job Opening: Seeking an IT professional to conduct code reviews and implement quality assurance procedures to uphold our company's quality standards.
+----------------------------------------------------------------------------------------------------
+skills : ['manage keys for data protection', 'manage cloud data and storage', 'Backbox (penetration testing tool)']
+Job Opening: Looking for a trustworthy and reliable candidate with strong skills in maintaining and enhancing internal communication systems.
+----------------------------------------------------------------------------------------------------
+skills : ['fibre optics']
+Job Opening: Business Analyst needed to precisely define and measure technical needs based on thorough analysis of business requirements.
+----------------------------------------------------------------------------------------------------
+skills : ['QlikView Expressor', 'SAS Data Management', 'Oracle Warehouse Builder', 'IBM InfoSphere Information Server', 'IBM InfoSphere DataStage', 'Pentaho Data Integration']
+Job Opening: Seeking an Information Security Specialist to implement and uphold our company's information security policies.
+----------------------------------------------------------------------------------------------------
+skills : ['define database physical structure', 'design database scheme', 'manage standards for data exchange']
+Job Opening : Conduct regular ICT code reviews, implement quality assurance procedures, and uphold the highest quality standards in our software development process.
+----------------------------------------------------------------------------------------------------
+skills : ['provide multimedia content', 'use presentation software']
+Job Opening: Seeking a highly motivated Web Developer with expertise in Angular, JavaScript, and TypeScript for dynamic team projects.
+----------------------------------------------------------------------------------------------------
+skills : ['assess ICT knowledge']
+Job Opening: Seeking an individual with strong analytical skills to interpret and evaluate test data.
+----------------------------------------------------------------------------------------------------
+skills : ['develop online community plan']
+Job Opening: Seeking a computer programmer proficient in Python to develop, test and debug advanced software applications.
+----------------------------------------------------------------------------------------------------
+skills : ['lead disaster recovery exercises']
+Job Opening: Looking for experienced individuals with a knack for troubleshooting ICT related issues efficiently and effectively.
+----------------------------------------------------------------------------------------------------
+skills : ['digital camera sensors', 'hardware components']
+Job Opening : Seeking a dynamic E-commerce Specialist with a strong foundation in digital marketing techniques to drive online sales.
+----------------------------------------------------------------------------------------------------
+skills : ['Vyper', 'Perl']
+Job Opening : Seeking a Cyber Security Specialist with experience in Data Management, Web Analytics, and Digital Marketing techniques.
+----------------------------------------------------------------------------------------------------
+skills : ['use back-up and recovery tools', 'store digital data and systems']
+Job Opening : The position requires exceptional expertise in PostgreSQL for database management and maintenance.
+----------------------------------------------------------------------------------------------------
+skills : ['use production planning software', 'industrial software']
+Job Opening: Seeking an experienced software development manager with a strong background in Agile project management methodologies.
+----------------------------------------------------------------------------------------------------
+skills : ['ICT recovery techniques']
+Job Opening: Seeking an imaginative thinker to drive innovation and ideation.
+----------------------------------------------------------------------------------------------------
+skills : ['mix ink', 'edit negatives', 'operate imagesetter', 'digital printing']
+Job Opening : Seeking a self-motivated and independent professional for a challenging and dynamic role.
+----------------------------------------------------------------------------------------------------
+skills : ['software UI design patterns', 'use software design patterns']
+Job Opening: Digital Marketing Analyst with expertise in Web Analytics, Data Management and Cyber Security.
+----------------------------------------------------------------------------------------------------
+skills : ['improve user-friendliness']
+Job Opening : We're seeking a Cloud Technology Specialist with a strong computer technology background, committed to providing top-tier technical expertise.
+----------------------------------------------------------------------------------------------------
+skills : ['Prolog (computer programming)', 'SAP R3', 'Pascal (computer programming)', 'use functional programming', 'computer programming', 'PHP']
+Job Opening: Seeking a candidate with knowledge and significant experience in the entertainment industry.
+----------------------------------------------------------------------------------------------------
+skills : ['food waste monitoring systems', 'web analytics']
+Job Opening: Looking for individuals with a solid understanding of Agile project management methodologies to drive complex software projects to successful completion.
+----------------------------------------------------------------------------------------------------
+skills : ['develop reporting software']
+Job Opening : Involved in the creation, configuration, and execution of automated testing solutions for IT.
+----------------------------------------------------------------------------------------------------
+skills : ['telecommunication trunking']
+Job Opening : Seeking a customer service specialist who excels in active listening and effective communication.
+----------------------------------------------------------------------------------------------------
+skills : ['analyse software specifications']
+Job Opening: As a financial Advisor, you will be providing clients with professional advice and financial services.
+----------------------------------------------------------------------------------------------------
+skills : ['animate 3D organic forms', 'convert into animated object', 'create digital images']
+Job Opening: Seeking a versatile individual capable of handling responsibilities with minimal supervision.
+----------------------------------------------------------------------------------------------------
+skills : ['proxy servers']
+Job Opening : An ICT professional with experience in providing technical support and troubleshooting to ensure optimal system performance is required.
+----------------------------------------------------------------------------------------------------
+skills : ['implement data quality processes', 'data quality assessment']
+Job Opening: Seek a Computer Engineering Professional who will optimize our technical operations and enhance customer experience.
+----------------------------------------------------------------------------------------------------
+skills : ['manage data, information and digital content']
+Job Opening: With a passion for quality products, you excel in implementing and maintaining quality assurance procedures throughout the product development life cycle.
+----------------------------------------------------------------------------------------------------
+skills : ['service-oriented modelling', 'Outsourcing model', 'Open source model', 'hybrid model', 'SaaS (service-oriented modelling)']
+Job Opening: Software Developer specializing in Java and Python programming.
+----------------------------------------------------------------------------------------------------
+skills : ['ICT security standards']
+Job Opening: Multilingual Professional with proficiency in German and English required.
+----------------------------------------------------------------------------------------------------
+skills : ['model medical devices', 'design optical prototypes']
+Job Opening: A position is open for a talented computer programmer proficient in Java.
+----------------------------------------------------------------------------------------------------
+skills : ['ICT communications protocols']
+Job Opening: Seeking a dependable professional responsible for maintaining internal communication systems, with a proven track record in demonstrating trust and reliability.
+----------------------------------------------------------------------------------------------------
+skills : ['process collected survey data']
+Job Opening : Seeking a Project Manager proficient in Agile methodologies to facilitate team efficiency and deliver project success.
+----------------------------------------------------------------------------------------------------
+skills : ['implement spam protection']
+Job Opening: Serve as an ICT programmer where you will develop and implement unique solutions to complex technical issues.
+----------------------------------------------------------------------------------------------------
+skills : ['manage dispatch software systems']
+Job Opening : We're seeking an individual who thrives in a team environment, consistently meets commitments and brings innovative thinking to the table.
+----------------------------------------------------------------------------------------------------
+skills : ['maintain internet protocol configuration', 'analyse network configuration and performance']
+Job Opening : Accessible and professional, you are well-versed in actively listening and communicating effectively with a variety of audiences.
+----------------------------------------------------------------------------------------------------
+skills : ['N1QL', 'MDX', 'XQuery']
+Job Opening: We are seeking a Database Administrator with expertise in PostgreSQL for managing and improving our database systems.
+----------------------------------------------------------------------------------------------------
+skills : ['hardware testing methods', 'printed circuit boards testing methods', 'test hardware']
+Job Opening: Seeking a Data Scientist proficient in R or Python, machine learning models and capable of managing data storage systems.
+----------------------------------------------------------------------------------------------------
+skills : ['analyse network bandwidth requirements']
+Job Opening: Seeking a technical analyst to understand and translate business needs into system scope and objectives.
+----------------------------------------------------------------------------------------------------
+skills : ['Open source model', 'Iterative development', 'Spiral development', 'Incremental development', 'hybrid model', 'Outsourcing model']
+Job Opening : Seeking Database Administrator with advanced proficiency in PostgreSQL for data querying and management.
+----------------------------------------------------------------------------------------------------
+skills : ['create digital content', 'develop digital content']
+Job Opening: Seeking an experienced back-end developer proficient in Python programming with an ability to design, develop, and maintain complex systems.
+----------------------------------------------------------------------------------------------------
+skills : ['Adobe Illustrator', 'Capture One', 'graphics editor software', 'Adobe Photoshop Lightroom', 'Synfig', 'Microsoft Visio']
+Job Opening: Searching for a highly motivated self-starter capable of working independently to join our expanding team.
+----------------------------------------------------------------------------------------------------
+skills : ['Java (computer programming)', 'Ruby (computer programming)', 'Vyper', 'ASP.NET', 'VBScript', 'SAS language']
+Job Opening: Looking for experienced candidates with a background in the entertainment industry.
+----------------------------------------------------------------------------------------------------
+skills : ['execute conversion testing']
+Job Opening: Seeking Data Scientist with expertise in R or Python, proficient in Machine Learning, and experience in data storage techniques.
+----------------------------------------------------------------------------------------------------
+skills : ['use communication and collaboration software']
+Job Opening : Join our team of professionals with a humble attitude, readiness to grow, and a strong dedication to picking up new skills and technologies.
+----------------------------------------------------------------------------------------------------
+skills : ['manage information access aids']
+Job Opening: Seeking a dedicated professional to collaborate on challenging tasks involving the resolution of complex technical problems.
+----------------------------------------------------------------------------------------------------
+skills : ['collect ICT data']
+Job Opening : Seeking an individual with a strong acumen for analyzing test data and implementing results-driven strategies.
+----------------------------------------------------------------------------------------------------
+skills : ['blockchain platforms', 'decentralized application frameworks']
+Job Opening: Database Developer specializing in SQL, SQL Server, and JavaScript.
+----------------------------------------------------------------------------------------------------
+skills : ['quality control systems']
+Job Opening : Java Developer responsible for building Java applications.
+----------------------------------------------------------------------------------------------------
+skills : ['transportation software related to an ERP system', 'manage standard enterprise resource planning system']
+Job Opening : Testing is in your blood, and you are gifted with skills to develop top-notch automated software tests to ensure supreme software quality.
+----------------------------------------------------------------------------------------------------

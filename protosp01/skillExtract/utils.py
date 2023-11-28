@@ -28,7 +28,6 @@ from spacy.language import Language
 from spacy_language_detection import LanguageDetector
 import torch
 import torch.nn.functional as F
-from googletrans import Translator
 from fuzzywuzzy import fuzz
 encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
 max_tokens = 3996
@@ -83,16 +82,16 @@ def write_json(data, path):
 
 
 def detect_language(text):
-    maximum = max(len(text), 150)
-    doc = nlp_model(text[:maximum])
+    max_len = min(len(text), 500)
+    doc = nlp_model(text[:max_len])
     detect_language = doc._.language
     return detect_language["language"]
 
 
-def split_sentences(text):
+def split_sentences(text, language):
     # sentences = re.split(r'(?<=[.!?]) +', text)
     # sentences = text.split("\n\n")  # TODO: AD test number of sentences here
-    splitter = SentenceSplitter(language="de")
+    splitter = SentenceSplitter(language=language)
     sentences = splitter.split(text)
     # if sentences are took long, split them again
     sentences = [sentence.rstrip(".") for sentence in sentences]
@@ -111,6 +110,7 @@ def split_sentences(text):
 
 
 def drop_short_text(df, text_col, min_length=100):
+    # drop short texts under 100 words
     df["text_length"] = df[text_col].apply(lambda x: len(x.split()))
     df = df[df["text_length"] > min_length].drop(columns=["text_length"])
 
@@ -141,6 +141,29 @@ def compute_cost(input, output, model):
     input_len = num_tokens_from_string(input, model)
     output_len = num_tokens_from_string(output, model)
     return input_len * COSTS[model]["input"] + output_len * COSTS[model]["output"]
+
+
+def chat_completion(messages, model="gpt-3.5-turbo", return_text=True, model_args=None):
+    if model_args is None:
+        model_args = {}
+
+    while True:
+        try:
+            response = openai.ChatCompletion.create(
+                model=model, messages=messages, request_timeout=20, **model_args
+            )
+            if return_text:
+                return response["choices"][0]["message"]["content"].strip()
+            return response
+        except (
+            RateLimitError,
+            ServiceUnavailableError,
+            APIError,
+            Timeout,
+        ) as e:  # Exception
+            print(f"Timed out {e}. Waiting for 5 seconds.")
+            time.sleep(10)
+            continue
 
 
 # async def batch_chat_completion(
@@ -182,10 +205,16 @@ def chat_completion(messages, model="gpt-3.5-turbo", return_text=True, model_arg
             ServiceUnavailableError,
             APIError,
             Timeout,
+            InvalidRequestError,
         ) as e:  # Exception
-            print(f"Timed out {e}. Waiting for 5 seconds.")
-            time.sleep(5)
-            continue
+            if isinstance(e, InvalidRequestError):
+                print("Invalid request error")
+                print("Messages:", messages)
+                break
+            else:
+                print(f"Timed out {e}. Waiting for 5 seconds.")
+                time.sleep(5)
+                continue
 
 
 def text_completion(
@@ -207,10 +236,16 @@ def text_completion(
             ServiceUnavailableError,
             APIError,
             Timeout,
+            InvalidRequestError,
         ) as e:
-            print("Timed out. Waiting for 5 seconds.")
-            time.sleep(5)
-            continue
+            if isinstance(e, InvalidRequestError):
+                print("Invalid request error")
+                print("Prompt:", prompt)
+                break
+            else:
+                print(f"Timed out {e}. Waiting for 5 seconds.")
+                time.sleep(5)
+                continue
 
 
 def get_extraction_prompt_elements(
@@ -300,13 +335,15 @@ class OPENAI:
             messages.append({"role": "user", "content": sample["sentence"]})
             max_tokens = self.args.max_tokens
 
-            prediction = (
-                self.run_gpt_sample(messages, max_tokens=max_tokens).lower().strip()
-            )
-            if prediction == None:
-                sample["extracted_skills"] = []
-                self.data[idx] = sample
-                continue
+            try:
+                prediction = (
+                    self.run_gpt_sample(messages, max_tokens=max_tokens).lower().strip()
+                )
+            except:
+                print("Error with sample:", messages)
+                prediction = ""
+            if self.args.data_type == "course" and self.args.prompt_type == "wreqs":
+                self.args.prompt_type = "wlevels"
             if self.args.prompt_type == "wlevels":
                 # extracted_skills would be the keys and mastery level would be the values
                 # keep only the dictionary
@@ -318,11 +355,24 @@ class OPENAI:
                     prediction = {}
                 extracted_skills = list(prediction.keys())
                 levels = list(prediction.values())
+
+            elif self.args.prompt_type == "wreqs":
+                try:
+                    prediction = eval(prediction)
+                except:
+                    print("Error parsing json:", prediction)
+                    prediction = {}
+                extracted_skills = list(prediction.keys())
+                # levels the same as == "wlevels" but it's now the first element of a tuple (level, requirement)
+                levels = [level[0] for level in list(prediction.values())]
+                reqs = [req[1] for req in list(prediction.values())]
             else:
                 extracted_skills = re.findall(pattern, prediction)
             sample["extracted_skills"] = extracted_skills  # AD: removed duplicates
-            if self.args.prompt_type == "wlevels":
+            if self.args.prompt_type != "skills":
                 sample["extracted_skills_levels"] = levels
+            if self.args.prompt_type == "wreqs":
+                sample["extracted_skills_reqstatus"] = reqs
             self.data[idx] = sample
             # cost = compute_cost(input_, prediction, self.args.model)
             # costs += cost
@@ -382,11 +432,13 @@ class OPENAI:
 
                 # messages_list = [
                 #     messages + [{"role": "user", "content": option}]
-                prediction = (
-                    self.run_gpt_sample(messages, max_tokens=10).lower().strip()
-                )
-                if prediction == "":
-                    continue
+                try:
+                    prediction = (
+                        self.run_gpt_sample(messages, max_tokens=10).lower().strip()
+                    )
+                except:
+                    print("Error with sample:", messages)
+                    prediction = ""
 
                 chosen_letter = prediction[0].upper()
                 # TODO match this with the list of candidates, in case no letter was generated! (AD: try to ask it to output first line like "Answer is _")
@@ -494,13 +546,13 @@ def load_taxonomy(args):
 
     keep_cols = [
         "unique_id",
-        "ElementID",
+        # "ElementID",
         # "Dimension",
         "Type Level 1",
         "Type Level 2",
         "Type Level 3",
         "Type Level 4",
-        "Example",
+        # "Example",
         "Definition",
         "name+definition",
     ]
@@ -509,7 +561,13 @@ def load_taxonomy(args):
 
 
 def get_emb_inputs(text, tokenizer):
-    tokens = tokenizer(text, return_tensors="pt", padding=True, truncation=True)
+    tokens = tokenizer(
+        text,
+        return_tensors="pt",
+        padding=True,
+        truncation=True,
+        max_length=512,
+    )
     return tokens
 
 
@@ -531,7 +589,7 @@ def find_best_matching_tokens(skill_tokens, sentence_tokens, threshold=95):
     return best_start_idx, best_end_idx
 
 
-def get_token_idx(sentence, skill, tokenizer, threshold=95):
+def get_token_idx(sentence, skill, tokenizer, threshold=90):
     sentence = sentence.lower().strip()
     sentence_tokens = tokenizer.tokenize(sentence)
     skill_tokens = tokenizer.tokenize(skill)
@@ -621,11 +679,11 @@ def select_candidates_from_taxonomy(
                     extracted_skill, case=False, regex=False
                 )
 
-                if not taxonomy["results"].any():
-                    # print("checking for matches in example")
-                    taxonomy["results"] = taxonomy["Example"].str.contains(
-                        extracted_skill, case=False, regex=False
-                    )
+                # if not taxonomy["results"].any():
+                #     # print("checking for matches in example")
+                #     taxonomy["results"] = taxonomy["Example"].str.contains(
+                #         extracted_skill, case=False, regex=False
+                #     )
 
                 if not taxonomy["results"].any():
                     # print("checking for matches in subwords")
@@ -849,20 +907,3 @@ def remove_duplicates(dic):
         elif isinstance(value, dict):
             remove_duplicates(value)
 
-
-def translate_text(text, src_lang="de", dest_lang="en"):
-    """
-    Translates text from one language to another.
-    text (str): Text to be translated.
-    src_lang (str): Source language.
-    dest_lang (str): Target language.
-    """
-    translator = Translator()
-    try:
-        translation = translator.translate(text, src=src_lang, dest=dest_lang)
-    except:
-        print("Time out error. Waiting for 10 seconds...")
-        time.sleep(10)
-        translator = Translator()
-        translation = translator.translate(text, src=src_lang, dest=dest_lang)
-    return translation.text

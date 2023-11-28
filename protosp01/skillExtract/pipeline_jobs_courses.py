@@ -37,7 +37,7 @@ def main():
     # fmt: off
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--datapath", type=str, help="Path to source data", default = "../data/raw/vacancies.json")
+    parser.add_argument("--datapath", type=str, help="Path to source data", default = "../data/processed/job_evl_all.csv")
     parser.add_argument("--taxonomy", type=str, help="Path to taxonomy file in csv format", default = "../data/taxonomy/taxonomy_V4.csv")
     parser.add_argument("--api_key", type=str, help="openai keys", default = API_KEY)
     parser.add_argument("--model", type=str, help="Model to use for generation", default="gpt-3.5-turbo")
@@ -49,17 +49,19 @@ def main():
     parser.add_argument("--presence_penalty", type=float, help="Presence penalty for generation", default=0)
     parser.add_argument("--candidates_method", type=str, help="How to select candidates: rules, mixed or embeddings. Default is embeddings", default="embeddings")
     parser.add_argument("--output_path", type=str, help="Output for evaluation results", default="results/")
-    parser.add_argument("--prompt_type", type=str, help="Prompt type, from the prompt_template.py file. For now, only \"skills\" and \"wlevels\". default is wlevels.", default="wlevels")
-    parser.add_argument("--num-samples", type=int, help="Last N elements to evaluate (the new ones)", default=0)
+    parser.add_argument("--prompt_type", type=str, help="Prompt type, from the prompt_template.py file. For now, only \"skills\", \"wlevels\", and \"wreqs\". default is wreqs.", default="wreqs")
+    parser.add_argument("--num-samples", type=int, help="Last N elements to evaluate (the new ones)", default=10)
     parser.add_argument("--num-sentences", type=int, help="by how many sentences to split the corpus", default=2)
     parser.add_argument("--do-extraction", action="store_true", help="Whether to do the extraction or directly the matching")
     parser.add_argument("--do-matching", action="store_true", help="Whether to do the matching or not")
     parser.add_argument("--load-extraction", type=str, help="Path to a file with intermediate extraction results", default="")
-    parser.add_argument("--word-emb-model", type=str, help="Word embedding model to use", default="agne/jobBERT-de")
+    # parser.add_argument("--word-emb-model", type=str, help="Word embedding model to use", default="agne/jobBERT-de")
     parser.add_argument("--debug", action="store_true", help="Keep only one sentence per job offer / course to debug")
     parser.add_argument("--detailed", action="store_true", help="Generate detailed output")
     parser.add_argument("--ids", type=str, help="Path to a file with specific ids to evaluate", default=None)
     parser.add_argument("--annotate", action="store_true", help="Whether to annotate the data or not")
+    parser.add_argument("--language", type=str, help="Language of the data", default="de")
+    parser.add_argument("--chunks", action="store_true", help="Whether data was split into chunks or not")
     # fmt: on
 
     ###
@@ -70,26 +72,45 @@ def main():
     args = parser.parse_args()
     if not os.path.exists(args.output_path):
         os.makedirs(args.output_path)
-    if args.datapath.split("/")[-1] == "vacancies.json":
+
+    if "job" in args.datapath.split("/")[-1]:
         args.data_type = "job"
-    elif args.datapath.split("/")[-1] == "learning_opportunities.json":
+        print("data type:" + args.data_type)
+    elif "course" in args.datapath.split("/")[-1]:
         args.data_type = "course"
+        print("data type:" + args.data_type)
+    elif "cv" in args.datapath.split("/")[-1]:
+        args.data_type = "cv"
+        print("data type:" + args.data_type)
     else:
         print("Error: Data source unknown")
 
+    if args.language != "de":
+        # append "en_" to args.data_type
+        args.data_type = args.language + "_" + args.data_type
+
     nsent = f"_{args.num_sentences}sent"
     nsamp = f"_n{args.num_samples}"
-    # dt = datetime.datetime.now().strftime("%y%m%d")
-    # tax_v = "_" + args.taxonomy.split("/")[-1].split(".")[0].split("_")[-1]
     dt = "231025"
     tax_v = f"_{args.taxonomy.split('/')[-1].split('.')[0].split('_')[-1]}"
+
+    if args.chunks:
+        chunk = args.datapath.split("_")[-1].split(".")[0]
+        print("Chunk:", chunk)
+        chunk = "_" + chunk
+    else:
+        chunk = ""
 
     args.api_key = API_KEY  # args.openai_key
     args.output_path = args.output_path + args.data_type + "_" + args.model + ".json"
     print("Output path", args.output_path)
 
     # Intitialize pretrained word embeddings
-    word_emb = args.word_emb_model
+    if args.language == "de":
+        word_emb = "agne/jobBERT-de"
+        # word_emb = "agne/jobGBERT"
+    if args.language == "en":
+        word_emb = "jjzha/jobbert-base-cased"
     word_emb_model = AutoModel.from_pretrained(word_emb)
     word_emb_tokenizer = AutoTokenizer.from_pretrained(word_emb)
 
@@ -102,6 +123,8 @@ def main():
             emb_sh = "_jBd"
         elif word_emb == "agne/jobGBERT":
             emb_sh = "_jGB"
+        elif word_emb == "jjzha/jobbert-base-cased":
+            emb_sh = "_jbEn"
 
         try:
             print(f"Loading embedded taxonomy for {word_emb}")
@@ -109,6 +132,11 @@ def main():
                 f"../data/taxonomy/taxonomy{tax_v}_embeddings{emb_sh}.pkl", "rb"
             ) as f:
                 emb_tax = pickle.load(f)
+
+            # assert it's the same taxonomy
+            assert (emb_tax["unique_id"] == taxonomy["unique_id"]).all()
+            assert (emb_tax["name+definition"] == taxonomy["name+definition"]).all()
+
         except:
             print(f"Loading failed, generating embedded taxonomy for {word_emb}")
             emb_tax = embed_taxonomy(taxonomy, word_emb_model, word_emb_tokenizer)
@@ -128,68 +156,19 @@ def main():
             args.data_type = "job"
         elif "learning_opportunities" in ids[0]:
             args.data_type = "course"
+        elif "resume" in ids[0]:
+            args.data_type = "cv"
         ids = [int(id.split("/")[-1]) for id in ids]
         print("Evaluating only ids:", len(ids))
         args.output_path = args.output_path.replace(".json", f"_ids.json")
 
+    data = pd.read_csv(args.datapath, encoding="utf-8")
+
+    if args.language != "all" and args.ids is None:
+        data = data[data["language"] == args.language]
+
     if args.num_samples > 0:
-        data = read_json(args.datapath, lastN=args.num_samples)
-        data = data[0][-args.num_samples :]
-    else:
-        data = read_json(args.datapath)[0]
-
-    data = pd.DataFrame.from_records(data)
-    if args.data_type == "job":
-        data["fulltext"] = data["name"] + "\n" + data["description"]
-        print("num jobs:", len(data))
-
-    elif args.data_type == "course":
-        data = data[data["active"] == True]
-        keep_ids = {1, 5, 9}
-        data = data[data["study_ids"].apply(lambda x: bool(set(x) & keep_ids))]
-
-        print("num courses with ids 1,5,9:", len(data))
-
-        # drop cols that are not needed
-        drop_cols = [
-            "type",
-            "active",
-            "pricing_description",
-            "ects_points",
-            "average_effort_per_week",
-            "total_effort",
-            "structure_description",
-            "application_process_description",
-            "required_number_years_of_experience",
-            "certificate_type",
-            "currency",
-            "pricing_type",
-            "transaction_type",
-        ]
-        data.drop(columns=drop_cols, inplace=True)
-
-        # to keep an indicator for the type of skill (to acquire or prereq), we will run the skill extraction/matching pipeline twice
-        acq_data = data.copy()
-        acq_data["fulltext"] = (
-            acq_data["name"]
-            + acq_data["intro"].fillna("")
-            + acq_data["key_benefits"].fillna("")
-            + acq_data["learning_targets_description"].fillna("")
-        )
-        acq_data["skill_type"] = "to_acquire"
-
-        req_data = data.copy()
-        req_data["fulltext"] = req_data["admission_criteria_description"].fillna(
-            ""
-        ) + req_data["target_group_description"].fillna("")
-        req_data["skill_type"] = "required"
-
-        data = pd.concat([acq_data, req_data], ignore_index=True)
-        # replace every 10 tags with a period to avoid too long sentences
-
-    data["fulltext"] = data["fulltext"].apply(replace_html_tags)
-    data = drop_short_text(data, "fulltext", 100)
-    # breakpoint()
+        data = data[-args.num_samples :]
 
     if args.ids is not None:
         data = data[data["id"].isin(ids)]
@@ -200,13 +179,8 @@ def main():
         ids_content = data_to_save.to_dict("records")
         write_json(
             ids_content,
-            args.output_path.replace(".json", f"{nsent}{emb_sh}{tax_v}_content.json"),
+            args.output_path.replace(".json", f"{nsent}{emb_sh}{tax_v}{chunk}_content.json"),
         )
-    else:
-        # apply language detection
-        data["language"] = data["fulltext"].apply(detect_language)
-        print(data["language"].value_counts())
-        data = data[data["language"] == "de"]
 
     print("loaded data:", len(data), "elements")
 
@@ -233,12 +207,9 @@ def main():
 
     for i, item in tqdm(enumerate(data)):  # item is job or course in dictionary format
         print(f"*** Processing {i+1}/{len(data)} ***")
-        sentences = split_sentences(item["fulltext"])
+        sentences = split_sentences(item["fulltext"], language=args.language)
         # breakpoint()
         if args.debug:
-            # sentences = [sent for sent in sentences if len(sent.split())<80]
-            # if len(sentences)==0:
-            #    continue
             sentences = [random.choice(sentences)]
         sentences_res_list = []
 
@@ -264,10 +235,6 @@ def main():
         if args.do_extraction:
             print("Starting extraction")
             api = OPENAI(args, sentences_res_list)
-            # if max(api.get_num_tokens(sentences_res_list)) > 3000:
-            #     for ii, sent in enumerate(sentences_res_list):
-            #         with open("diag_sentences_too_long.txt", "a") as f:
-            #             f.write(f"\n\n {str(item['id'])}\n{sent['sentence']}")
             sentences_res_list, cost = api.do_prediction("extraction")
             extraction_cost += cost
 
@@ -275,7 +242,7 @@ def main():
             try:
                 sentences_res_list = (
                     detailed_results_dict[str(item["id"])][item["skill_type"]]
-                    if args.data_type == "course"
+                    if args.data_type.endswith("course")
                     else detailed_results_dict[str(item["id"])]
                 )
             except:
@@ -330,7 +297,7 @@ def main():
         # TODO find a way to correctly identify even common strings (eg 'R')! (AD: look in utils exact_match)
         # Idem for finding C on top of C# and C++
         # TODO update alternative names generation to get also shortest names (eg .Net, SQL etc) (Syrielle)
-        if args.data_type == "course":
+        if args.data_type.endswith("course"):
             skill_type = item["skill_type"]  # to acquire or prereq
             item_id = item["id"]  # number, first level of dict
             if item_id not in detailed_results_dict:
@@ -354,28 +321,23 @@ def main():
 
     if args.debug:
         args.output_path = args.output_path.replace(
-            ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}_debug.json"
+            ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}{chunk}_debug.json"
         )
     if args.detailed:
         detailed_results_dict_output = {
             key: remove_level_2(value) for key, value in detailed_results_dict.items()
         }
-        # save detailed results
-        # write_json(
-        #     detailed_results_dict, args.output_path.replace(".json", "_DEBBBUGGG.json")
-        # )
-        # breakpoint()
         write_json(
             detailed_results_dict_output,
             args.output_path.replace(
-                ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}_detailed.json"
+                ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}{chunk}_detailed.json"
             ),
         )
 
     if args.do_extraction:
         write_json(
             detailed_results_dict,
-            args.output_path.replace(".json", f"{nsent}{nsamp}{dt}_extraction.json"),
+            args.output_path.replace(".json", f"{nsent}{nsamp}{dt}{chunk}_extraction.json"),
         )
 
     # Output final
@@ -386,11 +348,11 @@ def main():
             "Certifications",
             "Certification_alternative_names",
         ]
-        if args.data_type != "course":
+        if not args.data_type.endswith("course"):
             categs.append("Languages")
         clean_output_dict = {}
 
-        if args.data_type == "course":
+        if args.data_type.endswith("course"):
             for item_id, skill_type_dict in detailed_results_dict.items():
                 for skill_type, detailed_res in skill_type_dict.items():
                     if item_id not in clean_output_dict:
@@ -438,7 +400,7 @@ def main():
         write_json(
             clean_output_dict,
             args.output_path.replace(
-                ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}_clean.json"
+                ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}{chunk}_clean.json"
             ),
         )
     print("Done")
@@ -446,20 +408,19 @@ def main():
     print("Matching cost ($):", matching_cost)
     print("Total cost ($):", extraction_cost + matching_cost)
 
+
     if args.detailed:
         print(
             "Saved detailed results in",
             args.output_path.replace(
-                ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}_detailed.json"
+                ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}{chunk}_detailed.json"
             ),
         )
     print(
         "Saved clean results in",
-        args.output_path.replace(".json", f"{nsent}{nsamp}{emb_sh}{tax_v}_clean.json"),
+        args.output_path.replace(".json", f"{nsent}{nsamp}{emb_sh}{tax_v}{chunk}_clean.json"),
     )
 
 
 if __name__ == "__main__":
     main()
-
-# %%

@@ -180,5 +180,8 @@ data/raw/job_profiles.json
 data/raw/job_skills.json
 data/raw/learning_opportunities.json
 data/raw/vacancies.json
+data/raw/coco_courses*
+data/taxonomy/*
 protosp01/results/*
 .DS_Store
+*.pkl
