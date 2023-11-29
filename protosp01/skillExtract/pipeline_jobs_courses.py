@@ -61,6 +61,7 @@ def main():
     parser.add_argument("--ids", type=str, help="Path to a file with specific ids to evaluate", default=None)
     parser.add_argument("--annotate", action="store_true", help="Whether to annotate the data or not")
     parser.add_argument("--language", type=str, help="Language of the data", default="de")
+    parser.add_argument("--chunks", action="store_true", help="Whether data was split into chunks or not")
     # fmt: on
 
     ###
@@ -92,6 +93,13 @@ def main():
     nsamp = f"_n{args.num_samples}"
     dt = "231025"
     tax_v = f"_{args.taxonomy.split('/')[-1].split('.')[0].split('_')[-1]}"
+
+    if args.chunks:
+        chunk = args.datapath.split("_")[-1].split(".")[0]
+        print("Chunk:", chunk)
+        chunk = "_" + chunk
+    else:
+        chunk = ""
 
     args.api_key = API_KEY  # args.openai_key
     args.output_path = args.output_path + args.data_type + "_" + args.model + ".json"
@@ -151,7 +159,7 @@ def main():
         elif "resume" in ids[0]:
             args.data_type = "cv"
         ids = [int(id.split("/")[-1]) for id in ids]
-        print("Evaluating only ids:", ids)
+        print("Evaluating only ids:", len(ids))
         args.output_path = args.output_path.replace(".json", f"_ids.json")
 
     data = pd.read_csv(args.datapath, encoding="utf-8")
@@ -171,7 +179,7 @@ def main():
         ids_content = data_to_save.to_dict("records")
         write_json(
             ids_content,
-            args.output_path.replace(".json", f"{nsent}{emb_sh}{tax_v}_content.json"),
+            args.output_path.replace(".json", f"{nsent}{emb_sh}{tax_v}{chunk}_content.json"),
         )
 
     print("loaded data:", len(data), "elements")
@@ -300,10 +308,20 @@ def main():
                 detailed_results_dict[item_id][skill_type].extend(sentences_res_list)
         else:
             detailed_results_dict[item["id"]] = sentences_res_list
+        
+
+        if i%10==0:
+            # save intermediate results
+            write_json(
+                detailed_results_dict,
+                args.output_path.replace(
+                    ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}_intermediate.json"
+                ),
+            )
 
     if args.debug:
         args.output_path = args.output_path.replace(
-            ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}_debug.json"
+            ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}{chunk}_debug.json"
         )
     if args.detailed:
         detailed_results_dict_output = {
@@ -312,14 +330,14 @@ def main():
         write_json(
             detailed_results_dict_output,
             args.output_path.replace(
-                ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}_detailed.json"
+                ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}{chunk}_detailed.json"
             ),
         )
 
     if args.do_extraction:
         write_json(
             detailed_results_dict,
-            args.output_path.replace(".json", f"{nsent}{nsamp}{dt}_extraction.json"),
+            args.output_path.replace(".json", f"{nsent}{nsamp}{dt}{chunk}_extraction.json"),
         )
 
     # Output final
@@ -382,7 +400,7 @@ def main():
         write_json(
             clean_output_dict,
             args.output_path.replace(
-                ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}_clean.json"
+                ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}{chunk}_clean.json"
             ),
         )
     print("Done")
@@ -390,16 +408,17 @@ def main():
     print("Matching cost ($):", matching_cost)
     print("Total cost ($):", extraction_cost + matching_cost)
 
+
     if args.detailed:
         print(
             "Saved detailed results in",
             args.output_path.replace(
-                ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}_detailed.json"
+                ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}{chunk}_detailed.json"
             ),
         )
     print(
         "Saved clean results in",
-        args.output_path.replace(".json", f"{nsent}{nsamp}{emb_sh}{tax_v}_clean.json"),
+        args.output_path.replace(".json", f"{nsent}{nsamp}{emb_sh}{tax_v}{chunk}_clean.json"),
     )
 
 

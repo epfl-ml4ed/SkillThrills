@@ -15,7 +15,7 @@ def main():
     parser.add_argument("--input_dir", type=str, help="Input directory", default="../data/raw")
     parser.add_argument("--output_dir", type=str, help="Output directory", default="../data/processed")
     parser.add_argument("--model", type=str, help="Model to use for generation", default="gpt-3.5-turbo")
-    parser.add_argument("--datatype", type=str, help="Type of data to process", default="job_evl")
+    parser.add_argument("--datatype", type=str, help="Type of data to process, should be one of 'job_evl' or 'course_evl'", default="job_evl")
     
     args = parser.parse_args()
     # fmt: on

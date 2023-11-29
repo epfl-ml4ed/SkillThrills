@@ -76,11 +76,12 @@ def get_list_of_selections(model_output, sentence, prompt_type):
 def get_list_of_selections_extract(model_output, sentence):
     # model_output is a list of strings separated by \n. Sentence is the list of tokens of the original sentence.
     list_of_selections = ['O']*len(sentence)
+    sentence = [token.lower() for token in sentence]
     if "None" in model_output:
         return list_of_selections
     model_output = [str(item) for item in model_output.split('\n')]
     for skill in model_output:
-        skill_tokens = skill.split()
+        skill_tokens = skill.lower().split()
         if skill_tokens[0] not in sentence:
             skill_tokens[0] = [token for token in sentence if skill_tokens[0] in token][0]
         skill_index = sentence.index(skill_tokens[0])
@@ -135,11 +136,12 @@ def check_format_response(original, generated, prompt_type):
             feedback = 'You didn\'t correctly replicate the given sentence. Make sure the sentence stays the same, even if there are no skills to highlight, including punctuation and spacing. Don\'t add any extra words or punctuation to the sentence except for the ## and @@ tags. Don\'t add nor remove any space.'
         # and that you highlight all the skills and competencies that are required from the candidate, by surrounding them with tags \'@@\' and \'##\'
     elif prompt_type == 'extract':
+        original = original.lower()
         if generated=="None":
             feedback = ''
         else:
             missing_skills = 0
-            extracted_skills = generated.split('\n')
+            extracted_skills = generated.lower().split('\n')
             for skill in extracted_skills:
                 if skill not in original:
                     missing_skills += 1
@@ -261,6 +263,9 @@ def run_openai(dataset, args):
                 print(model_output)
                 trys_count += 1
         if trys_count == 5:
+            with open("failed_extraction.json", "a") as outfile:
+                json.dump({"dataset": args.dataset_name, "sentence": row['sentence'], "extracted_skills": model_output.split('\n')}, outfile)
+                outfile.write('\n')
             continue
         else:
             list_of_selections = get_list_of_selections(model_output, row['tokens'], args.prompt_type)

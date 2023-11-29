@@ -29,7 +29,8 @@ from spacy_language_detection import LanguageDetector
 import torch
 import torch.nn.functional as F
 from fuzzywuzzy import fuzz
-
+encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
+max_tokens = 3996
 
 def get_lang_detector(nlp, name):
     return LanguageDetector(seed=42)  # We use the seed 42
@@ -159,15 +160,10 @@ def chat_completion(messages, model="gpt-3.5-turbo", return_text=True, model_arg
             ServiceUnavailableError,
             APIError,
             Timeout,
-            InvalidRequestError,
         ) as e:  # Exception
-            if isinstance(e, InvalidRequestError):
-                print("Invalid request error")
-                print("Messages:", messages)
-            else:
-                print(f"Timed out {e}. Waiting for 5 seconds.")
-                time.sleep(5)
-                continue
+            print(f"Timed out {e}. Waiting for 5 seconds.")
+            time.sleep(10)
+            continue
 
 
 # async def batch_chat_completion(
@@ -189,6 +185,9 @@ def chat_completion(messages, model="gpt-3.5-turbo", return_text=True, model_arg
 def chat_completion(messages, model="gpt-3.5-turbo", return_text=True, model_args=None):
     if model_args is None:
         model_args = {}
+    total_tokens = sum(len(encoding.encode(message["content"])) for message in messages)
+    if total_tokens > max_tokens:
+        return "None"
 
     while True:
         try:
@@ -211,6 +210,7 @@ def chat_completion(messages, model="gpt-3.5-turbo", return_text=True, model_arg
             if isinstance(e, InvalidRequestError):
                 print("Invalid request error")
                 print("Messages:", messages)
+                break
             else:
                 print(f"Timed out {e}. Waiting for 5 seconds.")
                 time.sleep(5)
@@ -241,6 +241,7 @@ def text_completion(
             if isinstance(e, InvalidRequestError):
                 print("Invalid request error")
                 print("Prompt:", prompt)
+                break
             else:
                 print(f"Timed out {e}. Waiting for 5 seconds.")
                 time.sleep(5)
