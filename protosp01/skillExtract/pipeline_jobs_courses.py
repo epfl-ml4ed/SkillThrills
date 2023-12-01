@@ -179,7 +179,9 @@ def main():
         ids_content = data_to_save.to_dict("records")
         write_json(
             ids_content,
-            args.output_path.replace(".json", f"{nsent}{emb_sh}{tax_v}{chunk}_content.json"),
+            args.output_path.replace(
+                ".json", f"{nsent}{emb_sh}{tax_v}{chunk}_content.json"
+            ),
         )
 
     print("loaded data:", len(data), "elements")
@@ -231,6 +233,7 @@ def main():
                 index=False,
             )
 
+        # NOTE: this is Step 1
         # extract skills
         if args.do_extraction:
             print("Starting extraction")
@@ -251,7 +254,8 @@ def main():
                 )
                 exit()
 
-        # select candidate skills from taxonomy
+        # NOTE: this is Step 2
+        # select candidate skills from taxonomy -
         if args.do_matching and "extracted_skills" in sentences_res_list[0]:
             print("Starting candidate selection")
             splitter = Splitter()
@@ -270,6 +274,7 @@ def main():
                 sentences_res_list[idxx] = sample
             # breakpoint()
 
+        # NOTE: this is Step 3
         # match skills with taxonomy
         if args.do_matching and "skill_candidates" in sentences_res_list[0]:
             print("Starting matching")
@@ -277,6 +282,9 @@ def main():
             sentences_res_list, cost = api.do_prediction("matching")
             # breakpoint()
             matching_cost += cost
+
+        # NOTE: This is not step 4 but separate Step that is used to use string matching
+        ## to find tech and certif and lang in the text
 
         # Do exact match with technologies, languages, certifications
         tech_certif_lang = pd.read_csv("../data/taxonomy/tech_certif_lang.csv")
@@ -294,6 +302,9 @@ def main():
             certification_alternative_names,
             args.data_type,
         )
+
+        # NOTE: this is the end of data collection in the pipeline, below is related to formatting output
+
         # TODO find a way to correctly identify even common strings (eg 'R')! (AD: look in utils exact_match)
         # Idem for finding C on top of C# and C++
         # TODO update alternative names generation to get also shortest names (eg .Net, SQL etc) (Syrielle)
@@ -308,9 +319,8 @@ def main():
                 detailed_results_dict[item_id][skill_type].extend(sentences_res_list)
         else:
             detailed_results_dict[item["id"]] = sentences_res_list
-        
 
-        if i%10==0:
+        if i % 10 == 0:
             # save intermediate results
             write_json(
                 detailed_results_dict,
@@ -337,7 +347,9 @@ def main():
     if args.do_extraction:
         write_json(
             detailed_results_dict,
-            args.output_path.replace(".json", f"{nsent}{nsamp}{dt}{chunk}_extraction.json"),
+            args.output_path.replace(
+                ".json", f"{nsent}{nsamp}{dt}{chunk}_extraction.json"
+            ),
         )
 
     # Output final
@@ -408,7 +420,6 @@ def main():
     print("Matching cost ($):", matching_cost)
     print("Total cost ($):", extraction_cost + matching_cost)
 
-
     if args.detailed:
         print(
             "Saved detailed results in",
@@ -418,7 +429,9 @@ def main():
         )
     print(
         "Saved clean results in",
-        args.output_path.replace(".json", f"{nsent}{nsamp}{emb_sh}{tax_v}{chunk}_clean.json"),
+        args.output_path.replace(
+            ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}{chunk}_clean.json"
+        ),
     )
 
 
