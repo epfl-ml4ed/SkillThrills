@@ -51,7 +51,7 @@ PROMPT_TEMPLATES = {
         "system": "You are an expert human resource manager. You need to analyse skills in a job posting.",
         "extraction" : {
             "skills":{
-                "instruction": "You are an expert human resource manager. You are given an extract from a job description. Highlight all the skills, competencies and tasks that are required from the candidate applying for the job, by surrounding them with tags '@@' and '##'. Make sure you don't highlight job titles, nor elements related to the company and not to the job itself.\n",
+                "instruction": "You are an expert human resource manager. You are given an extract from a job description. Highlight all the skills, competencies and tasks that are required from the candidate applying for the job, by surrounding them with tags '@@' and '##'. Make sure you don't highlight job titles, nor elements related to the company and not to the job itself. Make sure to rewrite the sentence with all the tags.\n",
                 "shots": en_job_shots_extr_skills,
             },
         },
