@@ -106,7 +106,7 @@ The latter can be used to format any sample to look like the input to ChatGPT fo
 You could use these to generate input output for LLaMa use the SkillSpans support set.
 
 
-You can see an example an how to generate the dataset by looking at [this notebook](./dataprep_llama_ft.ipynb).
+You can see an example an how to generate the dataset by looking at [this notebook](./generation/dataprep_llama_ft.ipynb).
 
 You can generate more samples or improve them by looking at :
 - [feedack.py](./generation/feedack.py)
