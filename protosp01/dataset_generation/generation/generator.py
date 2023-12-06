@@ -23,6 +23,7 @@ from collections import defaultdict
 import json
 from math import ceil
 
+
 class SkillsGenerator():
 
     def __init__(self, 
@@ -32,7 +33,7 @@ class SkillsGenerator():
                  popularity: Dict,
                  emb_model: Any = None,
                  emb_tokenizer: Any = None,
-                 reference_df: DataFrame = None):
+                 reference_df: DataFrame = None,):
         
         if(not taxonomy_is_embedded):
             if("name+definition" not in emb_tax.columns):
@@ -58,11 +59,15 @@ class SkillsGenerator():
         self.idx_to_label = {k: v for k, v in enumerate(taxonomy.name.values)}
         self.label_to_idx = {v: k for k, v in enumerate(taxonomy.name.values)}
 
-
+        ## refenrece df for specific few shots
+        self.reference_df = reference_df
 
 
     @staticmethod
-    def embedd_df(df: DataFrame, key_to_embed:str, model: Any, tokenizer: Any):
+    def embedd_df(df: DataFrame,
+                  key_to_embed:str,
+                  model: Any,
+                  tokenizer: Any):
         """
             Embedds the entities of the dataframe in column key_to_embed
             using the given model and tokenizer
@@ -128,7 +133,7 @@ class SkillsGenerator():
         return kNN_skills
     
 
-    def get_combination_size(self, T):
+    def get_combination_size(self, T: float):
         """
             Returns a realization of the distribution $\mathcal{N}$, of the combination size dist
             flattened or skewed with the temperature T
@@ -136,6 +141,7 @@ class SkillsGenerator():
         temp_dist = SkillsGenerator.softmax(self.combination_dist, T)
         n = np.random.choice(np.arange(1, len(self.combination_dist) + 1), p=temp_dist) 
         return n
+
 
     @staticmethod
     def softmax(X, T=1):
@@ -228,7 +234,8 @@ class SkillsGenerator():
                             temperature_pairing=1,
                             temperature_sample_size=1,
                             frequency_select=True, 
-                            upper_bound_skill_matching=None):
+                            upper_bound_skill_matching=None, 
+                            diverse=False):
             """
             Creates a lazy iterator of combinations of entities in the taxonomy
 
@@ -253,7 +260,8 @@ class SkillsGenerator():
                 if(len(all_skills) == 0):
                     ## continue the generation
                     all_skills = list(self.emb_tax.name.unique())
-                yield [skill] + self.get_combination_for_(skill, 
+                if(not diverse):
+                    yield [skill] + self.get_combination_for_(skill, 
                                                             threshold=threshold,
                                                             k=beam_size,
                                                             temperature=temperature_pairing,
@@ -261,6 +269,164 @@ class SkillsGenerator():
                                                             temperature_sample_size=temperature_sample_size,
                                                             upper_bound_skill_matching=upper_bound_skill_matching) ## get the tuple to generate
 
+class AdvancedSkillsGenerator(SkillsGenerator):
+
+    def __init__(self,
+                 taxonomy:DataFrame,
+                 taxonomy_is_embedded: bool,
+                 combination_dist: npt.ArrayLike,
+                 popularity: Dict,
+                 emb_model: Any = None,
+                 emb_tokenizer: Any = None,
+                 reference_df: DataFrame = None,
+                 entities_category_key: str=None):
+        
+        super().__init__(taxonomy, taxonomy_is_embedded, combination_dist, popularity, emb_model, emb_tokenizer, reference_df)
+
+        self.entities_categories = list(self.emb_tax[entities_category_key].unique()) ## all the categories
+
+        categories_embeddings = {}
+        for cat in self.entities_categories:
+            categories_embeddings[cat] = self.emb_tax[self.emb_tax[entities_category_key] == cat]
+        self.categories_embeddings = categories_embeddings
+    
+        self.advanced_combinations_activated = True
+        self.inter_categories_distribution = self.get_inter_categories_distribution(T=0.1)
+
+        self.name_to_cat = self.emb_tax[["name", entities_category_key]].drop_duplicates("name").set_index("name").to_dict()[entities_category_key]
+    
+    def get_inter_categories_distribution(self, T: float):
+        if(not self.advanced_combinations_activated):
+            raise RuntimeError("Advanced combination are not activate. You need to input a entity category key.")
+        inter_cat_dists = {}
+        start = time.time()
+        for i, cat1 in enumerate(self.entities_categories):
+            cat1_embs = torch.cat(list(self.categories_embeddings[cat1]["embeddings"].values)).numpy()
+            cat1_sims = []
+            for j, cat2 in enumerate(self.entities_categories):
+                
+                ## if we already computed it
+                if(cat2 in inter_cat_dists):
+                    cat1_sims.append(inter_cat_dists[cat2][i]) ## inter_cat_dists[cat2][cat1]
+                else:
+                    ## if it's not already computed
+                    cat2_embs = torch.cat(list(self.categories_embeddings[cat1]["embeddings"].values)).numpy()
+                    cos_sims = cosine_similarity(cat1_embs, cat2_embs)
+                    N, M = cos_sims.shape
+                    cat1_sims.append(((np.tri(N, M, -1) * cos_sims).flatten()).mean())
+            inter_cat_dists[cat1] = SkillsGenerator.softmax(np.array(cat1_sims), T)
+        return inter_cat_dists
+                
+
+
+    def get_kNN_in_all_levels(self,
+                              skillname: str,
+                              category:str, 
+                              k: int,
+                              threshold: float=0.0):
+        
+        if(not self.advanced_combinations_activated):
+            raise RuntimeError("Advanced combination are not activate. You need to input a entity category key.")
+        skill_embedding = self.emb_tax[self.emb_tax["name"] == skillname]["embeddings"].values[0].numpy()
+        kNN_in_levels = {}
+        for i, category in enumerate(self.entities_categories):
+            sims = cosine_similarity(skill_embedding, torch.cat(list(self.categories_embeddings[category]["embeddings"].values)).numpy())[0]
+            if(self.entities_categories.index(category) == i):
+                ## we deal directly with the skills's category, we have to exclude it
+                idxs = sims.argsort()[::-1][1:k+1]
+            else :
+                ## other categories
+                idxs = sims.argsort()[::-1][:k]
+
+            ## threshold posteriori filtering
+            idxs = [idx for idx in idxs if sims[idx] > threshold]
+            
+            kNN_in_levels[category] = [
+                self.categories_embeddings[category].iloc[idx]['name']
+                for idx in idxs
+            ]
+        return kNN_in_levels
+
+    def get_combination_diverse(self,
+                                skill: str,
+                                category: str,
+                                k:int,
+                                frequency_select: bool,
+                                temperature: float,
+                                temperature_sample_size: float,
+                                threshold:float,
+                                upper_bound_skill_matching:int =None
+                                ):
+        if(not self.advanced_combinations_activated):
+            raise RuntimeError("Advanced combination are not activate. You need to input a entity category key.")
+        
+        if(upper_bound_skill_matching is None):
+            comb_size = self.get_combination_size(temperature_sample_size) - 1 ## we remove the skill selected first
+        else :
+            comb_size = min(self.get_combination_size(temperature_sample_size) - 1, upper_bound_skill_matching) ## we remove the skill selected first
+        
+        if(comb_size == 0):
+            return []
+        
+        
+        select_dist = self.inter_categories_distribution[category]
+        kNNs = self.get_kNN_in_all_levels(skill, category, k, threshold)
+
+        comb_levels = np.random.choice(self.entities_categories, size=comb_size, p=select_dist, replace=True)
+        combination = []
+        for comb_level in comb_levels:
+            if(not frequency_select): ## deterministic
+                select = kNNs[comb_level][0]
+            else : ## popularity selection
+                F = np.array([self.popularity[nn] for nn in kNNs[comb_level]])
+                F = SkillsGenerator.softmax(-F, T=temperature) ## we get a dist, potentially dumped
+                # with frequency dist
+                select = np.random.choice(kNNs[comb_level], size=1, replace=False, p=F)[0]
+            kNNs[comb_level].remove(select)
+            combination.append(select)
+        return combination  
+
+    def balanced_nbred_iter(self, 
+                            nb_generation=5000, 
+                            threshold=0.0,
+                            beam_size=20,
+                            temperature_pairing=1,
+                            temperature_sample_size=1,
+                            frequency_select=True, 
+                            upper_bound_skill_matching=None):
+            """
+            Creates a lazy iterator of combinations of entities in the taxonomy
+
+            parameters:
+                - total_generations          : 
+                - threshold                  : 
+                - beam_size                  : 
+                - temperature pairing        : 
+                - temperature_sample_size    : 
+                - frequency_select           : 
+                - upper_bound_skill_matching : 
+            """
+            
+            all_skills = list(self.emb_tax.name.unique())
+            print(all_skills)
+            for i in range(nb_generation):
+                skill = np.random.choice(all_skills, size=1)[0]
+                
+                all_skills.remove(skill)
+                if(len(all_skills) == 0):
+                    ## continue the generation
+                    all_skills = list(self.emb_tax.name.unique())
+
+
+                yield [skill] + self.get_combination_diverse(skill,
+                                                            self.name_to_cat[skill],
+                                                            k=beam_size,
+                                                            threshold=threshold,
+                                                            temperature=temperature_pairing,
+                                                            frequency_select=frequency_select,
+                                                            temperature_sample_size=temperature_sample_size,
+                                                            upper_bound_skill_matching=upper_bound_skill_matching)
+        
 
 MODELS = {
     'gpt-3.5' : "gpt-3.5-turbo",
@@ -268,7 +434,7 @@ MODELS = {
 }
 
 UPB_DENSE_GEN = 4
-LB_SPARSE_GEN = 3
+LB_SPARSE_GEN = 6 ## normally 3 but set to 6 to avoid them in skillspan
 
 class DatasetGenerator():
 
