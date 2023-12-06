@@ -2,10 +2,8 @@ import sys
 sys.path.append("../skillExtract/")
 import pandas as pd
 from transformers import (AutoModel, AutoTokenizer)
-from utils import load_taxonomy
-from api_key import API_KEY
+from utils import select_candidates_from_taxonomy
 import pickle
-from utils import embed_taxonomy
 from tqdm.notebook import tqdm
 tqdm.pandas()
 from utils import (OPENAI,
@@ -17,50 +15,17 @@ from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.metrics import (precision_score, 
                              recall_score)
 import numpy as np
+import torch
+import random
+from split_words import Splitter
 
-
-ESCO_DIR = "../../esco/"
-
-class Args():
-    def __init__(self):
-        self.taxonomy = ESCO_DIR + "tech_managment_taxonomy.csv" 
-
-        ## RELATED TO PROMPT CREATION
-        self.datapath = "remote-annotated-en"
-        # self.candidates_method = "embeddings"  ## putting "rules" doesn't give the embeddings
-        self.candidates_method = "mixed"
-        self.shots = 6
-        self.prompt_type = "skills"
-        self.data_type = "en_job"
-        
-        ## RELATED TO CHAT GPT GENERATION
-        self.max_tokens = 200      ## ?? default value but JobBERT suposedly takes 512
-        self.api_key = API_KEY
-        self.model = "gpt-3.5-turbo"
-        self.temperature = 0       ## default val
-        self.top_p = 1             ## default val
-        self.frequency_penalty = 0 ## default val
-        self.presence_penalty = 0  ## default val
-
-args = Args()
-
-## Loading the embedded taxonomy
-emb_sh = "_jbEn"
-with open(f"../../data/taxonomy/taxonomy_embeddings{emb_sh}.pkl", "rb") as f:
-    emb_tax = pickle.load(f)
-    emb_tax["name"] = emb_tax["name+definition"].apply(
-        lambda x : x.split(" : ")[0]
-    )
-
-## ESCO technical skills
 ESCO_DIR = "../../../esco/"
-tech_skills = pd.read_csv(ESCO_DIR + "tech_managment_taxonomy_narrow.csv")
-tech_skills_names = list(tech_skills.name.unique())
-tech_skills["name+definition"] = tech_skills["name+defintion"]
-tech_skills["Example"] = tech_skills["altLabels"]
 
-with open(ESCO_DIR + "embedded_tech_management_tax.pkl", "rb") as emb:
-    tech_emb_tax = pickle.load(emb)
+
+
+
+
+OPTION_LETTERS = list("abcdefghijklmnopqrstuvwxyz".upper())
 
 word_emb = "jjzha/jobbert-base-cased"
 word_emb_model = AutoModel.from_pretrained(word_emb)
@@ -72,7 +37,7 @@ word_emb_tokenizer = AutoTokenizer.from_pretrained(word_emb)
 def fidelity(dataset, model_id='jjzha/jobbert-base-cased'):
     perplexity = evaluate.load("perplexity", module_type="metric")
     results = perplexity.compute(model_id=model_id,
-                                add_start_token=False,
+                                add_start_token=True,
                                 predictions=dataset)
     return results
 
@@ -91,6 +56,8 @@ def sentence_level_quality(dataset, label_key="label"):
             label_embedding = emb_tax[emb_tax["name"] == label]["embeddings"].values[0].detach().numpy()
             return cosine_similarity(sentence_embedding, label_embedding)[0][0]
 
+    
+    emb_tax = pd.concat([get_sp_emb_tax("dev")[0], get_sp_emb_tax("test")[0]])
     known_label_set = set(emb_tax["name"].values)    
     ## compute the embeddings of the sentences
     dataset["embeddings"] = dataset["sentence"]\
@@ -99,7 +66,7 @@ def sentence_level_quality(dataset, label_key="label"):
                     .last_hidden_state[:, 0, :]\
                     .detach()
                     )
-    dataset["sim"] = dataset[["embeddings", label_key]].progress_apply(compute_cos_sim, axis=1)
+    dataset["sim"] = dataset[["embeddings", label_key]].dropna().progress_apply(compute_cos_sim, axis=1)
 
     return dataset
 
@@ -178,50 +145,247 @@ def entity_level_quality(predictions, label_key="label"):
 
 
 
-def pipeline_prediction(dataset):
-    """
-        takes dataset as record list
-    """
-    args = Args()
 
-    ## loading embeddings taxonomy less
-    
-    extraction_cost = 0
-    matching_cost = 0
-    ress = []
-    for i, annotated_record in tqdm(enumerate(dataset)):
 
-        ## EXTRACTION
-        api = OPENAI(args, [annotated_record])
-        sentences_res_list, cost = api.do_prediction("extraction")
-        extraction_cost += cost
+class Args():
+    def __init__(self,
+                 taxonomy="",
+                 datapath="remote_annotated-en",
+                 candidates_method="mixed",
+                 shots=6,
+                 prompt_type="skills",
+                 data_type = "en_job",
+                 max_tokens = 512,
+                 api_key = API_KEY,
+                 model = "gpt-3.5-turbo",
+                 temperature = 0,
+                 top_p = 1,
+                 frequency_penalty = 0,
+                 presence_penalty = 0):
+        self.taxonomy = taxonomy
+
+        ## RELATED TO PROMPT CREATION
+        self.datapath = datapath
+        # self.candidates_method = "embeddings"  ## putting "rules" doesn't give the embeddings
+        self.candidates_method = candidates_method
+        self.shots = shots
+        self.prompt_type = prompt_type
+        self.data_type = data_type
+        
+        ## RELATED TO CHAT GPT GENERATION
+        self.max_tokens =max_tokens      ## ?? default value but JobBERT suposedly takes 512
+        self.api_key = api_key
+        self.model = model
+        self.temperature =temperature     ## default val
+        self.top_p =top_p           ## default val
+        self.frequency_penalty = frequency_penalty# default val
+        self.presence_penalty = presence_penalty## default val
+
+
+def get_proto_emb_tax():
+    with open(ESCO_DIR + "embedded_tech_management_tax.pkl", "rb") as emb:
+        tech_emb_tax = pickle.load(emb)
+
+    taxonomy = pd.read_csv(ESCO_DIR + "tech_managment_taxonomy_narrow.csv")
+    taxonomy["name+definition"] = taxonomy["name+defintion"]
+    taxonomy["Example"] = taxonomy["altLabels"]
+    return tech_emb_tax, taxonomy
+
+
+def get_sp_emb_tax(split):
+    if(split == "dev"):
+        with open(ESCO_DIR + "dev_skillspan_emb.pkl", "rb") as emb:
+            sp_emb_tax = pickle.load(emb)
+    if(split == "test"):
+        with open(ESCO_DIR + "test_skillspan_emb.pkl", "rb") as emb:
+            sp_emb_tax = pickle.load(emb)
+
+    sp_emb_tax["Example"] = sp_emb_tax["altLabels"]
+    taxonomy = sp_emb_tax.drop("embeddings", axis=1)
+    return sp_emb_tax, taxonomy
+
+class Predictor():
+
+    def __init__(self,
+                 test_domain="SkillSpan-dev",
+                 train_domain="Proto",
+                 candidates_method="mixed",
+                 datapath="remote_annotated-en",
+                 shots=6,
+                 prompt_type="skills",
+                 data_type = "en_job",
+                 max_tokens = 512,
+                 api_key = API_KEY,
+                 model = "gpt-3.5-turbo",
+                 temperature = 0,
+                 top_p = 1,
+                 frequency_penalty = 0,
+                 presence_penalty = 0
+                 ) -> None:
+        
+        self.args = Args(datapath=datapath,
+                    candidates_method=candidates_method,
+                    shots=shots,
+                    prompt_type=prompt_type,
+                    data_type=data_type,
+                    max_tokens=max_tokens,
+                    api_key=api_key,
+                    model=model,
+                    temperature=temperature,
+                    top_p=top_p,
+                    frequency_penalty=frequency_penalty,
+                    presence_penalty=presence_penalty)
+        
+        if(test_domain == "SkillSpan-dev"):
+            self.emb_tax, self.taxonomy = get_sp_emb_tax("dev")
+        elif(test_domain == "SkillSpan-test"):
+            self.emb_tax, self.taxonomy = get_sp_emb_tax("test")
+        elif(test_domain == "Proto"):
+            self.emb_tax, self.taxonomy = get_proto_emb_tax()
+        else:
+            raise ValueError("Unknown or unsupported test domain.")
+
+        ## ADD TRAIN DOMAIN TO DECIDE WHERE THE SUPPORT COME FROM
+        if(train_domain == "Proto"):
+            support_set_fname = "./generation/generated/PROTOTYPE/ANNOTATED_SUPPORT_SET.pkl"
+        elif(train_domain == "SkillSpan"):
+            support_set_fname = "./generation/generated/SKILLSPAN/ANNOTATED_SUPPORT_SET.pkl"
+        else:
+            raise ValueError("Unknown or unsupported train domain")
+            
+        with open(support_set_fname, "rb") as f:
+            self.support_set = pickle.load(f)
+            self.support_set["skill"] = self.support_set["skill"].apply(eval) ## into list
+            self.support_set = self.support_set.explode("skill")
+
+        self.unique_support = self.support_set[["sentence", "embeddings"]].drop_duplicates()
+        self.all_embeddings = torch.cat(list(self.unique_support["embeddings"].values)).detach()
+
         
 
-        ## CANDIDATE SELECTION
-        if "extracted_skills" in sentences_res_list[0]:
-            splitter = Splitter()
-            max_candidates = 10
-            for idxx, sample in enumerate(sentences_res_list):
-                sample = select_candidates_from_taxonomy(
-                    sample,
-                    tech_skills,
-                    splitter,
-                    word_emb_model,
-                    word_emb_tokenizer,
-                    max_candidates,
-                    method=args.candidates_method,
-                    emb_tax=None if args.candidates_method == "rules" else tech_emb_tax,
+
+    def pipeline_prediction(self, dataset, support_type=None, support_size_match=None, nb_candidates=None, support_size_extr=None):
+        """
+            takes dataset as record list
+        """
+
+        if(support_type not in ["kNN", "rand", None]):
+            raise ValueError("Unknown or unsupported support type.")
+        args = self.args
+        ## loading embeddings taxonomy less
+        
+        extraction_cost = 0
+        matching_cost = 0
+        ress = []
+        for i, annotated_record in tqdm(enumerate(dataset)):
+            ## EXTRACTION
+            if(support_size_extr is not None):
+                api = OPENAI(args, [annotated_record], self.generate_support_set(annotated_record["sentence"], type="extraction", k=support_size_extr))
+            else:
+                api = OPENAI(args, [annotated_record])
+            sentences_res_list, cost = api.do_prediction("extraction")
+            extraction_cost += cost
+
+            ## CANDIDATE SELECTION
+            if "extracted_skills" in sentences_res_list[0]:
+                splitter = Splitter()
+                max_candidates = 10
+                for idxx, sample in enumerate(sentences_res_list):
+                    sample = select_candidates_from_taxonomy(
+                        sample,
+                        self.taxonomy,
+                        splitter,
+                        word_emb_model,
+                        word_emb_tokenizer,
+                        max_candidates,
+                        method=args.candidates_method,
+                        emb_tax=None if args.candidates_method == "rules" else self.emb_tax,
+                    )
+
+                    sentences_res_list[idxx] = sample
+
+
+            if("skill_candidates" in sentences_res_list[0]):
+
+                if(support_type is not None and support_type == "random"):
+                    shots_fields = self.generate_random_support_set(sentences_res_list[0]["sentence"], support_size_match, nb_candidates)  
+                elif(support_type is not None and support_type == "kNN"):
+                    shots_fields = self.generate_support_set(sentences_res_list[0]["sentence"], support_size_match, nb_candidates)
+                else:
+                    shots_fields = None
+                api = OPENAI(args, sentences_res_list, shots_fields)
+                sentences_res_list, cost = api.do_prediction("matching")
+                matching_cost += cost
+
+
+
+            ress.append(sentences_res_list)
+        return ress
+
+    def generate_support_set(self, sentence, k, nb_candidates=10, type="matching"):
+        embedding = word_emb_model(
+            **word_emb_tokenizer(sentence, return_tensors="pt", max_length=512, padding=True, truncation=True)
+        ).last_hidden_state[:, 0, :] ## BOTTLENECK 1
+        sims = torch.nn.functional.cosine_similarity(embedding, self.all_embeddings)
+        sims = sims.argsort().flip(dims=(-1,))[:k]
+        supports = [
+            self.support_set[["sentence", "annotated_sentence", "spans", "skill"]][self.support_set["sentence"] == x].sample(1).to_dict("records")[0]
+            for x in list(self.unique_support.iloc[sims]["sentence"])
+            ]
+        
+
+        prepared_supports = []
+        for support in supports:
+            if(len(support["spans"]) > 0):
+                prepared_supports.append(
+                    self.prepare_support(support, nb_candidates) if type == "matching" else self.prepare_support_extract(support)
                 )
-                sentences_res_list[idxx] = sample
+        return prepared_supports
 
 
-        if("skill_candidates" in sentences_res_list[0]):
-            api = OPENAI(args, sentences_res_list)
-            sentences_res_list, cost = api.do_prediction("matching")
-            matching_cost += cost
+    def generate_random_support_set(self, sentence, k):
+        return [
+            self.prepare_support(x) 
+            for x in self.support_set.sample(k)[["sentence", "annotated_sentence", "spans", "skill"]].to_dict("records")
+            if len(x["spans"]) > 0
+        ]
+    
+    def prepare_support(self, support, nb_candidates):
 
+        splitter = Splitter()
+        span = random.choice(support["spans"])
+        candidates = select_candidates_from_taxonomy( ## BOTTLENECK 2
+            {
+                "extracted_skills":[span],
+                "sentence": support["sentence"]
+            }, 
+            self.taxonomy,
+            splitter=splitter,
+            tokenizer=word_emb_tokenizer,
+            model=word_emb_model,
+            max_candidates=nb_candidates,
+            method="embeddings", ### COMPARE WITH MIXED AND CANDIDATEDS WILL THEN BE 20 AS FOR THE RUN 
+            emb_tax = self.emb_tax
+        )
+        if(support["skill"] in self.taxonomy.name):
+            skill_nd = self.taxonomy[self.taxonomy.name == support["skill"]].iloc[0]["name+definition"]
+        else :
+            skill_nd = support["skill"]
+        all_candidates = [candidate["name+definition"] for candidate in candidates["skill_candidates"][span]]
+        
+        ## if the current skill is not the selected candidates : ADD IT
+        if(skill_nd not in all_candidates):
+            all_candidates = [skill_nd] + all_candidates[:-1]
+        
+        shot = f"Sentence: {support['sentence']}\n"
+        shot += f"Skill : {span}\nOptions: \n"
+        options = {}
+        for l, cand in zip(OPTION_LETTERS, all_candidates):
+            shot += l + ": " + cand + "\n"
+            options[cand] = l
+        shot += f"Answer: {options[skill_nd]}\n" ## answer with the letter instead of copying
+        return shot
 
-
-        ress.append(sentences_res_list)
-    return ress
+    def prepare_support_extract(self, support):
+        return "Sentence: " + support["sentence"] + "\nAnswer: " + support["annotated_sentence"]
 
