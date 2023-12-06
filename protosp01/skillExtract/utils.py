@@ -267,17 +267,19 @@ def get_matching_prompt_elements(data_type):
 
 
 class OPENAI:
-    def __init__(self, args, data):
+    def __init__(self, args, data, custom_shots_field=None):
         """
         data is a list of dictionaries, each consisting of one sentence and extracted skills
         """
         openai.api_key = args.api_key
         self.args = args
         self.data = data
+        self.custom_shots_field = custom_shots_field
+        
 
     def do_prediction(self, task):
         cost = self.run_gpt(task)
-        print("Costs: ", task, cost)
+        # print("Costs: ", task, cost)
         return self.data, cost
 
     def run_gpt(self, task):
@@ -289,7 +291,8 @@ class OPENAI:
     def run_gpt_df_extraction(self):
         costs = 0
         pattern = r"@@(.*?)##"
-        for idx, sample in enumerate(tqdm(self.data)):
+        # for idx, sample in enumerate(tqdm(self.data)): TODO REMOVE
+        for idx, sample in enumerate(self.data):
             (
                 system_prompt,
                 instruction_field,
@@ -307,8 +310,14 @@ class OPENAI:
                     "content": instruction_field,
                 }
             )
+            
 
             # 3) shots
+            if(self.custom_shots_field is not None):
+                ## SPECIFIC SHOTS
+                shots_field = self.custom_shots_field
+
+            
             for shot in shots_field[: self.args.shots]:
                 sentence = shot.split("\nAnswer:")[0].split(":")[1].strip()
                 answer = shot.split("\nAnswer:")[1].strip()
@@ -352,7 +361,8 @@ class OPENAI:
             shots_field,
         ) = get_matching_prompt_elements(self.args.data_type)
 
-        for idxx, sample in enumerate(tqdm(self.data)):
+        # for idxx, sample in enumerate(tqdm(self.data)): TOTO REMOVE
+        for idxx, sample in enumerate(self.data):
             sample["matched_skills"] = {}
             for extracted_skill in sample["extracted_skills"]:
                 # 1) system prompt
@@ -367,6 +377,9 @@ class OPENAI:
                 )
 
                 # 3) shots
+
+                if(self.custom_shots_field is not None):
+                    shots_field = self.custom_shots_field
                 for shot in shots_field:
                     sentence = shot.split("\nAnswer:")[0]
                     answer = shot.split("\nAnswer:")[1].strip()
@@ -395,6 +408,8 @@ class OPENAI:
 
                 messages.append({"role": "user", "content": user_input})
 
+
+                
                 # messages_list = [
                 #     messages + [{"role": "user", "content": option}]
                 prediction = (
