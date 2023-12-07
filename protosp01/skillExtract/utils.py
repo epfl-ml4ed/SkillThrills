@@ -49,16 +49,18 @@ nlp_model.add_pipe("language_detector", last=True)
 from prompt_template import PROMPT_TEMPLATES
 from api_key import API_KEY
 
-CHAT_COMPLETION_MODELS = ["gpt-3.5-turbo", "gpt-4"]
+CHAT_COMPLETION_MODELS = ["gpt-3.5-turbo", "gpt-4", "gpt-4-1106-preview"]
 TEXT_COMPLETION_MODELS = ["text-davinci-003"]
 COSTS = {
     "gpt-3.5-turbo": {"input": 0.0000015, "output": 0.000002},
     "gpt-4": {"input": 0.00003, "output": 0.00006},
+    "gpt-4-1106-preview": {"input": 0.00003, "output": 0.00006},  # ?
     "text-davinci-003": {"input": 0.00002, "output": 0.00002},
 }
 ENCODINGS = {
     "gpt-3.5-turbo": "cl100k_base",
     "gpt-4": "cl100k_base",
+    "gpt-4-1106-preview": "cl100k_base",
     "text-davinci-003": "p50k_base",
 }
 
@@ -210,7 +212,7 @@ def chat_completion(messages, model="gpt-3.5-turbo", return_text=True, model_arg
             InvalidRequestError,
         ) as e:  # Exception
             if isinstance(e, InvalidRequestError):
-                print("Invalid request error")
+                print("Invalid request error:" + str(e))
                 print("Messages:", messages)
                 break
             else:
@@ -350,8 +352,15 @@ class OPENAI:
                 # extracted_skills would be the keys and mastery level would be the values
                 # keep only the dictionary
                 # prediction = prediction.replace("'", '"')
+                # print("extracted_json:", extracted_json)
                 try:
-                    prediction = json.loads(prediction)
+                    pat = r"\{[^{}]*\}"
+                    extracted_json = re.search(pat, prediction).group()
+                except:
+                    print("Error parsing json:", prediction)
+                    extracted_json = "{}"
+                try:
+                    prediction = json.loads(extracted_json)
                 except:
                     print("Error parsing json:", prediction)
                     prediction = {}

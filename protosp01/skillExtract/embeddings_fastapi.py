@@ -10,6 +10,7 @@ model = "agne/jobBERT-de"
 tokenizer = AutoTokenizer.from_pretrained(model)
 model = AutoModel.from_pretrained(model)
 
+
 def tokenize_text(text: str) -> dict:
     tokens = tokenizer(
         text,
@@ -21,8 +22,9 @@ def tokenize_text(text: str) -> dict:
 
     return tokens
 
-#%%
+
 app = FastAPI()
+
 
 @app.post("/v1/embeddings")
 def get_embeddings(sentence: str) -> dict:
@@ -43,5 +45,6 @@ def get_tokens(text: str) -> dict:
     tokens = tokenizer.tokenize(text)
 
     return {"token_ids": token_ids["input_ids"].squeeze().tolist(), "tokens": tokens}
+
 
 # %%
