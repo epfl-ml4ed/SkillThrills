@@ -29,8 +29,10 @@ from spacy_language_detection import LanguageDetector
 import torch
 import torch.nn.functional as F
 from fuzzywuzzy import fuzz
+
 encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
 max_tokens = 3996
+
 
 def get_lang_detector(nlp, name):
     return LanguageDetector(seed=42)  # We use the seed 42
@@ -47,16 +49,18 @@ nlp_model.add_pipe("language_detector", last=True)
 from prompt_template import PROMPT_TEMPLATES
 from api_key import API_KEY
 
-CHAT_COMPLETION_MODELS = ["gpt-3.5-turbo", "gpt-4"]
+CHAT_COMPLETION_MODELS = ["gpt-3.5-turbo", "gpt-4", "gpt-4-1106-preview"]
 TEXT_COMPLETION_MODELS = ["text-davinci-003"]
 COSTS = {
     "gpt-3.5-turbo": {"input": 0.0000015, "output": 0.000002},
     "gpt-4": {"input": 0.00003, "output": 0.00006},
+    "gpt-4-1106-preview": {"input": 0.00003, "output": 0.00006},  # ?
     "text-davinci-003": {"input": 0.00002, "output": 0.00002},
 }
 ENCODINGS = {
     "gpt-3.5-turbo": "cl100k_base",
     "gpt-4": "cl100k_base",
+    "gpt-4-1106-preview": "cl100k_base",
     "text-davinci-003": "p50k_base",
 }
 
@@ -208,7 +212,7 @@ def chat_completion(messages, model="gpt-3.5-turbo", return_text=True, model_arg
             InvalidRequestError,
         ) as e:  # Exception
             if isinstance(e, InvalidRequestError):
-                print("Invalid request error")
+                print("Invalid request error:" + str(e))
                 print("Messages:", messages)
                 break
             else:
@@ -348,8 +352,15 @@ class OPENAI:
                 # extracted_skills would be the keys and mastery level would be the values
                 # keep only the dictionary
                 # prediction = prediction.replace("'", '"')
+                # print("extracted_json:", extracted_json)
                 try:
-                    prediction = json.loads(prediction)
+                    pat = r"\{[^{}]*\}"
+                    extracted_json = re.search(pat, prediction).group()
+                except:
+                    print("Error parsing json:", prediction)
+                    extracted_json = "{}"
+                try:
+                    prediction = json.loads(extracted_json)
                 except:
                     print("Error parsing json:", prediction)
                     prediction = {}
@@ -561,6 +572,8 @@ def load_taxonomy(args):
 
 
 def get_emb_inputs(text, tokenizer):
+    # NOTE: tokenizer is initialized in pipeline_jobs_courses.py
+    # (line 115 word_emb_tokenizer = AutoTokenizer.from_pretrained(word_emb))
     tokens = tokenizer(
         text,
         return_tensors="pt",
@@ -571,7 +584,8 @@ def get_emb_inputs(text, tokenizer):
     return tokens
 
 
-def find_best_matching_tokens(skill_tokens, sentence_tokens, threshold=95):
+def find_best_matching_tokens(skill_tokens, sentence_tokens, threshold=90):
+    # NOTE: because sometimes chatgpt does not give us exact match, we use fuzzy wuzzy's fuzz ratio to get fuzzy string match
     best_matches = []
     best_start_idx = None
     best_end_idx = None
@@ -590,6 +604,7 @@ def find_best_matching_tokens(skill_tokens, sentence_tokens, threshold=95):
 
 
 def get_token_idx(sentence, skill, tokenizer, threshold=90):
+    # NOTE: to get the start and end idx of the skill within the sentence
     sentence = sentence.lower().strip()
     sentence_tokens = tokenizer.tokenize(sentence)
     skill_tokens = tokenizer.tokenize(skill)
@@ -605,12 +620,15 @@ def get_token_idx(sentence, skill, tokenizer, threshold=90):
 
 
 def get_embeddings(input_tokens, model):
+    # NOTE: embeddings are taken from model initialized in pipeline_jobs_courses.py
+    # (line 114 word_emb_model = AutoModel.from_pretrained(word_emb))
     with torch.no_grad():
         word_outputs = model(**input_tokens)
         embeddings = word_outputs.last_hidden_state
     return embeddings
 
 
+# NOTE: can ignore for prototype v1
 def embed_taxonomy(taxonomy, model, tokenizer):
     taxonomy["embeddings"] = taxonomy["name+definition"].apply(
         lambda x: get_embeddings(get_emb_inputs(x, tokenizer), model)[
@@ -623,6 +641,7 @@ def embed_taxonomy(taxonomy, model, tokenizer):
     return embedded_taxonomy
 
 
+# NOTE: below is taking the cosine similarity and picking the top 10 candidates
 def get_top_vec_similarity(
     extracted_skill,
     context,
@@ -631,6 +650,7 @@ def get_top_vec_similarity(
     tokenizer,
     max_candidates=10,
 ):
+    # NOTE: this is to get contextualized embeddings (embed the sentence but only take the embeddings of the skill within the sentence)
     start_idx, end_idx = get_token_idx(context, extracted_skill, tokenizer)
     if start_idx is None and end_idx is None:
         # no idx found for extracted skill so we will take just the embeddings of the skill
@@ -657,6 +677,7 @@ def get_top_vec_similarity(
     return emb_tax
 
 
+# NOTE: function below is for step 2
 def select_candidates_from_taxonomy(
     sample,
     taxonomy,
@@ -673,8 +694,10 @@ def select_candidates_from_taxonomy(
         for extracted_skill in sample["extracted_skills"]:
             # print("extracted skill:", extracted_skill)
 
+            # NOTE: this is to handle rule-based/string-matching ways of selecting candidates
             if method == "rules" or method == "mixed":
-                # print("checking for matches in name+definition")
+                # NOTE: 1. checking for direct matches in name+definition
+                # NOTE: name+definition is generated at ~544 (which is concat of level 2, 3, 4 and definition)
                 taxonomy["results"] = taxonomy["name+definition"].str.contains(
                     extracted_skill, case=False, regex=False
                 )
@@ -685,6 +708,7 @@ def select_candidates_from_taxonomy(
                 #         extracted_skill, case=False, regex=False
                 #     )
 
+                # NOTE: 2. if not found, checking for subword matches in name+definition
                 if not taxonomy["results"].any():
                     # print("checking for matches in subwords")
                     taxonomy["results"] = False
@@ -709,12 +733,14 @@ def select_candidates_from_taxonomy(
                 if not taxonomy["results"].any():
                     print("No candidates found for: ", extracted_skill)
 
+                # NOTE: 3. if more than 10 candidates, randomly select 10
                 if taxonomy["results"].sum() > 10:
                     true_indices = taxonomy.index[taxonomy["results"]].tolist()
                     selected_indices = np.random.choice(true_indices, 10, replace=False)
                     taxonomy["results"] = False
                     taxonomy.loc[selected_indices, "results"] = True
 
+            # NOTE: this is to handle embedding-based ways of selecting candidates
             if method == "embeddings" or method == "mixed":
                 # print("checking for highest embedding similarity")
                 emb_tax = get_top_vec_similarity(
@@ -725,6 +751,8 @@ def select_candidates_from_taxonomy(
                     tokenizer,
                     max_candidates,
                 )
+
+                # NOTE: below is to either use the embeddings or a mix of embeddings and rules
                 if method == "embeddings":
                     taxonomy["results"] = emb_tax["results"]
                 else:
@@ -906,4 +934,3 @@ def remove_duplicates(dic):
             dic[key] = unique_values
         elif isinstance(value, dict):
             remove_duplicates(value)
-
