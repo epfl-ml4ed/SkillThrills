@@ -1,4 +1,7 @@
-########### SHOT EXAMPLES ###########
+########### FEW SHOT EXAMPLES ###########
+########## EXTRACTION ##########
+###### JOBS ######
+
 ### extracts only skills marked with @@ and ##
 job_shots_extr_skills = [
     "Sentence: Wir suchen einen Teamleiter mit ausgeprägten Kommunikationskompetenzen, um die Zusammenarbeit und den Informationsaustausch innerhalb des Teams zu fördern.\nAnswer: Wir suchen einen Teamleiter mit ausgeprägten @@Kommunikationskompetenzen##, um die Zusammenarbeit und den Informationsaustausch innerhalb des Teams zu fördern.",
@@ -29,7 +32,28 @@ job_shots_extr_wreqs = [
     'Sentence: Nebst guten Kenntnisse in moderner, agiler Softwareentwicklung und deren Konzepte, hast du auch noch ein grundlegendes Wissen in der Testautomatisierung. \nAnswer: {"agiler Softwareentwicklung": ["intermediate", "unknown"], "Testautomatisierung": ["beginner", "unknown"]}',
 ]
 
+### extracts only skills marked with @@ and ## in English
+en_job_shots_extr_skills = [
+    "Sentence: We are looking for a team leader with strong communication skills to foster collaboration and information sharing within the team.\nAnswer: We are looking for a team leader with strong @@communication skills## to foster collaboration and information sharing within the team.",
+    "Sentence: the ability to work collaboratively across disciplines is a key criterion for this position. \nAnswer: @@ability to collaborate across disciplines## is a key criterion for this position.",
+    "Sentence: As a Java Senior Software Engineer with experience, you will be a member of a Scrum team. \nAnswer: As a Java Senior Software Engineer with experience, you will be a member of a Scrum team.",
+    "Sentence: In her role as a team leader, she has continuously supported the professional development of her employees. \nAnswer: In her role as a team leader, she has continuously fostered the professional @@development of her employees##.",
+    "Sentence: He is a resilient employee who has been able to set proper priorities and organize tasks thoughtfully during periods of heavy workload. \nAnswer: He is a resilient employee who has been able to set @@correct priorities and organize tasks thoughtfully## during periods of high workload.",
+    "Sentence: Highly qualified, flexible employees from the insurance and IT industry develop them further. \nAnswer: Highly qualified, flexible employees from the insurance and IT industries continue to develop them.",
+    "Sentence: Over the past few years, it has succeeded in continuously developing itself in a rapidly changing environment. \nAnswer: Over the past few years, he has succeeded in @@continuously developing## himself in a rapidly changing environment##.\n",
+]
 
+### extracts skills and their corresponding mastery levels as {skill: level} pairs in English
+en_job_shots_extr_wlevels = [
+    'Sentence: We are looking for a team leader with strong communication skills to foster collaboration and information sharing within the team. \nAnswer: {"communication skills": "expert"}',
+    'Sentence: the ability to work collaboratively across disciplines is a key criterion for this position. \nAnswer: {"ability to collaborate across disciplines": "unknown"}',
+    'Sentence: In her role as a team leader, she has continuously supported the professional development of her employees. \nAnswer: {"development of her employees": "unknown"}',
+    'Sentence: He is a resilient employee who has been able to set proper priorities and organize tasks thoughtfully during periods of heavy workload. \nAnswer: {"correct priorities and organize tasks thoughtfully": "unknown"}',
+    'Sentence: You have very good knowledge of digital circuit technology and control circuits. \nAnswer: {"digital circuit technology": "expert", "control loops": "expert"}',
+    'Sentence: In addition to good knowledge of modern, agile software development and its concepts, you also have a basic knowledge of test automation. \nAnswer: {"agile software development": "expert", "test automation": "beginner"}',
+]
+
+###### COURSES ######
 course_shots_extr_wlevels = [
     'Sentence: Digitale Kompetenzen einfacher einschätzen und besser erlernen können.\nAnswer: {"Kompetenzen einfacher einschätzen und besser erlernen": "unknown"}',
     'Sentence: Strategisches IT-GRC: IT-Governance, IT-Risk und Compliance Management als Bindeglied zwischen Business und IT.\nAnswer: {"IT-Governance, IT-Risk und Compliance Management": "unknown", "Bindeglied zwischen Business und IT": "unknown"}',
@@ -48,36 +72,67 @@ en_course_shots_extr_wlevels = [
     'Sentence: In our practice-oriented course, you will learn how to guide such development processes in a goal-oriented manner, promote them with effective tools and conclude them in a coherent manner.\nAnswer: {"Guiding development processes in a goal-oriented manner, promoting them with effective tools and concluding them in a coherent manner": "unknown"}',
 ]
 
-# send example to Marco to check on these
-# ask for matching examples
+###### CVs ######
 
+en_cv_shots_extr_skills = [
+    "Sentence: Good logical and analytical skills • Positive attitude towards solving problems and accepting challenges • A team player & leader.\nAnswer: Good @@logical and analytical skills## • @@Positive attitude towards solving problems and accepting challenges## • A @@team player## & @@leader##.",
+    "Sentence: Well-versed in analyzing and mitigating risk and finding cost-effective solutions. Excels at boosting performance and productivity by establishing realistic goals and enforcing deadlines.  Versatile IT professional with 37 years of Enterprise design and engineering methodology.\nAnswer: Well-versed in @@analyzing and mitigating risk## and @@finding cost-effective solutions##. Excels at @@boosting performance and productivity## by establishing realistic goals and enforcing deadlines.  Versatile IT professional with 37 years of @@Enterprise design and engineering methodology##.",
+    "Sentence: The different projects required careful management of specific STIG. compliance and hardening for the different configurations. \nAnswer: The different projects required careful @@management of specific STIG##. compliance and hardening for the different configurations.",
+    "Sentence: Highlights Excellent communication techniques Manufacturing systems integration Multidisciplinary exposure Design instruction creation Project management Complex problem solver Advanced critical thinking SharePoint Microsoft Excel \nAnswer: Highlights Excellent @@communication techniques## Manufacturing @@systems integration## @@Multidisciplinary## exposure Design instruction creation @@Project management## Complex @@problem solver## Advanced @@critical thinking## SharePoint Microsoft Excel",
+    "Sentence: Group and project management experience for over twelve years. Advanced problem solving skills and expertise. \nAnswer: @@Group and project management## experience for over twelve years. Advanced @@problem solving skills## and expertise.",
+    "Sentence: GPA: 4  0 B.S : Marketing , Iowa State University - City , State Marketing Microsoft Front Page Certified New Horizons - Des Moines, IA. \nAnswer: GPA: 4  0 B.S : Marketing , Iowa State University - City , State Marketing Microsoft Front Page Certified New Horizons - Des Moines, IA.",
+]
+en_cv_shots_extr_wlevels = [
+    'Sentence: Good logical and analytical skills • Positive attitude towards solving problems and accepting challenges • A team player & leader.\nAnswer: {"logical and analytical skills": "intermediate", "Positive attitude towards solving problems and accepting challenges": "unknown", "team player": "unknown", "leader": "unknown"}',
+    'Sentence: Well-versed in analyzing and mitigating risk and finding cost-effective solutions. Excels at boosting performance and productivity by establishing realistic goals and enforcing deadlines.  Versatile IT professional with 37 years of Enterprise design and engineering methodology.\nAnswer: {"analyzing and mitigating risk": "expert", "finding cost-effective solutions": "expert", "boosting performance and productivity": "expert", "Enterprise design and engineering methodology": "expert"}',
+    'Sentence: The different projects required careful management of specific STIG. compliance and hardening for the different configurations. \nAnswer: {"management of specific STIG": "unknown"}',
+    'Sentence: Highlights Excellent communication techniques Manufacturing systems integration Multidisciplinary exposure Design instruction creation Project management Complex problem solver Advanced critical thinking SharePoint Microsoft Excel \nAnswer: {"communication techniques": "expert", "systems integration": "unknown", "Multidisciplinary": "beginner", "Project management": "unknown", "problem solver": "expert", "critical thinking": "expert"}',
+    'Sentence: Group and project management experience for over twelve years. Advanced problem solving skills and expertise. \nAnswer: {"Group and project management": "expert", "problem solving skills": "expert"}',
+    'Sentence: GPA: 4  0 B.S : Marketing , Iowa State University - City , State Marketing Microsoft Front Page Certified New Horizons - Des Moines, IA. \nAnswer: {}',
+]
+
+
+cv_shots_extr_skills = [
+    "Sentence: Gute logische und analytische Fähigkeiten • Positive Einstellung zur Problemlösung und Akzeptanz von Herausforderungen • Ein Teamplayer & Leader.\nAnswer: Gute @@logische und analytische Fähigkeiten## • @@Positive Einstellung zur Problemlösung und Akzeptanz von Herausforderungen## • Ein @@Teamplayer## & @@Leader##.",
+    "Sentence: Gut vertraut mit der Analyse und Minderung von Risiken und der Suche nach kostengünstigen Lösungen. Hervorragend in der Steigerung von Leistung und Produktivität durch die Festlegung realistischer Ziele und die Durchsetzung von Fristen. Vielseitiger IT-Profi mit 37 Jahren Enterprise Design und Engineering Methodik.\nAnswer: Gut vertraut mit der @@Analyse und Minderung von Risiken## und der Suche nach kostengünstigen Lösungen##. Hervorragend in der Steigerung von Leistung und Produktivität durch die Festlegung realistischer Ziele und die Durchsetzung von Fristen. Vielseitiger IT-Profi mit 37 Jahren @@Enterprise Design und Engineering Methodik##.",
+    "Sentence: Die verschiedenen Projekte erforderten ein sorgfältiges Management von spezifischen STIG. Compliance und Härtung für die verschiedenen Konfigurationen. \nAnswer: Die verschiedenen Projekte erforderten ein sorgfältiges @@Management von spezifischen STIG##. Compliance und Härtung für die verschiedenen Konfigurationen.",
+    "Sentence: Highlights Hervorragende Kommunikationstechniken Integration von Fertigungssystemen Multidisziplinäre Exposition Designanweisungserstellung Projektmanagement Komplexer Problemlöser Fortgeschrittenes kritisches Denken SharePoint Microsoft Excel \nAnswer: Highlights Hervorragende @@Kommunikationstechniken## Integration von @@Fertigungssystemen## @@Multidisziplinäre## Exposition Designanweisungserstellung @@Projektmanagement## Komplexer @@Problemlöser## Fortgeschrittenes @@kritisches Denken## SharePoint Microsoft Excel",
+    "Sentence: Gruppen- und Projektmanagementerfahrung seit über zwölf Jahren. Fortgeschrittene Problemlösungsfähigkeiten und Expertise. \nAnswer: @@Gruppen- und Projektmanagement## Erfahrung seit über zwölf Jahren. Fortgeschrittene @@Problemlösungsfähigkeiten## und Expertise.",
+    "Sentence: GPA: 4  0 B.S : Marketing , Iowa State University - City , State Marketing Microsoft Front Page Certified New Horizons - Des Moines, IA. \nAnswer: GPA: 4  0 B.S : Marketing , Iowa State University - City , State Marketing Microsoft Front Page Certified New Horizons - Des Moines, IA.",
+]
+cv_shots_extr_wlevels = [
+    'Sentence: Gute logische und analytische Fähigkeiten • Positive Einstellung zur Problemlösung und Akzeptanz von Herausforderungen • Ein Teamplayer & Leader.\nAnswer: {"logische und analytische Fähigkeiten": "intermediate", "Positive Einstellung zur Problemlösung und Akzeptanz von Herausforderungen": "unknown", "Teamplayer": "unknown", "Leader": "unknown"}',
+    'Sentence: Gut vertraut mit der Analyse und Minderung von Risiken und der Suche nach kostengünstigen Lösungen. Hervorragend in der Steigerung von Leistung und Produktivität durch die Festlegung realistischer Ziele und die Durchsetzung von Fristen. Vielseitiger IT-Profi mit 37 Jahren Enterprise Design und Engineering Methodik.\nAnswer: {"Analyse und Minderung von Risiken": "expert", "Suche nach kostengünstigen Lösungen": "expert", "Steigerung von Leistung und Produktivität": "expert", "Enterprise Design und Engineering Methodik": "expert"}',
+    'Sentence: Die verschiedenen Projekte erforderten ein sorgfältiges Management von spezifischen STIG. Compliance und Härtung für die verschiedenen Konfigurationen. \nAnswer: {"Management von spezifischen STIG": "unknown"}',
+    'Sentence: Highlights Hervorragende Kommunikationstechniken Integration von Fertigungssystemen Multidisziplinäre Exposition Designanweisungserstellung Projektmanagement Komplexer Problemlöser Fortgeschrittenes kritisches Denken SharePoint Microsoft Excel \nAnswer: {"Kommunikationstechniken": "expert", "Fertigungssystemen": "unknown", "Multidisziplinäre": "beginner", "Projektmanagement": "unknown", "Problemlöser": "expert", "kritisches Denken": "expert"}',
+    'Sentence: Gruppen- und Projektmanagementerfahrung seit über zwölf Jahren. Fortgeschrittene Problemlösungsfähigkeiten und Expertise. \nAnswer: {"Gruppen- und Projektmanagement": "expert", "Problemlösungsfähigkeiten": "expert"}',
+    'Sentence: GPA: 4  0 B.S : Marketing , Iowa State University - City , State Marketing Microsoft Front Page Certified New Horizons - Des Moines, IA. \nAnswer: {}',
+]
+
+########## MATCHING ##########
+###### JOBS ######
 job_shots_match = [
     'Sentence: Grundlegende Bestimmungen von Urheberrecht und Datenschutz verstehen. \nSkill: Datenschutz. \nOptions: \nA: "Grundsätze des Datenschutzes respektieren" \nB: "Datenschutz verstehen" \nC: "Datenschutz im Luftfahrtbetrieb sicherstellen" \nD: "Datenschutz". \nAnswer: "Datenschutz verstehen", "Datenschutz".\n'
 ]
 
-## SKILL EXTRACTION IN JOB OPENING PROMPTS IN ENGLISH
-en_job_shots_extr_skills = [
-    "Sentence: We are looking for a team leader with strong communication skills to foster collaboration and information sharing within the team.\nAnswer: We are looking for a team leader with strong @@communication skills## to foster collaboration and information sharing within the team.",
-    "Sentence: the ability to work collaboratively across disciplines is a key criterion for this position. \nAnswer: @@ability to collaborate across disciplines## is a key criterion for this position.",
-    "Sentence: As a Java Senior Software Engineer with experience, you will be a member of a Scrum team. \nAnswer: As a Java Senior Software Engineer with experience, you will be a member of a Scrum team.",
-    "Sentence: In her role as a team leader, she has continuously supported the professional development of her employees. \nAnswer: In her role as a team leader, she has continuously fostered the professional @@development of her employees##.",
-    "Sentence: He is a resilient employee who has been able to set proper priorities and organize tasks thoughtfully during periods of heavy workload. \nAnswer: He is a resilient employee who has been able to set @@correct priorities and organize tasks thoughtfully## during periods of high workload.",
-    "Sentence: Highly qualified, flexible employees from the insurance and IT industry develop them further. \nAnswer: Highly qualified, flexible employees from the insurance and IT industries continue to develop them.",
-    "Sentence: Over the past few years, it has succeeded in continuously developing itself in a rapidly changing environment. \nAnswer: Over the past few years, he has succeeded in @@continuously developing## himself in a rapidly changing environment##.\n",
-]
-
-### extracts skills and their corresponding mastery levels as {skill: level} pairs
-en_job_shots_extr_wlevels = [
-    'Sentence: We are looking for a team leader with strong communication skills to foster collaboration and information sharing within the team. \nAnswer: {"communication skills": "expert"}',
-    'Sentence: the ability to work collaboratively across disciplines is a key criterion for this position. \nAnswer: {"ability to collaborate across disciplines": "unknown"}',
-    'Sentence: In her role as a team leader, she has continuously supported the professional development of her employees. \nAnswer: {"development of her employees": "unknown"}',
-    'Sentence: He is a resilient employee who has been able to set proper priorities and organize tasks thoughtfully during periods of heavy workload. \nAnswer: {"correct priorities and organize tasks thoughtfully": "unknown"}',
-    'Sentence: You have very good knowledge of digital circuit technology and control circuits. \nAnswer: {"digital circuit technology": "expert", "control loops": "expert"}',
-    'Sentence: In addition to good knowledge of modern, agile software development and its concepts, you also have a basic knowledge of test automation. \nAnswer: {"agile software development": "expert", "test automation": "beginner"}',
-]
-
 en_job_shots_match = [
     'Sentence: Understand basic provisions of copyright and privacy. \nSkill: Data protection. \nOptions: \nA: "Respect privacy principles." \nB: "Understand data protection" \nC: "Ensure data protection in aviation operations" \nD: "Data protection." \nAnswer: b, d.\n',
+]
+
+###### COURSES ######
+
+course_shots_match = [
+    """
+    Sentence: Sie haben alle wichtigen Tools und Methoden in Ihrem Rucksack, um Entwicklungsprozesse im interkulturellen Umfeld zu begleiten, erfolgreich abzuschliessen und zu evaluieren.
+    \nSkill: Entwicklungsprozesse im interkulturellen Umfeld zu begleiten, erfolgreich abzuschliessen und zu evaluieren
+    \nOptions: \nA: "Kognitive Fertigkeit: Aufmerksamkeit: Fokuswechsel: Zwischen zwei oder mehreren Aktivitäten oder Informationsquellen (z. B. Sprache, Geräusche, Berührungen oder andere Quellen) hin und her wechseln."
+    \nB: "Soziale Fertigkeit: Fertigkeiten, um in der Zusammenarbeit mit anderen Menschen Ziele zu erreichen"
+    \nC: "Leistungsorientierung: Die Person ist bestrebt, persönliche Ziele zu erreichen und in der eigenen Arbeit kompetent zu sein."
+    \nD: "Kommunikation: Die Kompetenz, erfolgreich mit Personen aus verschiedenen kulturellen Hintergründen zu kommunizieren, indem man kulturelle Unterschiede respektiert, Verständnis und Sensibilität zeigt und eine offene und inklusive Kommunikationsumgebung fördert."
+    \nE: "Kollaboration: Zusammenarbeit in interdisziplinären Teams: Die Kompetenz, erfolgreich mit Mitgliedern aus verschiedenen Berufsgruppen oder Fachrichtungen zusammenzuarbeiten, indem unterschiedliche Fachkenntnisse, Perspektiven und Arbeitsweisen respektiert und integriert werden, um gemeinsame Ziele zu erreichen."
+    \nF: "Kommunikation: Die Kompetenz, in Coaching- und Beratungssituationen einfühlsam auf das Gegenüber (i.d.R. Klienten) einzugehen und ihre Anliegen zu klären, um damit eine vertrauensvolle Beziehung aufzubauen und unterstützende Ratschläge zu geben."
+    \nAnswer: "Kommunikation: Die Kompetenz, erfolgreich mit Personen aus verschiedenen kulturellen Hintergründen zu kommunizieren, indem man kulturelle Unterschiede respektiert, Verständnis und Sensibilität zeigt und eine offene und inklusive Kommunikationsumgebung fördert.", "Kommunikation: Die Kompetenz, in Coaching- und Beratungssituationen einfühlsam auf das Gegenüber (i.d.R. Klienten) einzugehen und ihre Anliegen zu klären, um damit eine vertrauensvolle Beziehung aufzubauen und unterstützende Ratschläge zu geben."
+    """
 ]
 
 en_course_shots_match = [
@@ -94,34 +149,16 @@ en_course_shots_match = [
     """
 ]
 
-course_shots_match = [
-    """
-    Sentence: Sie haben alle wichtigen Tools und Methoden in Ihrem Rucksack, um Entwicklungsprozesse im interkulturellen Umfeld zu begleiten, erfolgreich abzuschliessen und zu evaluieren.
-    \nSkill: Entwicklungsprozesse im interkulturellen Umfeld zu begleiten, erfolgreich abzuschliessen und zu evaluieren
-    \nOptions: \nA: "Kognitive Fertigkeit: Aufmerksamkeit: Fokuswechsel: Zwischen zwei oder mehreren Aktivitäten oder Informationsquellen (z. B. Sprache, Geräusche, Berührungen oder andere Quellen) hin und her wechseln."
-    \nB: "Soziale Fertigkeit: Fertigkeiten, um in der Zusammenarbeit mit anderen Menschen Ziele zu erreichen"
-    \nC: "Leistungsorientierung: Die Person ist bestrebt, persönliche Ziele zu erreichen und in der eigenen Arbeit kompetent zu sein."
-    \nD: "Kommunikation: Die Kompetenz, erfolgreich mit Personen aus verschiedenen kulturellen Hintergründen zu kommunizieren, indem man kulturelle Unterschiede respektiert, Verständnis und Sensibilität zeigt und eine offene und inklusive Kommunikationsumgebung fördert."
-    \nE: "Kollaboration: Zusammenarbeit in interdisziplinären Teams: Die Kompetenz, erfolgreich mit Mitgliedern aus verschiedenen Berufsgruppen oder Fachrichtungen zusammenzuarbeiten, indem unterschiedliche Fachkenntnisse, Perspektiven und Arbeitsweisen respektiert und integriert werden, um gemeinsame Ziele zu erreichen."
-    \nF: "Kommunikation: Die Kompetenz, in Coaching- und Beratungssituationen einfühlsam auf das Gegenüber (i.d.R. Klienten) einzugehen und ihre Anliegen zu klären, um damit eine vertrauensvolle Beziehung aufzubauen und unterstützende Ratschläge zu geben."
-    \nAnswer: "Kommunikation: Die Kompetenz, erfolgreich mit Personen aus verschiedenen kulturellen Hintergründen zu kommunizieren, indem man kulturelle Unterschiede respektiert, Verständnis und Sensibilität zeigt und eine offene und inklusive Kommunikationsumgebung fördert.", "Kommunikation: Die Kompetenz, in Coaching- und Beratungssituationen einfühlsam auf das Gegenüber (i.d.R. Klienten) einzugehen und ihre Anliegen zu klären, um damit eine vertrauensvolle Beziehung aufzubauen und unterstützende Ratschläge zu geben."
-    """
-]
+########### TEMP HOLDERS BELOW ###########
 
-### TEMP HOLDERS BELOW ###
 job_shots_match = course_shots_match
 en_job_shots_match = en_course_shots_match
 
+cv_shots_match = course_shots_match
+en_cv_shots_match = en_course_shots_match
+
 course_shots_extr_skills = job_shots_extr_skills
 en_course_shots_extr_skills = en_job_shots_extr_skills
-
-cv_shots_extr_skills = job_shots_extr_skills
-cv_shots_extr_wlevels = job_shots_extr_wlevels
-cv_shots_match = job_shots_match
-
-en_cv_shots_extr_skills = en_course_shots_extr_skills
-en_cv_shots_extr_wlevels = en_course_shots_extr_wlevels
-en_cv_shots_match = en_course_shots_match
 
 
 job_shots_tl = [
