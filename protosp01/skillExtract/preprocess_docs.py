@@ -101,7 +101,7 @@ def main():
 
     # heuristics to clean fulltext
     data["fulltext"] = data["fulltext"].apply(replace_html_tags)
-    data = drop_short_text(data, "fulltext", 100)
+    data = drop_short_text(data, "fulltext", 50)
 
     # %%
     # get tokens of each sentence and filter out rows with too long sentences

@@ -111,6 +111,7 @@ def main():
         # word_emb = "agne/jobGBERT"
     if args.language == "en":
         word_emb = "jjzha/jobbert-base-cased"
+    print("Initializing embedding model:", word_emb)
     word_emb_model = AutoModel.from_pretrained(word_emb)
     word_emb_tokenizer = AutoTokenizer.from_pretrained(word_emb)
 
@@ -162,6 +163,7 @@ def main():
         print("Evaluating only ids:", len(ids))
         args.output_path = args.output_path.replace(".json", f"_ids.json")
 
+    print("Loading data...")
     data = pd.read_csv(args.datapath, encoding="utf-8")
 
     if args.language != "all" and args.ids is None:
