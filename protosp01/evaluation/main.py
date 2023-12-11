@@ -32,7 +32,7 @@ def parse_args():
     parser.add_argument('--save_path', type=str, default='output/')
     parser.add_argument('--model', type=str, default='gpt-3.5-turbo')
     parser.add_argument('--sample', type=int, default=0, help='number of samples to perform inference on, for debugging.')
-
+    parser.add_argument('--exclude_failed', action='store_true', help='whether to exclude previous failed attempt') 
     args = parser.parse_args()
     args.save_path = args.save_path + args.dataset_name + '_' + args.model + '_' + args.prompt_type + '_' + str(args.shots) + '-shots.json'
     if args.knn:
@@ -79,7 +79,7 @@ def main():
         for split in ['train', 'test']:
             emb_save_path = args.embeddings_dir + '/' + split + '.pt'
             if not os.path.exists(emb_save_path):
-                print(f'Generating train set embeddings for {args.dataset_name} dataset...')
+                print(f'Generating {split} set embeddings for {args.dataset_name} dataset...')
                 source_dataset = json.load(open(args.processed_data_dir + split + '.json'))
                 if len(source_dataset) > 500 and split == 'train':
                     source_dataset = random.sample(source_dataset, 500)
