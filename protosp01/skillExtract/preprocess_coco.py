@@ -76,6 +76,9 @@ def main():
     )
     print("num rows before filtering:", len(data))
 
+    # rename course_id to id
+    data.rename(columns={"course_id": "id"}, inplace=True)
+
     language_dict = {
         "english": "en",
         "portuguese": "pt",
@@ -159,10 +162,9 @@ def main():
         # "long_description",
         "objectives",
         "requirements",
-        "target_audience",
+        # "target_audience",
     ]
 
-    # breakpoint()
     for col in text_cols:
         data[col] = data[col].apply(convert_to_list)
 
@@ -179,14 +181,12 @@ def main():
     acq_data["skill_type"] = "to_acquire"
 
     req_data = data.copy()
-    req_data["fulltext"] = req_data["requirements"].fillna("") + req_data[
-        "target_audience"
-    ].fillna("")
+    req_data["fulltext"] = req_data["requirements"].fillna("")
     req_data["skill_type"] = "required"
 
     # create data with both required and to acquire skills sorted by course_id
     data = pd.concat([acq_data, req_data], ignore_index=True)
-    data.sort_values(by=["course_id", "skill_type"], inplace=True)
+    data.sort_values(by=["id", "skill_type"], inplace=True)
 
     print("number of rows after combining required and to acquire skills:", len(data))
     # %%
@@ -195,29 +195,27 @@ def main():
     data["fulltext"] = data["fulltext"].apply(clean_non_ascii)
     data["fulltext"] = data["fulltext"].apply(decode_unicode)
 
-    # find which rows have fulltext < 100 words
-    print("num rows before dropping short text:", len(data))
-    print(
-        "num rows with short text:",
-        len(data[data["fulltext"].apply(num_words_from_string) < 20]),
-    )
-    data = drop_short_text(data, "fulltext", 20)
-
-    # %%
-
-    # rename course_id to id
-    data.rename(columns={"course_id": "id"}, inplace=True)
-
     # %%
     language = "en" if args.language == "all" else args.language
 
-    # get tokens of each sentence and filter out rows with too long sentences
+    # filter out ids with too short fulltext
+    data["num_words"] = data["fulltext"].apply(num_words_from_string)
+    print("--avg num words:", data["num_words"].mean())
+
+    short_text_ids = data[data["num_words"] < 20]["id"].unique()
+    data = data[~data["id"].isin(short_text_ids)]
+    print("number of rows after dropping short texts:", len(data))
+
+    # filter out ids with too many words in a sentence
     data["sentences"] = data["fulltext"].apply(split_sentences, language=language)
     data["longest_sentence"] = data["sentences"].apply(longest_sentence)
-    print("avg sentence length:", data["longest_sentence"].apply(len).mean())
+    print("--avg sentence length:", data["longest_sentence"].apply(len).mean())
     data["num_tokens"] = data["longest_sentence"].apply(num_tokens_from_string)
-    print("avg num tokens:", data["num_tokens"].mean())
-    data = data[data["num_tokens"] <= 1500]
+    print("--avg num tokens:", data["num_tokens"].mean())
+
+    long_sentence_ids = data[data["num_tokens"] > 1500]["id"].unique()
+    data = data[~data["id"].isin(long_sentence_ids)]
+    print("number of rows after dropping long sentences:", len(data))
 
     drop_new_cols = ["sentences", "longest_sentence", "num_tokens"]
     data.drop(columns=drop_new_cols, inplace=True)
