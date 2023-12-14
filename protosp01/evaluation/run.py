@@ -91,7 +91,8 @@ def get_list_of_selections_extract(model_output, sentence):
     return list_of_selections
 
 def get_list_of_selections_ner(model_output, sentence):
-    model_output = postprocess_ner_prompt(sentence, model_output)
+    sentence = ' '.join(sentence)
+    model_output, _, _ = postprocess_ner_prompt(sentence, model_output)
     list_of_selections = []
     model_output = model_output.split()
     in_span = False
@@ -126,14 +127,18 @@ def check_format_response(original, generated, prompt_type):
     feedback = ''
     if prompt_type == 'ner':
         # check for missing words. TODO check for skills exact match inside tags?
-        generated = postprocess_ner_prompt(original, generated)
-        generated_clean = generated.replace('@@', ' ').replace('##', ' ')
+        _, mismatched, extracted = postprocess_ner_prompt(original, generated)
+        # generated_clean = generated.replace('@@', ' ').replace('##', ' ')
         #generated_clean = generated_clean.translate(str.maketrans('', '', string.punctuation))
         #original = original.translate(str.maketrans('', '', string.punctuation))
-        generated_words = generated_clean.split()
-        original_words = original.split()
-        if len(generated_words) != len(original_words):
-            feedback = 'You didn\'t correctly replicate the given sentence. Make sure the sentence stays the same, even if there are no skills to highlight, including punctuation and spacing. Don\'t add any extra words or punctuation to the sentence except for the ## and @@ tags. Don\'t add nor remove any space.'
+        # generated_words = generated_clean.split()
+        # original_words = original.split()
+        if mismatched: 
+            feedback = "You didn\'t correctly replicate the given sentence. Make sure the sentence stays the same, even if there are no skills to highlight, including punctuation, spacing, and grammar mistakes. Don\'t add any extra words or punctuation to the sentence except for the ## and @@ tags. Don\'t add nor remove any space." 
+            if len(extracted) > 0:
+                extracted_str = ", ".join(extracted)
+                feedback += f" Remember to kept the valid highlighted skills with tags '@@' and '##': {extracted_str}"
+
         # and that you highlight all the skills and competencies that are required from the candidate, by surrounding them with tags \'@@\' and \'##\'
     elif prompt_type == 'extract':
         original = original.lower()
@@ -149,21 +154,154 @@ def check_format_response(original, generated, prompt_type):
                 feedback = 'Some of the skills you extracted are not written the same way as in the sentence, or are absent from the sentence. Make sure to correctly replicate all skills in the input sentence, and provide them with one skill per line, without adding anything.'
     return feedback
 
-def postprocess_ner_prompt(original, generated):
-    # TODO correct this, it stays stuck in while loop
-    # Compare with original and fix any errors in the generated string
+def extract_spans(sentence):
+    pattern = r'@@(.*?)##'
+    spans = re.findall(pattern, sentence)
+    return spans
 
-    # It's okay if the sentence is not perfectly replicated, just need to check if all the sentence was covered (no words missing) and all extracted skills are the same as in the original sentence.
-    # deal with added punctuation by the model at the end of the sentence
-    if original[-1] not in string.punctuation and generated[-1] in string.punctuation:
-        generated = generated[:-1]
+def postprocess_ner_prompt(original, generation):
+    print("======= INSIDE POSTPROCESS =======")
+    print(f"ORIGINAL: {original}")
+    print(f"GENERATION: {generation}")
 
-    pattern = r"(\w)([.,!?;'])|([.,!?;'])(\w)"
+    puntuation_list = ['.', ',', '!', '?', ';', ':', '\'', '"', '/', '(', ')', '[', ']', '{', '}']
+
+    if generation.endswith("##") and generation[-3] in puntuation_list:
+        if generation[-4] == ' ':
+            generation = generation[:-4] + "##" + generation[-3]
+        else:
+            generation = generation[:-3] + "##" + generation[-3]
+    if original[-1] not in puntuation_list and generation[-1] in puntuation_list:
+        generation = generation[:-1]
+
+    extracted_spans = extract_spans(generation)
+
+    pattern = r"(\w|##)([.,!?;:')\]}\"\/](?:##)?)|((?:@@)?[.,!?;:'(\[{\"\/])(\w)"
 
     # add spaces around punctuation
-    cleaned_generation = re.sub(pattern, r'\1 \2 \3 \4', generated)
+    cleaned_generation = re.sub(pattern, r'\1 \2 \3 \4', generation)
     # remove duplicated spaces
-    cleaned_generation = re.sub(r'\s+', ' ', cleaned_generation)
+    cleaned_generation = re.sub(r'\s+', ' ', cleaned_generation).rstrip()
+
+    if original[-1] in puntuation_list and original[-2] != ' ':
+        generation = generation[:-1] 
+
+    print(f"CLEANED: {cleaned_generation}")
+
+    mismatched = False 
+
+    original_fixed = []
+    generation_fixed = []
+    original_idx = 0
+    generated_idx = 0
+
+    while original_idx < len(original) and generated_idx < len(cleaned_generation):
+        original_char = original[original_idx]
+        generated_char = cleaned_generation[generated_idx]
+
+        # Check if the characters match
+        if original_char == generated_char:
+            original_fixed.append(original_char)
+            generation_fixed.append(generated_char)
+            original_idx += 1
+            generated_idx += 1
+
+        else:
+            if generated_char == "#" or generated_char == "@":
+                generation_fixed.append(generated_char)
+                generated_idx += 1
+            
+            elif generated_char == ' ':
+                if original_char in puntuation_list and cleaned_generation[generated_idx + 1] == original_char \
+                    or cleaned_generation[generated_idx - 1] in puntuation_list and cleaned_generation[generated_idx + 1] == original_char:
+                    generation_fixed.append(cleaned_generation[generated_idx + 1])
+                    original_fixed.append(original_char)
+                    generated_idx += 2
+                    original_idx += 1
+               
+                elif cleaned_generation[generated_idx - 1] in puntuation_list and \
+                    cleaned_generation[generated_idx + 1] == '@' and cleaned_generation[generated_idx + 3] == original_char: 
+                    generation_fixed.extend(['@', '@'])
+                    generation_fixed.append(cleaned_generation[generated_idx + 3])
+                    original_fixed.append(original_char)
+                    generated_idx += 4
+                    original_idx += 1 
+ 
+                else:
+                    mismatched = True
+                    break
+            
+            elif generated_char in puntuation_list:
+                if original_char == ' ' and original[original_idx + 1] == generated_char:
+                    generation_fixed.append(' ')
+                    generation_fixed.append(generated_char)
+                    original_fixed.append(original_char)
+                    original_fixed.append(original[original_idx + 1])
+                    generated_idx += 1
+                    original_idx += 2
+                elif original_char in string.ascii_lowercase:
+                    if cleaned_generation[generated_idx + 2] == original_char: # random punctuation assertion
+                        generation_fixed.append(cleaned_generation[generated_idx + 2])
+                        original_fixed.append(original_char)
+                        generated_idx += 3
+                        original_idx += 1
+                    elif cleaned_generation[generated_idx + 2] == "@" and cleaned_generation[generated_idx + 4] == original_char:
+                        generation_fixed.extend(['@', '@'])
+                        generation_fixed.append(cleaned_generation[generated_idx + 4])
+                        original_fixed.append(original_char) 
+                        generated_idx += 5
+                        original_idx += 1 
+
+            elif generated_char in string.ascii_lowercase and original_char == ' ': # check for random spaces in original
+                if (cleaned_generation[generated_idx-4:generated_idx] == original[original_idx-4:original_idx]) \
+                and (cleaned_generation[generated_idx:generated_idx+4] == original[original_idx+1:original_idx+5]):
+                   generation_fixed.append(original_char)
+                   original_idx += 1 
+                else:
+                    mismatched = True
+                    break
+                     
+
+            elif original_char not in string.ascii_lowercase and generated_char not in string.ascii_letters:
+                generated_idx += 1
+                original_idx += 1
+            else:
+                mismatched = True
+                break
+        
+        # print(f"{''.join(original_fixed)}\n{''.join(generation_fixed)}\n\n")
+        # print
+    print(original[original_idx:])
+    original_fixed.extend(original[original_idx:])
+    generation_fixed.extend(cleaned_generation[generated_idx:])
+   
+    generated_fixed_str = ''.join(generation_fixed)
+
+    if len(original.split()) != len(generated_fixed_str.split()):
+        mismatched = True
+
+    extracted_spans = [ent for ent in extracted_spans if ent in original]
+
+    print(f"UPDATED: {generated_fixed_str}")
+    print(f"mismatched: {mismatched}")
+    print("================================")
+    return generated_fixed_str, mismatched, extracted_spans
+
+# def postprocess_ner_prompt(original, generated):
+#     # TODO correct this, it stays stuck in while loop
+#     # Compare with original and fix any errors in the generated string
+
+#     # It's okay if the sentence is not perfectly replicated, just need to check if all the sentence was covered (no words missing) and all extracted skills are the same as in the original sentence.
+#     # deal with added punctuation by the model at the end of the sentence
+#     if original[-1] not in string.punctuation and generated[-1] in string.punctuation:
+#         generated = generated[:-1]
+
+#     pattern = r"(\w)([.,!?;'])|([.,!?;'])(\w)"
+
+#     # add spaces around punctuation
+#     cleaned_generation = re.sub(pattern, r'\1 \2 \3 \4', generated)
+#     # remove duplicated spaces
+#     cleaned_generation = re.sub(r'\s+', ' ', cleaned_generation)
     
 
     """
@@ -214,11 +352,11 @@ def postprocess_ner_prompt(original, generated):
     if len(original.split()) != len(generated_fixed_str.split()):
         mismatch = True
     """    
-    return cleaned_generation
+    # return cleaned_generation
 
 
 def run_openai(dataset, args):
-    if os.path.exists(args.save_path) and args.sample == 0 and args.start_from_saved:
+    if os.path.exists(args.save_path) and args.start_from_saved:
         df = pd.read_json(args.save_path)
     else:
         df = pd.DataFrame(columns= list(dataset.columns) + ['model', 'prompt', 'model_output', 'list_of_selection'])
@@ -228,16 +366,26 @@ def run_openai(dataset, args):
     ids_done = df['id']
     ids_left = list(set(ids_all) - set(ids_done))
 
+    failed_sentences = set()
+    if args.exclude_failed:
+        with open("failed_extraction.json", "r") as readfile:
+            for line in readfile:
+                instance = json.loads(line)
+                failed_sentences.add(instance['sentence'])
+
     # sample demos from train set
     demos_dataset = json.load(open(args.processed_data_dir + 'train.json'))
     demos_with_skills = [sample for sample in demos_dataset if len(sample['skill_spans']) > 0]
     demos_without_skills = [sample for sample in demos_dataset if len(sample['skill_spans']) == 0]
-    demos = random.sample(demos_with_skills, args.shots) + random.sample(demos_without_skills, args.shots)
+    
+    demos = random.sample(demos_with_skills, args.shots) + random.sample(demos_without_skills, min(len(demos_without_skills), args.shots))
     random.shuffle(demos)
     
     for id in tqdm(ids_left,total=len(ids_left)):
         index_sample = dataset[dataset['id'] == id].index[0]
         row = dataset.iloc[index_sample]
+        if row['sentence'] in failed_sentences:
+            continue
         row_to_save = {}
         for key, value in row.items():
             row_to_save[key] = value
