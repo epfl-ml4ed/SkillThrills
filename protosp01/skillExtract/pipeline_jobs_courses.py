@@ -48,6 +48,7 @@ def main():
     parser.add_argument("--frequency_penalty", type=float, help="Frequency penalty for generation", default=0)
     parser.add_argument("--presence_penalty", type=float, help="Presence penalty for generation", default=0)
     parser.add_argument("--candidates_method", type=str, help="How to select candidates: rules, mixed or embeddings. Default is embeddings", default="embeddings")
+    parser.add_argument("--max_candidates", type=int, help="Max number of candidates to select", default=5)
     parser.add_argument("--output_path", type=str, help="Output for evaluation results", default="results/")
     parser.add_argument("--prompt_type", type=str, help="Prompt type, from the prompt_template.py file. For now, only \"skills\", \"wlevels\", and \"wreqs\". default is wreqs.", default="wreqs")
     parser.add_argument("--num-samples", type=int, help="Last N elements to evaluate (the new ones)", default=10)
@@ -261,7 +262,7 @@ def main():
         if args.do_matching and "extracted_skills" in sentences_res_list[0]:
             print("Starting candidate selection")
             splitter = Splitter()
-            max_candidates = 10
+            max_candidates = args.max_candidates
             for idxx, sample in enumerate(sentences_res_list):
                 sample = select_candidates_from_taxonomy(
                     sample,

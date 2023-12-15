@@ -28,7 +28,7 @@ from spacy.language import Language
 from spacy_language_detection import LanguageDetector
 import torch
 import torch.nn.functional as F
-from fuzzywuzzy import fuzz
+from thefuzz import fuzz
 
 encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
 max_tokens = 3996
@@ -168,22 +168,6 @@ def chat_completion(messages, model="gpt-3.5-turbo", return_text=True, model_arg
             print(f"Timed out {e}. Waiting for 5 seconds.")
             time.sleep(10)
             continue
-
-
-# async def batch_chat_completion(
-#     messages, model="gpt-3.5-turbo", return_text=True, model_args=None
-# ):
-#     async_responses = [
-#         openai.ChatCompletion.create(
-#             model=model,
-#             messages=msg,
-#             request_timeout=20,
-#             **model_args,
-#         )
-#         for msg in messages
-#     ]
-#     time.sleep(1)
-#     return await asyncio.gather(*async_responses)
 
 
 def chat_completion(messages, model="gpt-3.5-turbo", return_text=True, model_args=None):
@@ -564,6 +548,7 @@ def load_taxonomy(args):
         "Type Level 3",
         "Type Level 4",
         # "Example",
+        "name",
         "Definition",
         "name+definition",
     ]
@@ -585,7 +570,7 @@ def get_emb_inputs(text, tokenizer):
 
 
 def find_best_matching_tokens(skill_tokens, sentence_tokens, threshold=90):
-    # NOTE: because sometimes chatgpt does not give us exact match, we use fuzzy wuzzy's fuzz ratio to get fuzzy string match
+    # NOTE: because sometimes chatgpt does not give us exact match, we use thefuzz (fuzzywuzzy)'s fuzz ratio to get fuzzy string match
     best_matches = []
     best_start_idx = None
     best_end_idx = None
@@ -696,49 +681,33 @@ def select_candidates_from_taxonomy(
 
             # NOTE: this is to handle rule-based/string-matching ways of selecting candidates
             if method == "rules" or method == "mixed":
-                # NOTE: 1. checking for direct matches in name+definition
-                # NOTE: name+definition is generated at ~544 (which is concat of level 2, 3, 4 and definition)
-                taxonomy["results"] = taxonomy["name+definition"].str.contains(
+                taxonomy["results"] = False
+                # we will check for exact matches first = 100% skill in name+definition
+                taxonomy["match_pct"] = taxonomy["name+definition"].str.contains(
                     extracted_skill, case=False, regex=False
+                ).astype(int)
+                taxonomy["match_pct"] = taxonomy["match_pct"].astype(int)
+                taxonomy["match_type"] = np.where(
+                    taxonomy["match_pct"] == 1, "exact", "none"
                 )
 
-                # if not taxonomy["results"].any():
-                #     # print("checking for matches in example")
-                #     taxonomy["results"] = taxonomy["Example"].str.contains(
-                #         extracted_skill, case=False, regex=False
-                #     )
-
-                # NOTE: 2. if not found, checking for subword matches in name+definition
-                if not taxonomy["results"].any():
-                    # print("checking for matches in subwords")
-                    taxonomy["results"] = False
-                    for subword in filter_subwords(extracted_skill, splitter):
-                        taxonomy["results"] = taxonomy["results"] + taxonomy[
-                            "name+definition"
-                        ].str.contains(subword, case=False, regex=False)
-
-                # if not taxonomy["results"].any():
-                #     if method == "rules":
-                #         # print("checking for matches in difflib")
-                #         matching_elements = difflib.get_close_matches(
-                #             extracted_skill,
-                #             taxonomy["name+definition"],
-                #             cutoff=0.4,
-                #             n=max_candidates,
-                #         )
-                #         taxonomy["results"] = taxonomy["name+definition"].isin(
-                #             matching_elements
-                #         )
-
-                if not taxonomy["results"].any():
-                    print("No candidates found for: ", extracted_skill)
-
-                # NOTE: 3. if more than 10 candidates, randomly select 10
-                if taxonomy["results"].sum() > 10:
-                    true_indices = taxonomy.index[taxonomy["results"]].tolist()
-                    selected_indices = np.random.choice(true_indices, 10, replace=False)
-                    taxonomy["results"] = False
-                    taxonomy.loc[selected_indices, "results"] = True
+                if (taxonomy["match_pct"] == 1).any():
+                    if sum(taxonomy["match_pct"] == 1) <= max_candidates:
+                        taxonomy["results"] = taxonomy["match_pct"].astype(bool)
+                    else:
+                        # randomly select max_candidates from the exact matches
+                        taxonomy["results"] = taxonomy["match_pct"].sample(
+                            n=max_candidates, random_state=42
+                        )
+                else:
+                    taxonomy["match_pct"] = taxonomy["name"].apply(
+                        lambda x: fuzz.token_set_ratio(extracted_skill, x)
+                    )
+                    # take the top max_candidates
+                    taxonomy["results"] = taxonomy["match_pct"].rank(
+                        method="first", ascending=False
+                    ) <= max_candidates
+                    taxonomy["match_type"] = "fuzzy"
 
             # NOTE: this is to handle embedding-based ways of selecting candidates
             if method == "embeddings" or method == "mixed":
@@ -763,6 +732,7 @@ def select_candidates_from_taxonomy(
             keep_cols = [
                 "unique_id",
                 "Type Level 2",
+                "name",
                 "name+definition",
             ]
 
