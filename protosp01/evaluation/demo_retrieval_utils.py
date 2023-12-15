@@ -53,4 +53,4 @@ def knn_demo_retrieval(test_sentence_id, args):
     cosine_scores = [(similarity, index) for similarity, index in zip(cosine_similarity(demo_embeddings, input_embed.unsqueeze(0)), demo_ids)]
     sorted_cosine_scores = sorted(cosine_scores, key=lambda x: x[0], reverse=True)
     sorted_indices = [score[1] for score in sorted_cosine_scores]
-    return sorted_indices[:args.shots]
+    return sorted_indices

@@ -27,14 +27,17 @@ def write_answer_extract(list_skills):
     else:
         return "\n".join(list_skills)
 
-
-def get_knn_demonstrations(test_sentence_id, args):
-    demos_files = json.load(open(args.processed_data_dir + 'train.json'))
+def get_knn_demonstrations(demos_files, test_sentence_id, args):
+    shots = min(len(demos_files), args.shots)
     demos_ids = knn_demo_retrieval(test_sentence_id, args)
-    demos = [sample for sample in demos_files if sample['id'] in demos_ids]
+    demos = []
+    for i in range(len(demos_ids)):
+        if len(demos) == shots:
+            break
+        demos.extend(sample for sample in demos_files if sample['id'] == demos_ids[i])
     return demos
 
-def get_prompt(dataset, args, id, demos):
+def get_prompt(dataset, args, id, all_demos):
     instruction_field = 'all'
     instruction = PROMPT_TEMPLATES[instruction_field]['instruction'][args.prompt_type]
     # TODO have specify prompt template for all datasets
@@ -47,9 +50,12 @@ def get_prompt(dataset, args, id, demos):
     indexes.remove(id)
 
     if args.knn:
-        demos_knn = get_knn_demonstrations(row['id'], args)
-        demos = demos_knn + demos
+        positive_demos_knn = get_knn_demonstrations(all_demos[0], row['id'], args)
+        negative_demos_knn = get_knn_demonstrations(all_demos[1], row['id'], args)
+        demos = positive_demos_knn + negative_demos_knn
         random.shuffle(demos)
+    else:
+        demos = all_demos[2]
 
     for example in demos:
         question = "Sentence: " + str(example['sentence'])
@@ -65,19 +71,19 @@ def get_prompt(dataset, args, id, demos):
 
     return messages
 
-def get_list_of_selections(model_output, sentence, prompt_type):
+def get_list_of_selections(model_output, sentence, prompt_type, args):
     if prompt_type == 'ner':
-        return get_list_of_selections_ner(model_output, sentence)
+        return get_list_of_selections_ner(model_output, sentence, args)
     elif prompt_type == 'extract':
-        return get_list_of_selections_extract(model_output, sentence)
+        return get_list_of_selections_extract(model_output, sentence, args)
     else:
         raise Exception('prompt type not supported')
 
-def get_list_of_selections_extract(model_output, sentence):
+def get_list_of_selections_extract(model_output, sentence, args):
     # model_output is a list of strings separated by \n. Sentence is the list of tokens of the original sentence.
     list_of_selections = ['O']*len(sentence)
     sentence = [token.lower() for token in sentence]
-    if "None" in model_output:
+    if "None" in model_output or model_output == "":
         return list_of_selections
     model_output = [str(item) for item in model_output.split('\n')]
     for skill in model_output:
@@ -90,9 +96,10 @@ def get_list_of_selections_extract(model_output, sentence):
             list_of_selections[skill_index + i] = 'I'
     return list_of_selections
 
-def get_list_of_selections_ner(model_output, sentence):
+def get_list_of_selections_ner(model_output, sentence, args):
     sentence = ' '.join(sentence)
-    model_output, _, _ = postprocess_ner_prompt(sentence, model_output)
+    if model_output != "":
+        model_output, _, _ = postprocess_ner_prompt(sentence, model_output, args)
     list_of_selections = []
     model_output = model_output.split()
     in_span = False
@@ -120,14 +127,14 @@ def get_list_of_selections_ner(model_output, sentence):
 
     return list_of_selections
 
-def check_format_response(original, generated, prompt_type):
+def check_format_response(original, generated, prompt_type, args):
     """
     Check if the generated response is in the correct format. If not, return feedback to the user.
     """
     feedback = ''
     if prompt_type == 'ner':
         # check for missing words. TODO check for skills exact match inside tags?
-        _, mismatched, extracted = postprocess_ner_prompt(original, generated)
+        _, mismatched, extracted = postprocess_ner_prompt(original, generated, args)
         # generated_clean = generated.replace('@@', ' ').replace('##', ' ')
         #generated_clean = generated_clean.translate(str.maketrans('', '', string.punctuation))
         #original = original.translate(str.maketrans('', '', string.punctuation))
@@ -145,13 +152,24 @@ def check_format_response(original, generated, prompt_type):
         if generated=="None":
             feedback = ''
         else:
-            missing_skills = 0
+            missing_skills = []
+            correct_skills = []
             extracted_skills = generated.lower().split('\n')
             for skill in extracted_skills:
                 if skill not in original:
-                    missing_skills += 1
-            if missing_skills > 0:
-                feedback = 'Some of the skills you extracted are not written the same way as in the sentence, or are absent from the sentence. Make sure to correctly replicate all skills in the input sentence, and provide them with one skill per line, without adding anything.'
+                    missing_skills.append(skill)
+                else:
+                    correct_skills.append(skill)
+            if len(missing_skills) > 0:
+                if len(correct_skills) > 0:
+                    extracted_correct_skills_str = ", ".join(correct_skills)
+                    feedback = f"You have correctly extracted these skills: {extracted_correct_skills_str}. "
+                extracted_missing_skills_str = ", ".join(missing_skills)
+                feedback += f"The following skills you extracted are either absent or not written the same way as in the original sentence: {extracted_missing_skills_str}. Modify these skills to make sure to exactly replicate these skills from the input sentence with their original spellings and grammars, discard any of them if needed."
+                if len(correct_skills) > 0:
+                    extracted_correct_skills_str = ", ".join(correct_skills)
+                    feedback += " Remember to keep the skills that you correctly extracted."
+                feedback += " Provide them with one skill per line."
     return feedback
 
 def extract_spans(sentence):
@@ -159,18 +177,20 @@ def extract_spans(sentence):
     spans = re.findall(pattern, sentence)
     return spans
 
-def postprocess_ner_prompt(original, generation):
+def postprocess_ner_prompt(original, generation, args):
     print("======= INSIDE POSTPROCESS =======")
     print(f"ORIGINAL: {original}")
     print(f"GENERATION: {generation}")
 
     puntuation_list = ['.', ',', '!', '?', ';', ':', '\'', '"', '/', '(', ')', '[', ']', '{', '}']
 
-    if generation.endswith("##") and generation[-3] in puntuation_list:
+    if args.dataset_name != 'kompetencer' and generation.endswith("##") and generation[-3] in puntuation_list:
         if generation[-4] == ' ':
             generation = generation[:-4] + "##" + generation[-3]
         else:
             generation = generation[:-3] + "##" + generation[-3]
+    elif args.dataset_name == 'kompetencer' and generation.endswith("##."):
+        generation = generation[:-3] + " .##"
     if original[-1] not in puntuation_list and generation[-1] in puntuation_list:
         generation = generation[:-1]
 
@@ -183,7 +203,7 @@ def postprocess_ner_prompt(original, generation):
     # remove duplicated spaces
     cleaned_generation = re.sub(r'\s+', ' ', cleaned_generation).rstrip()
 
-    if original[-1] in puntuation_list and original[-2] != ' ':
+    if len(original) > 1 and original[-1] in puntuation_list and original[-2] != ' ':
         generation = generation[:-1] 
 
     print(f"CLEANED: {cleaned_generation}")
@@ -250,7 +270,13 @@ def postprocess_ner_prompt(original, generation):
                         generation_fixed.append(cleaned_generation[generated_idx + 4])
                         original_fixed.append(original_char) 
                         generated_idx += 5
-                        original_idx += 1 
+                        original_idx += 1
+                    else:
+                        mismatched = True
+                        break
+                else:
+                    mismatched = True
+                    break
 
             elif generated_char in string.ascii_lowercase and original_char == ' ': # check for random spaces in original
                 if (cleaned_generation[generated_idx-4:generated_idx] == original[original_idx-4:original_idx]) \
@@ -359,6 +385,7 @@ def run_openai(dataset, args):
     if os.path.exists(args.save_path) and args.start_from_saved:
         df = pd.read_json(args.save_path)
     else:
+        os.makedirs(os.path.dirname(args.save_path), exist_ok=True)
         df = pd.DataFrame(columns= list(dataset.columns) + ['model', 'prompt', 'model_output', 'list_of_selection'])
     print(f'saving to {args.save_path}')
         
@@ -368,7 +395,11 @@ def run_openai(dataset, args):
 
     failed_sentences = set()
     if args.exclude_failed:
-        with open("failed_extraction.json", "r") as readfile:
+        failed_path = f"failed_extraction_{args.prompt_type}"
+        if args.knn:
+            failed_path += "_knn"
+        failed_path += ".json"
+        with open(failed_path, "r") as readfile:
             for line in readfile:
                 instance = json.loads(line)
                 failed_sentences.add(instance['sentence'])
@@ -377,9 +408,11 @@ def run_openai(dataset, args):
     demos_dataset = json.load(open(args.processed_data_dir + 'train.json'))
     demos_with_skills = [sample for sample in demos_dataset if len(sample['skill_spans']) > 0]
     demos_without_skills = [sample for sample in demos_dataset if len(sample['skill_spans']) == 0]
-    
-    demos = random.sample(demos_with_skills, args.shots) + random.sample(demos_without_skills, min(len(demos_without_skills), args.shots))
-    random.shuffle(demos)
+
+    negative_shots = min(len(demos_without_skills), args.shots)
+    fixed_demos = random.sample(demos_with_skills, args.shots) + random.sample(demos_without_skills, negative_shots)
+    random.shuffle(fixed_demos)
+    all_demos = (demos_with_skills, demos_without_skills, fixed_demos)
     
     for id in tqdm(ids_left,total=len(ids_left)):
         index_sample = dataset[dataset['id'] == id].index[0]
@@ -389,39 +422,50 @@ def run_openai(dataset, args):
         row_to_save = {}
         for key, value in row.items():
             row_to_save[key] = value
-        messages = get_prompt(dataset, args, id, demos)
+        messages = get_prompt(dataset, args, id, all_demos)
         response = openai.ChatCompletion.create(model=args.model, messages=messages, temperature=0)
         model_output = response['choices'][0]['message']['content']
 
-        feedback = check_format_response(row['sentence'], model_output, args.prompt_type)
+        feedback = check_format_response(row['sentence'], model_output, args.prompt_type, args)
         trys_count = 0
         if feedback != '':
+            print("######################### INCORRECT FORMAT DETECTED ##############################")
             print(feedback)
+            print("---- Original Sentence")
             print(row['sentence'])
+            print("---- Extraction")
             print(model_output)
             # If the model fails to generate the output correctly, try again up to 5 times
             # update the prompt with a new message targeting the specific issue
-            while feedback != '' and trys_count < 5:
+            while feedback != '' and trys_count < 3:
                 print("Re-trying...", str(trys_count))
                 messages.append({"role": "assistant", "content": model_output})
                 messages.append({"role": "user", "content": feedback})
                 response = openai.ChatCompletion.create(model=args.model, messages=messages, temperature=0)
                 model_output = response['choices'][0]['message']['content']
-                feedback = check_format_response(row['sentence'], model_output, args.prompt_type)
+                feedback = check_format_response(row['sentence'], model_output, args.prompt_type, args)
+                print("#### New feedback")
+                print(feedback)
+                print("---- Revised Extraction")
                 print(model_output)
                 trys_count += 1
-        if trys_count == 5:
-            with open("failed_extraction.json", "a") as outfile:
+        if trys_count == 3:
+            failed_path = f"failed_extraction_{args.prompt_type}"
+            if args.knn:
+                failed_path += "_knn"
+            failed_path += ".json"
+            with open(failed_path, "a") as outfile:
                 json.dump({"dataset": args.dataset_name, "sentence": row['sentence'], "extracted_skills": model_output.split('\n')}, outfile)
                 outfile.write('\n')
-            continue
-        else:
-            list_of_selections = get_list_of_selections(model_output, row['tokens'], args.prompt_type)
-
-            row_to_save['model'] = args.model
-            row_to_save['prompt'] = messages
-            row_to_save['model_output'] = model_output
-            
-            row_to_save['list_of_selection'] = list_of_selections
-            df.loc[len(df)] = row_to_save
+            model_output = ""
+        list_of_selections = get_list_of_selections(model_output, row['tokens'], args.prompt_type, args)
+        if args.prompt_type == 'ner' and trys_count < 3:
+            model_output, _, _ = postprocess_ner_prompt(row['sentence'], model_output, args)
+    
+        row_to_save['model'] = args.model
+        row_to_save['prompt'] = messages
+        row_to_save['model_output'] = model_output
+        
+        row_to_save['list_of_selection'] = list_of_selections
+        df.loc[len(df)] = row_to_save
         df.to_json(args.save_path, orient='records', indent=4, force_ascii=False)
