@@ -7,17 +7,45 @@ PROMPT_TEMPLATES = {
         },
     },
     "gnehm": {
-        "system": "You are an expert human resource manager from Germany. You need to analyse skills required in German job offers.",
+        "system": "You are an expert human resource manager in information and communication technology (ICT) from Germany. You need to analyse skills required in German job offers.",
         "instruction": {
-            "ner": "You are given an extract from a job description in German. Highlight all the skills and competencies that are required from the candidate, by surrounding them with tags '@@' and '##'.\n",
-            "extract": "You are given a sentence from a job description in German. Extract all the skills and competencies that are required from the candidate as list.\n",
+            "ner": "You are given an extract from a job advertisement in German. Highlight all the IT/Technology skills and competencies that are required from the candidate, by surrounding them with tags '@@' and '##'.\n",
+            "extract": "You are given a sentence from a job advertisement in German. Extract all the IT/Technology skills and competencies that are required from the candidate as list.\n",
         },
     },
     "skillspan": {
         "system": "You are an expert human resource manager. You need to analyse skills required in job offers.",
         "instruction": {
-            "ner": "You are given a sentence from a job description. Highlight all the skills and competencies that are required from the candidate, by surrounding them with tags '@@' and '##'.\n",
-            "extract": "You are given a sentence from a job description. Extract all the skills and competencies that are required from the candidate as list.\n",
+            "ner": "You are given a sentence from a job posting. Highlight all the skills, knowledges, and competencies that are required from the candidate, by surrounding them with tags '@@' and '##'.\n",
+            "extract": "You are given a sentence from a job posting. Extract all the skills, knowledges, and competencies that are required from the candidate as list.\n",
+        },
+    },
+    "sayfullina": {
+        "system": "You are an expert human resource manager. You need to detect and analyse soft skills required in job offeres",
+        "instruction": {
+            "ner": "You are given a sentence from a job advertisement. Highlight all the soft skills and competencies that are required from the candidate, by surrounding them with tags '@@' and '##'.\n",
+            "extract": "You are given a sentence from a job advertisement. Extract all the soft skills and competencies that are required from the candidate as list.\n",
+        },
+    },
+    "fijo": {
+        "system": "You are an expert human resource manager in the insurance industry in France. You need to analyse skills required in job offers.",
+        "instruction": {
+            "ner": "You are given a sentence from an insurance job description in French. Highlight all the skills and competencies that are required from the candidate, by surrounding them with tags '@@' and '##'.\n",
+            "extract": "You are given a sentence from an insurance job description in French. Extract all the skills and competencies that are required from the candidate as list.\n",
+        },
+    },
+    "green": {
+        "system": "You are an expert human resource manager. You need to analyse skills required in job offers.",
+        "instruction": {
+            "ner": "You are given a sentence from a job description in various fields like IT, finance, healthcare, and sales. Highlight all the skills and competencies that are required from the candidate, by surrounding them with tags '@@' and '##'.\n",
+            "extract": "You are given a sentence from a job descriptionin various fields like IT, finance, healthcare, and sales. Extract all the skills and competencies that are required from the candidate as list.\n",
+        },
+    },
+    "kompetencer": {
+        "system": "You are an expert human resource manager. You need to analyse skills required in job offers.",
+        "instruction": {
+            "ner": "You are given a sentence from a job description in Danish. Highlight all the skills, knowledges, and competencies that are required from the candidate, by surrounding them with tags '@@' and '##'.\n",
+            "extract": "You are given a sentence from a job description in Danish. Extract all the skills, knowledges, and competencies that are required from the candidate as list.\n",
         },
     },
 }
