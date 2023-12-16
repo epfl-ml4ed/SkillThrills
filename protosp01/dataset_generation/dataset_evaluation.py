@@ -4,8 +4,7 @@ import pandas as pd
 from transformers import (AutoModel, AutoTokenizer)
 from utils import select_candidates_from_taxonomy
 import pickle
-from tqdm.notebook import tqdm
-tqdm.pandas()
+from tqdm import tqdm
 from utils import (OPENAI,
                    Splitter,
                    select_candidates_from_taxonomy)
@@ -18,10 +17,11 @@ import numpy as np
 import torch
 import random
 from split_words import Splitter
+from gen_utils import embedd_tax
 
-ESCO_DIR = "../../../esco/"
-
-
+# ESCO_DIR = "../../../esco/"
+ESCO_DIR = "/mnt/u14157_ic_nlp_001_files_nfs/nlpdata1/home/magron/esco/"
+GENERATED_DIR = "/mnt/u14157_ic_nlp_001_files_nfs/nlpdata1/home/magron/SkillThrills/protosp01/dataset_generation/generation/generated/"
 
 
 
@@ -40,6 +40,52 @@ def fidelity(dataset, model_id='jjzha/jobbert-base-cased'):
                                 add_start_token=True,
                                 predictions=dataset)
     return results
+
+
+def diversity(dataset):
+    ## compute the embeddings of the sentences
+    if("embeddings" not in dataset.columns):
+        dataset["embeddings"] = dataset["sentence"]\
+                    .progress_apply(lambda st : \
+                    word_emb_model(**word_emb_tokenizer(st, return_tensors="pt", max_length=512, padding=True, truncation=True))\
+                    .last_hidden_state[:, 0, :]\
+                    .detach()
+                    )
+    all_embeddings = torch.cat(list(dataset["embeddings"])).numpy()
+    all_extra = cosine_similarity(all_embeddings, all_embeddings)
+    N = len(dataset)
+    div = ((np.ones((N, N)) - np.tri(N, N)) * all_extra).flatten()
+    return div[div != 0]
+
+
+def intra_skills_diversity(dataset, label_key="skills"):
+    dataset["embeddings"] = dataset["sentence"]\
+                    .progress_apply(lambda st : \
+                    word_emb_model(**word_emb_tokenizer(st, return_tensors="pt", max_length=512, padding=True, truncation=True))\
+                    .last_hidden_state[:, 0, :]\
+                    .detach()
+                    )
+    skill_embds = dataset\
+        .explode(label_key)\
+        .groupby(label_key)\
+        .progress_apply(lambda x : torch.cat(list(x["embeddings"])))
+    
+    intra_sim = skill_embds\
+                    .progress_apply(
+                        lambda x : cosine_similarity(x, x)
+                    )\
+                    .apply(
+                        lambda x : ((np.ones((x.shape[0], x.shape[0])) - np.tri(x.shape[0], x.shape[0])) * x).flatten().mean()                        
+                    )
+
+    intra_sim = pd.DataFrame(
+        intra_sim
+    ).reset_index()
+
+    intra_sim.columns = ["skill", "intra_sim"]
+
+    return intra_sim
+    
 
 
 
@@ -204,6 +250,7 @@ def get_sp_emb_tax(split):
     taxonomy = sp_emb_tax.drop("embeddings", axis=1)
     return sp_emb_tax, taxonomy
 
+
 class Predictor():
 
     def __init__(self,
@@ -239,24 +286,45 @@ class Predictor():
         if(test_domain == "SkillSpan-dev"):
             self.emb_tax, self.taxonomy = get_sp_emb_tax("dev")
         elif(test_domain == "SkillSpan-test"):
-            self.emb_tax, self.taxonomy = get_sp_emb_tax("test")
+            self.emb_tax, self.taxonomy = get_sp_emb_tax("test")        
+        elif(test_domain == "SkillSpan-test+dev" or test_domain == "SkillSpan-dev+test"):
+            emb_tax1, taxonomy1 = get_sp_emb_tax("test")
+            emb_tax2, taxonomy2 = get_sp_emb_tax("dev")
+            self.emb_tax = pd.concat([emb_tax1, emb_tax2]).drop_duplicates("name")
+            self.taxonomy = pd.concat([taxonomy1, taxonomy2]).drop_duplicates("name")
         elif(test_domain == "Proto"):
             self.emb_tax, self.taxonomy = get_proto_emb_tax()
         else:
             raise ValueError("Unknown or unsupported test domain.")
 
         ## ADD TRAIN DOMAIN TO DECIDE WHERE THE SUPPORT COME FROM
-        if(train_domain == "Proto"):
-            support_set_fname = "./generation/generated/PROTOTYPE/ANNOTATED_SUPPORT_SET.pkl"
-        elif(train_domain == "SkillSpan"):
-            support_set_fname = "./generation/generated/SKILLSPAN/ANNOTATED_SUPPORT_SET.pkl"
+        support_set_fname_base = GENERATED_DIR + "{DOMAIN}/ANNOTATED_SUPPORT_SET.pkl"
+        target = {
+            "Proto": "PROTOTYPE",
+            "SkillSpan": "SKILLSPAN",
+            "R-SkillSpan": "R-SKILLSPAN",
+            "Decorte": "DECORTE"
+        }
+        if(train_domain in target):
+            support_set_fname = support_set_fname_base.format(DOMAIN=target[train_domain])
         else:
             raise ValueError("Unknown or unsupported train domain")
-            
+        
+
         with open(support_set_fname, "rb") as f:
-            self.support_set = pickle.load(f)
-            self.support_set["skill"] = self.support_set["skill"].apply(eval) ## into list
-            self.support_set = self.support_set.explode("skill")
+            self.support_set = pickle.load(f).dropna()
+            
+            if(train_domain not in ["Decorte", "R-SkillSpan"]): ## 1st gen
+                self.support_set["skill"] = self.support_set["skill"].apply(eval) ## into list
+            else: ## last generation
+                self.support_set = self.support_set.rename({'annot_spans': 'spans'}, axis=1)
+
+            if(train_domain not in ["Decorte"]):
+                self.support_set = self.support_set.explode("skill")
+            
+            if(train_domain in ["Decorte"]):
+                self.support_set["spans"] = self.support_set["spans"].apply(eval) ## into list
+                
 
         self.unique_support = self.support_set[["sentence", "embeddings"]].drop_duplicates()
         self.all_embeddings = torch.cat(list(self.unique_support["embeddings"].values)).detach()
@@ -277,7 +345,7 @@ class Predictor():
         extraction_cost = 0
         matching_cost = 0
         ress = []
-        for i, annotated_record in tqdm(enumerate(dataset)):
+        for i, annotated_record in tqdm(list(enumerate(dataset))):
             ## EXTRACTION
             if(support_size_extr is not None):
                 api = OPENAI(args, [annotated_record], self.generate_support_set(annotated_record["sentence"], type="extraction", k=support_size_extr))
@@ -289,7 +357,7 @@ class Predictor():
             ## CANDIDATE SELECTION
             if "extracted_skills" in sentences_res_list[0]:
                 splitter = Splitter()
-                max_candidates = 10
+                max_candidates = 5
                 for idxx, sample in enumerate(sentences_res_list):
                     sample = select_candidates_from_taxonomy(
                         sample,
