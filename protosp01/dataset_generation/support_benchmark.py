@@ -5,7 +5,7 @@ import os
 import sys
 
 
-
+AD = False
 
 def main():
 
@@ -21,9 +21,14 @@ def main():
     print(f"METRIC FILE NAME : {target_metric_filename}.pkl")
     print(f"BOOTSTRAPING REPETITIONS : {BOOTSTRAP}")
     ## we test with SkillSpan dataset
-    ESCO_DIR = "../../../esco/"
-    with open(ESCO_DIR + "test.json") as f:
-        testsp = eval(",".join(f.read().split("\n")))
+    if AD:
+        ESCO_DIR = "../../data/taxonomy/esco/"
+        with open(ESCO_DIR + "old_test.json") as f:
+            testsp = eval(",".join(f.read().split("\n")))
+    else:
+        ESCO_DIR = "../../../esco/"
+        with open(ESCO_DIR + "test.json") as f:
+            testsp = eval(",".join(f.read().split("\n")))
     testsp = pd.DataFrame(testsp).drop("idx", axis=1).dropna()
     testsp.columns = ["sentence", "skills"]
     testsp = testsp[["skills", "sentence"]]

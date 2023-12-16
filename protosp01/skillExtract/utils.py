@@ -737,7 +737,6 @@ def select_candidates_from_taxonomy(
                 taxonomy["match_pct"] = taxonomy["name+definition"].str.contains(
                     extracted_skill, case=False, regex=False
                 ).astype(int)
-                taxonomy["match_pct"] = taxonomy["match_pct"].astype(int)
                 taxonomy["match_type"] = np.where(
                     taxonomy["match_pct"] == 1, "exact", "none"
                 )
@@ -760,7 +759,6 @@ def select_candidates_from_taxonomy(
                     ) <= max_candidates
                     taxonomy["match_type"] = "fuzzy"
 
-            # NOTE: this is to handle embedding-based ways of selecting candidates
             if method == "embeddings" or method == "mixed":
                 # print("checking for highest embedding similarity")
                 emb_tax = get_top_vec_similarity(
