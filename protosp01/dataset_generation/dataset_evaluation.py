@@ -357,7 +357,6 @@ class Predictor():
             ## CANDIDATE SELECTION
             if "extracted_skills" in sentences_res_list[0]:
                 splitter = Splitter()
-                max_candidates = 5
                 for idxx, sample in enumerate(sentences_res_list):
                     sample = select_candidates_from_taxonomy(
                         sample,
