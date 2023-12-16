@@ -2,7 +2,7 @@
 
 en_job_sys="You are a human resource expert tasked with analyzing skills in a job posting."
 
-en_job_inst_extr_wlevels = ("You are given sentences from a job description. Extract the hard and soft skills that are required from the candidate applying for the job as exact substrings of the sentence. " 
+en_job_inst_extr_wlevels = ("You are given sentences from a job description. Extract the hard and soft skills (as exact substrings of the sentence) that are required from the candidate applying for the job. " 
                             "Infer the corresponding skill mastery level (beginner, intermediate, expert, or unknown) of each skill based on the context. "
                             "Return the output as only a json file extracted substrings (as keys) and their inferred mastery levels (as values).\n")
 en_job_shots_extr_wlevels = [
@@ -13,8 +13,11 @@ en_job_shots_extr_wlevels = [
     'Sentence: You have very good knowledge of digital circuit technology and control circuits. \nAnswer: {"digital circuit technology": "expert", "control loops": "expert"}',
     'Sentence: In addition to knowledge of modern, agile software development and its concepts, you also have a basic knowledge of test automation. \nAnswer: {"agile software development": "intermediate", "test automation": "beginner"}',
 ]
-en_job_inst_match = ("Given sentences from a job description and a skill extracted from these sentences along with several skills (as 'skill name: skill definition' pairs) as options, your task is to identify the best matching option."
-                     "If the best option matches exactly to the extracted skill in context of the sentence, output the associated letter (e.g., 'a'); otherwise (if there is no match or you are not sure), output nothing.\n")
+# en_job_inst_match = ("Given sentences from a job description and a skill extracted from these sentences along with several skills (as 'skill name: skill definition' pairs) as options, your task is to identify the best matching option."
+#                      "If the best option matches exactly to the extracted skill in context of the sentence, output the associated letter (e.g., 'a'); otherwise (if there is no match or you are not sure), output nothing.\n")
+
+en_job_inst_match = ("Given sentences from a job description and a skill extracted from these sentences along with several skills (as 'skill name: skill definition' pairs) as options, identify the best matched option."
+                    "Only if the extracted skill in context of the sentence is a perfect match to the best option, output the associated letter (e.g., 'b'); otherwise, output nothing. If you have any doubt, output nothing.\n")
 en_job_shots_match = [
     """
     Sentence: We need nowledge of modern, agile software development and its concepts.
@@ -48,8 +51,10 @@ en_course_shots_extr_wlevels = [
     """Sentence: Make web apps in the ELM language and 2D games!. The complete beginner's guide for web programmers and game developer \nAnswer: {"web apps in the ELM language": "beginner", "2D games": "beginner"}""",
 ]
 
-en_course_inst_match = ("Given sentences from a course description and a skill extracted from these sentences along with several skills (as 'skill name: skill definition' pairs) as options, your task is to identify the matching option(s)."
-                        "If the extracted skill in context of the sentence exactly matches one or more of the options, output the associated letter(s) (e.g., 'a', 'b', 'c'); otherwise, output nothing.\n")
+# en_course_inst_match = ("Given sentences from a course description and a skill extracted from these sentences along with several skills (as 'skill name: skill definition' pairs) as options, your task is to identify the matching option(s)."
+#                         "If the extracted skill in context of the sentence exactly matches one or more of the options, output the associated letter(s) (e.g., 'a', 'b', 'c'); otherwise, output nothing.\n")
+en_course_inst_match = ("Given sentences from a course description and a skill extracted from these sentences along with several skills (as 'skill name: skill definition' pairs) as options, identify the best matched option."
+                    "Only if the extracted skill in context of the sentence is a perfect match to the best option, output the associated letter (e.g., 'b'); otherwise, output nothing. If you have any doubt, output nothing.\n")
 en_course_shots_match = [
     """
     Sentence: "You will learn to successfully lead and manage team in a high-pressure environment."
@@ -72,21 +77,22 @@ en_course_shots_match = [
 ########### CVs ###########
 en_cv_sys = "You are an expert human resource manager tasked with finding the best candidate with the right skills."
 
-en_cv_inst_extr_wlevels = ("You are given sentences from a CV/resume. Extract hard and soft skills (as substrings of the sentence) that the candidate has. "
+en_cv_inst_extr_wlevels = ("You are given a sentence from a CV/resume from a candidate. Extract the important skills (as exact substrings of the sentence if possible) that the candidate has. "
                             "Infer the corresponding skill mastery level (beginner, intermediate, expert, or unknown) of each skill based on the context. "
-                            "Return the output as only a json file extracted substrings (as keys) and their inferred mastery levels (as values).\n")
+                            "Return the output as only a json file with the extracted skills (as keys) and their inferred mastery levels (as values).\n")
 
 en_cv_shots_extr_wlevels = [
-    'Sentence: Good logical and analytical skills • Positive attitude towards solving problems and accepting challenges • A team player & leader.\nAnswer: {"logical and analytical skills": "intermediate", "Positive attitude towards solving problems and accepting challenges": "unknown", "team player": "unknown", "leader": "unknown"}',
-    'Sentence: GPA: 4  0 B.S : Marketing , Iowa State University - City , State Marketing Microsoft Front Page Certified New Horizons - Des Moines, IA. \nAnswer: {}',
-    'Sentence: Well-versed in analyzing and mitigating risk and finding cost-effective solutions. Excels at boosting performance and productivity by establishing realistic goals and enforcing deadlines.  Versatile IT professional with 37 years of Enterprise design and engineering methodology.\nAnswer: {"analyzing and mitigating risk": "expert", "finding cost-effective solutions": "expert", "boosting performance and productivity": "expert", "Enterprise design and engineering methodology": "expert"}',
+    'Sentence: The purpose of reports is to provide an end-to-end view of the entire sales order transaction, and to track the investment orders in various funds, including the status of orders, order types along with the gross value and net value to be generated from these orders. \nAnswer: {"business analysis": "unknown"}',
+    'Sentence: Project 2: Project Name Nestle Client Nestle Globe Company Tech Mahindra Pvt. Ltd. \nAnswer: {}',
+    'Sentence: Suggested best visualization components in dashboard to use \nAnswer: {"data visualization": "unknown"}',
+    'Sentence: Proficient in Microsoft Office Suite (Word, Excel, PowerPoint, Outlook), SharePoint, and Visio. \nAnswer: {"microsoft office Suite": "expert", "sharePoint": "expert", "visio": "expert"}',
     'Sentence: The different projects required careful management of specific STIG. compliance and hardening for the different configurations. \nAnswer: {"management of specific STIG": "unknown"}',
-    'Sentence: Highlights Excellent communication techniques Manufacturing systems integration Multidisciplinary exposure Design instruction creation Project management Complex problem solver Advanced critical thinking SharePoint Microsoft Excel \nAnswer: {"communication techniques": "expert", "systems integration": "unknown", "Multidisciplinary": "beginner", "Project management": "unknown", "problem solver": "expert", "critical thinking": "expert"}',
+    'Sentence: Highlights Excellent communication techniques Manufacturing systems integration Multidisciplinary exposure Design instruction creation Project management Complex problem solver Advanced critical thinking SharePoint Microsoft Excel \nAnswer: {"communication techniques": "expert", "systems integration": "unknown", "project management": "unknown", "critical thinking": "expert"}',
     'Sentence: Group and project management experience for over twelve years. Advanced problem solving skills and expertise. \nAnswer: {"Group and project management": "expert", "problem solving skills": "expert"}',
 ]
 
-en_cv_inst_match = ("Given sentences from a CV/resume and a skill extracted from these sentences along with several skills (as 'skill name: skill definition' pairs) as options, your task is to identify the matching option(s)."
-                    "If the extracted skill in context of the sentence exactly matches one or more of the options, output the associated letter(s) (e.g., 'a', 'b', 'c'); otherwise, output nothing.\n")
+en_cv_inst_match = ("Given sentences from a CV/resume and a skill extracted from these sentences along with several skills (as 'skill name: skill definition' pairs) as options, identify the best matched option."
+                    "Only if the extracted skill in context of the sentence is a perfect match to the best option, output the associated letter (e.g., 'b'); otherwise, output nothing. If you have any doubt, output nothing.\n")
 
 en_cv_shots_match = [
     """
@@ -98,10 +104,11 @@ en_cv_shots_match = [
     \nAnswer: b
     """,
     """
-    Sentence: "I have 20 years of experience in administration. I can handle fax or email"
-    \nSkill: "administration"
-    \nOptions: \na: Grovo: the learning management system grovo is an e-learning platform for creating, administrating, arranging, reporting and delivering e-learning education courses or training programs.
-    \nb: "Sakai: the computer program sakai is a e-learning platform for creating, administrating, arranging, reporting and delivering e-learning education courses or training programs."
+    Sentence: "Project 2: Project Name Nestle Client Nestle Globe Company Tech Mahindra Pvt. Ltd""
+    \nSkill: "tech mahindra pvt. ltd"
+    \nOptions: \na: manage vehicle fleet : possess an overview of the vehicle fleet of a company in order to determine what vehicles are available and suitable for the provision of transport services.
+    \nb: set up tote board : install and the tote board used to display information relevant to tote betting at an event.
+    \nc: sand blasting machine parts : the various parts of a type of sand blasting machinery, their qualities and applications, such as a treadle, blast nozzle, dust collecter, filter, abrasive materials and others.
     \nAnswer: .
     """
 ]

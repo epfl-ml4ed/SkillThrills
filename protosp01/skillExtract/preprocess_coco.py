@@ -35,7 +35,7 @@ def decode_unicode(text):
 
 def clean_non_ascii(text):
     pattern = re.compile("[^\x00-\x7F]+")
-    return pattern.sub("", text)
+    pattern.sub("", text)
 
 
 def convert_to_list(value):

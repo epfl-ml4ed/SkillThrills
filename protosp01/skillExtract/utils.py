@@ -623,13 +623,13 @@ def get_top_vec_similarity(
     start_idx, end_idx = get_token_idx(context, extracted_skill, tokenizer)
     if start_idx is None and end_idx is None:
         # no idx found for extracted skill so we will take just the embeddings of the skill
-        # skill_vec = get_embeddings(get_emb_inputs(extracted_skill, tokenizer), model)[
-        #     :, 0, :
-        # ]  # taking the CLS token since we are comparing against the CLS token of the taxonomy
+        skill_vec = get_embeddings(get_emb_inputs(extracted_skill, tokenizer), model)[
+            :, 0, :
+        ]  # taking the CLS token since we are comparing against the CLS token of the taxonomy
 
         # instead, if no idx is found, we will just output vector that doesn't break the code
         # (this is because we are using this function to get the top 10 candidates)
-        skill_vec = torch.zeros(1, 768)
+        # skill_vec = torch.zeros(1, 768)
     else:
         skill_vec = get_embeddings(get_emb_inputs(context, tokenizer), model)[
             :, start_idx:end_idx, :
