@@ -353,7 +353,8 @@ class Predictor():
                 api = OPENAI(args, [annotated_record])
             sentences_res_list, cost = api.do_prediction("extraction")
             extraction_cost += cost
-
+            if(nb_candidates is None):
+                nb_candidates = 5
             ## CANDIDATE SELECTION
             if "extracted_skills" in sentences_res_list[0]:
                 splitter = Splitter()
@@ -364,7 +365,7 @@ class Predictor():
                         splitter,
                         word_emb_model,
                         word_emb_tokenizer,
-                        max_candidates,
+                        max_candidates=nb_candidates,
                         method=args.candidates_method,
                         emb_tax=None if args.candidates_method == "rules" else self.emb_tax,
                     )
