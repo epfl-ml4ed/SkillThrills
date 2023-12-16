@@ -332,7 +332,7 @@ class Predictor():
         
 
 
-    def pipeline_prediction(self, dataset, support_type=None, support_size_match=None, max_candidates=None, support_size_extr=None):
+    def pipeline_prediction(self, dataset, support_type=None, support_size_match=None, nb_candidates=None, support_size_extr=None):
         """
             takes dataset as record list
         """
