@@ -46,7 +46,7 @@ Language.factory("language_detector", func=get_lang_detector)
 nlp_model.add_pipe("language_detector", last=True)
 
 
-from prompt_template import PROMPT_TEMPLATES
+from prompt_template_temp import PROMPT_TEMPLATES
 from api_key import API_KEY
 
 CHAT_COMPLETION_MODELS = ["gpt-3.5-turbo", "gpt-4", "gpt-4-1106-preview"]
@@ -97,14 +97,14 @@ def split_sentences(text, language):
     # sentences = text.split("\n\n")  # TODO: AD test number of sentences here
     splitter = SentenceSplitter(language=language)
     sentences = splitter.split(text)
-    # if sentences are took long, split them again
-    sentences = [sentence.rstrip(".") for sentence in sentences]
     # if sentences shorter than 5 words, merge with next sentence
     for idx, sentence in enumerate(sentences):
         if len(sentence.split()) < 5 and idx < len(sentences) - 1:
-            sentences[idx + 1] = sentence + " " + sentences[idx + 1]
+            sentences[idx + 1] = sentence + ". " + sentences[idx + 1]
             sentences[idx] = ""
     sentences = [sentence for sentence in sentences if sentence != ""]
+
+    sentences = [sentence.rstrip(".") for sentence in sentences]
 
     # # save long sentences to see what's going on
     # long_sents = [sentence for sentence in sentences if len(sentence.split()) > 50]
@@ -341,12 +341,12 @@ class OPENAI:
                     pat = r"\{[^{}]*\}"
                     extracted_json = re.search(pat, prediction).group()
                 except:
-                    print("Error parsing json:", prediction)
+                    print("\nError parsing json:", prediction)
                     extracted_json = "{}"
                 try:
                     prediction = json.loads(extracted_json)
                 except:
-                    print("Error parsing json:", prediction)
+                    print("\nError parsing json:", prediction)
                     prediction = {}
                 extracted_skills = list(prediction.keys())
                 levels = list(prediction.values())
@@ -381,7 +381,6 @@ class OPENAI:
             instruction_field,
             shots_field,
         ) = get_matching_prompt_elements(self.args.data_type)
-
         for idxx, sample in enumerate(tqdm(self.data)):
             sample["matched_skills"] = {}
             for extracted_skill in sample["extracted_skills"]:
@@ -402,6 +401,7 @@ class OPENAI:
                     answer = shot.split("\nAnswer:")[1].strip()
                     messages.append({"role": "user", "content": sentence})
                     messages.append({"role": "assistant", "content": answer})
+
 
                 # TODO 1.5 having definition or not in the list of candidates ? Here we only prove the name and an example. Yes, should try, but maybe not if there are 10 candidates...
                 # update as an argument - like give def or not when doing the matching then ask Marco if it helps or decreases performance
@@ -435,7 +435,10 @@ class OPENAI:
                     print("Error with sample:", messages)
                     prediction = ""
 
-                chosen_letter = prediction[0].upper()
+                try:
+                    chosen_letter = prediction[0].upper()
+                except:
+                    chosen_letter = ""
                 # TODO match this with the list of candidates, in case no letter was generated! (AD: try to ask it to output first line like "Answer is _")
                 # Here the best way is just to change the prompt and ask the model to always output the same template, to make the extraction of the chosen option easier.
                 # AD: maybe try JSON or "Answer in _ format" or with specific tags
@@ -509,9 +512,10 @@ class OPENAI:
 
 
 def concatenate_cols_skillname(row):
-    output = row["Type Level 2"]
-    output += f": {row['Type Level 3']}" if not pd.isna(row["Type Level 3"]) else ""
-    output += f": {row['Type Level 4']}" if not pd.isna(row["Type Level 4"]) else ""
+    # output = row["Type Level 2"]
+    # output += f": {row['Type Level 3']}" if not pd.isna(row["Type Level 3"]) else ""
+    # output += f": {row['Type Level 4']}" if not pd.isna(row["Type Level 4"]) else ""
+    output = row["name"]
     output += f": {row['Definition']}" if not pd.isna(row["Definition"]) else ""
     return output
 
@@ -533,26 +537,6 @@ def filter_subwords(extracted_skill, splitter):
 
 def load_taxonomy(args):
     taxonomy = pd.read_csv(args.taxonomy, sep=",")
-    taxonomy = taxonomy.dropna(subset=["Definition", "Type Level 2"])
-    taxonomy["name+definition"] = taxonomy.apply(concatenate_cols_skillname, axis=1)
-    # taxonomy["unique_id"] = list(range(len(taxonomy)))
-    # skill_definitions = list(taxonomy["Definition"].apply(lambda x: x.lower()))
-    # skill_names = list(taxonomy["name+definition"].apply(lambda x: x.lower()))
-
-    keep_cols = [
-        "unique_id",
-        # "ElementID",
-        # "Dimension",
-        "Type Level 1",
-        "Type Level 2",
-        "Type Level 3",
-        "Type Level 4",
-        # "Example",
-        "name",
-        "Definition",
-        "name+definition",
-    ]
-    taxonomy = taxonomy[keep_cols]
     return taxonomy  # , skill_names, skill_definitions
 
 
@@ -598,8 +582,8 @@ def get_token_idx(sentence, skill, tokenizer, threshold=90):
         skill_tokens, sentence_tokens, threshold
     )
 
-    if start_idx is None:
-        print("String not found in sentence for: ", skill)
+    # if start_idx is None:
+    #     print("String not found in sentence for: ", skill)
 
     return start_idx, end_idx
 
@@ -639,9 +623,13 @@ def get_top_vec_similarity(
     start_idx, end_idx = get_token_idx(context, extracted_skill, tokenizer)
     if start_idx is None and end_idx is None:
         # no idx found for extracted skill so we will take just the embeddings of the skill
-        skill_vec = get_embeddings(get_emb_inputs(extracted_skill, tokenizer), model)[
-            :, 0, :
-        ]  # taking the CLS token since we are comparing against the CLS token of the taxonomy
+        # skill_vec = get_embeddings(get_emb_inputs(extracted_skill, tokenizer), model)[
+        #     :, 0, :
+        # ]  # taking the CLS token since we are comparing against the CLS token of the taxonomy
+
+        # instead, if no idx is found, we will just output vector that doesn't break the code
+        # (this is because we are using this function to get the top 10 candidates)
+        skill_vec = torch.zeros(1, 768)
     else:
         skill_vec = get_embeddings(get_emb_inputs(context, tokenizer), model)[
             :, start_idx:end_idx, :
@@ -698,7 +686,7 @@ def select_candidates_from_taxonomy(
                         # randomly select max_candidates from the exact matches
                         taxonomy["results"] = taxonomy["match_pct"].sample(
                             n=max_candidates, random_state=42
-                        )
+                        ).astype(bool)
                 else:
                     taxonomy["match_pct"] = taxonomy["name"].apply(
                         lambda x: fuzz.token_set_ratio(extracted_skill, x)
@@ -828,8 +816,7 @@ def get_lowest_level(row):
     for level in ["Type Level 4", "Type Level 3", "Type Level 2", "Type Level 1"]:
         value = row[level]
         if not pd.isna(value):
-            return value + "_" + level
-            # appending level also just in case different levels have the same name
+            return value
 
 
 # write something like below that does not work with splice:

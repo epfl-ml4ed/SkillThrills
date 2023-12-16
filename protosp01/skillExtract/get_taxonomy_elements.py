@@ -5,7 +5,6 @@ import pandas as pd
 # %%
 from utils import *
 
-
 # %%
 def get_taxonomy():
     # Navigating to the folder where the data is stored
@@ -18,6 +17,8 @@ def get_taxonomy():
     taxonomy = taxonomy.dropna(subset=["Type Level 1", "Type Level 2", "Definition"])
     print("num taxonomy rows after dropping empty Level 1 and 2:", len(taxonomy))
     taxonomy = taxonomy.dropna(axis=1, how="all")
+   
+
     tech = pd.read_excel("KompetenzmodellKodierbuch.xlsx", sheet_name="Technologies")
     print("num tech rows:", len(tech))
     certif = pd.read_excel(
@@ -76,6 +77,27 @@ def get_taxonomy():
         min(tech_certif_lang["unique_id"]),
         max(tech_certif_lang["unique_id"]),
     )
+
+    # pre-procress taxonomy
+    taxonomy = taxonomy.dropna(subset=["Definition", "Type Level 2"])
+    # taxonomy["name"] use lowest level name (function works by row)
+    taxonomy["name"] = taxonomy.apply(get_lowest_level, axis=1)
+    taxonomy["name+definition"] = taxonomy.apply(concatenate_cols_skillname, axis=1)
+
+    keep_cols = [
+        "unique_id",
+        # "ElementID",
+        # "Dimension",
+        # "Type Level 1",
+        # "Type Level 2",
+        # "Type Level 3",
+        # "Type Level 4",
+        # "Example",
+        "name",
+        # "Definition",
+        "name+definition",
+    ]
+    taxonomy = taxonomy[keep_cols]
 
     # Exporting processed data
     taxonomy.to_csv("taxonomy_V4.csv", index=False)

@@ -27,7 +27,7 @@ import datetime
 
 # %%
 
-from prompt_template import PROMPT_TEMPLATES
+from prompt_template_temp import PROMPT_TEMPLATES
 from utils import *
 
 # %%
@@ -211,7 +211,8 @@ def main():
             exit()
 
     for i, item in tqdm(enumerate(data)):  # item is job or course in dictionary format
-        print(f"*** Processing {i+1}/{len(data)} ***")
+        print(f"*** Processing {i+1}/{len(data)} (ID: {item['id']}) ***")
+
         sentences = split_sentences(item["fulltext"], language=args.language)
         # breakpoint()
         if args.debug:
