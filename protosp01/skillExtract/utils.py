@@ -644,46 +644,32 @@ def select_candidates_from_taxonomy(
             #print("extracted skill:", extracted_skill)
 
             if method == "rules" or method == "mixed":
-                # print("checking for matches in name+definition")
-                taxonomy["results"] = taxonomy["name+definition"].str.contains(
+                taxonomy["results"] = False
+                # we will check for exact matches first = 100% skill in name+definition
+                taxonomy["match_pct"] = taxonomy["name+definition"].str.contains(
                     extracted_skill, case=False, regex=False
+                ).astype(int)
+                taxonomy["match_type"] = np.where(
+                    taxonomy["match_pct"] == 1, "exact", "none"
                 )
 
-                if not taxonomy["results"].any():
-                    # print("checking for matches in example")
-                    taxonomy["results"] = taxonomy["Example"].str.contains(
-                        extracted_skill, case=False, regex=False
+                if (taxonomy["match_pct"] == 1).any():
+                    if sum(taxonomy["match_pct"] == 1) <= max_candidates:
+                        taxonomy["results"] = taxonomy["match_pct"].astype(bool)
+                    else:
+                        # randomly select max_candidates from the exact matches
+                        taxonomy["results"] = taxonomy["match_pct"].sample(
+                            n=max_candidates, random_state=42
+                        ).astype(bool)
+                else:
+                    taxonomy["match_pct"] = taxonomy["name"].apply(
+                        lambda x: fuzz.token_set_ratio(extracted_skill, x)
                     )
-
-                if not taxonomy["results"].any():
-                    # print("checking for matches in subwords")
-                    taxonomy["results"] = False
-                    for subword in filter_subwords(extracted_skill, splitter):
-                        taxonomy["results"] = taxonomy["results"] + taxonomy[
-                            "name+definition"
-                        ].str.contains(subword, case=False, regex=False)
-
-                # if not taxonomy["results"].any():
-                #     if method == "rules":
-                #         # print("checking for matches in difflib")
-                #         matching_elements = difflib.get_close_matches(
-                #             extracted_skill,
-                #             taxonomy["name+definition"],
-                #             cutoff=0.4,
-                #             n=max_candidates,
-                #         )
-                #         taxonomy["results"] = taxonomy["name+definition"].isin(
-                #             matching_elements
-                #         )
-
-                if not taxonomy["results"].any():
-                    print("No candidates found for: ", extracted_skill)
-
-                if taxonomy["results"].sum() > 10:
-                    true_indices = taxonomy.index[taxonomy["results"]].tolist()
-                    selected_indices = np.random.choice(true_indices, 10, replace=False)
-                    taxonomy["results"] = False
-                    taxonomy.loc[selected_indices, "results"] = True
+                    # take the top max_candidates
+                    taxonomy["results"] = taxonomy["match_pct"].rank(
+                        method="first", ascending=False
+                    ) <= max_candidates
+                    taxonomy["match_type"] = "fuzzy"
 
             if method == "embeddings" or method == "mixed":
                 # print("checking for highest embedding similarity")
