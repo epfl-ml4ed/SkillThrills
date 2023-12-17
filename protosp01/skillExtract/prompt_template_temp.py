@@ -10,7 +10,7 @@ en_job_shots_extr_wlevels = [
     'Sentence: You need a strong background in Python and C++ programming languages. Familiarity with Rust and Go are a plus. \nAnswer: {"Python": "expert", "C++": "expert", "Rust": "beginner", "Go": "beginner"}',
     'Sentence: You will be responsible for the development of the company’s new product. \nAnswer: {}',
     'Sentence: The ability to work collaboratively across disciplines is a key criterion for this position. \nAnswer: {"ability to collaborate across disciplines": "unknown"}',
-    'Sentence: You have very good knowledge of digital circuit technology and control circuits. \nAnswer: {"digital circuit technology": "expert", "control loops": "expert"}',
+    'Sentence: You have very good knowledge of digital circuit technology and control loops. \nAnswer: {"digital circuit technology": "expert", "control loops": "expert"}',
     'Sentence: In addition to knowledge of modern, agile software development and its concepts, you also have a basic knowledge of test automation. \nAnswer: {"agile software development": "intermediate", "test automation": "beginner"}',
 ]
 # en_job_inst_match = ("Given sentences from a job description and a skill extracted from these sentences along with several skills (as 'skill name: skill definition' pairs) as options, your task is to identify the best matching option."
