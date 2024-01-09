@@ -46,7 +46,7 @@ Language.factory("language_detector", func=get_lang_detector)
 nlp_model.add_pipe("language_detector", last=True)
 
 
-from prompt_template_temp import PROMPT_TEMPLATES
+from prompt_template import PROMPT_TEMPLATES
 from api_key import API_KEY
 
 CHAT_COMPLETION_MODELS = ["gpt-3.5-turbo", "gpt-4", "gpt-4-1106-preview"]
@@ -402,7 +402,6 @@ class OPENAI:
                     messages.append({"role": "user", "content": sentence})
                     messages.append({"role": "assistant", "content": answer})
 
-
                 # TODO 1.5 having definition or not in the list of candidates ? Here we only prove the name and an example. Yes, should try, but maybe not if there are 10 candidates...
                 # update as an argument - like give def or not when doing the matching then ask Marco if it helps or decreases performance
 
@@ -512,9 +511,15 @@ class OPENAI:
 
 
 def concatenate_cols_skillname(row):
-    # output = row["Type Level 2"]
-    # output += f": {row['Type Level 3']}" if not pd.isna(row["Type Level 3"]) else ""
-    # output += f": {row['Type Level 4']}" if not pd.isna(row["Type Level 4"]) else ""
+    #     if row["name"] does not already exist, create it
+    if pd.isna(row["name"]):
+        row["name"] = row["Type Level 2"]
+        row["name"] += (
+            f": {row['Type Level 3']}" if not pd.isna(row["Type Level 3"]) else ""
+        )
+        row["name"] += (
+            f": {row['Type Level 4']}" if not pd.isna(row["Type Level 4"]) else ""
+        )
     output = row["name"]
     output += f": {row['Definition']}" if not pd.isna(row["Definition"]) else ""
     return output
@@ -671,10 +676,11 @@ def select_candidates_from_taxonomy(
             if method == "rules" or method == "mixed":
                 taxonomy["results"] = False
                 # we will check for exact matches first = 100% skill in name+definition
-                taxonomy["match_pct"] = taxonomy["name+definition"].str.contains(
-                    extracted_skill, case=False, regex=False
-                ).astype(int)
-                taxonomy["match_pct"] = taxonomy["match_pct"].astype(int)
+                taxonomy["match_pct"] = (
+                    taxonomy["name+definition"]
+                    .str.contains(extracted_skill, case=False, regex=False)
+                    .astype(int)
+                )
                 taxonomy["match_type"] = np.where(
                     taxonomy["match_pct"] == 1, "exact", "none"
                 )
@@ -684,17 +690,20 @@ def select_candidates_from_taxonomy(
                         taxonomy["results"] = taxonomy["match_pct"].astype(bool)
                     else:
                         # randomly select max_candidates from the exact matches
-                        taxonomy["results"] = taxonomy["match_pct"].sample(
-                            n=max_candidates, random_state=42
-                        ).astype(bool)
+                        taxonomy["results"] = (
+                            taxonomy["match_pct"]
+                            .sample(n=max_candidates, random_state=42)
+                            .astype(bool)
+                        )
                 else:
                     taxonomy["match_pct"] = taxonomy["name"].apply(
                         lambda x: fuzz.token_set_ratio(extracted_skill, x)
                     )
                     # take the top max_candidates
-                    taxonomy["results"] = taxonomy["match_pct"].rank(
-                        method="first", ascending=False
-                    ) <= max_candidates
+                    taxonomy["results"] = (
+                        taxonomy["match_pct"].rank(method="first", ascending=False)
+                        <= max_candidates
+                    )
                     taxonomy["match_type"] = "fuzzy"
 
             # NOTE: this is to handle embedding-based ways of selecting candidates
@@ -719,7 +728,7 @@ def select_candidates_from_taxonomy(
 
             keep_cols = [
                 "unique_id",
-                "Type Level 2",
+                # "Type Level 2",
                 "name",
                 "name+definition",
             ]

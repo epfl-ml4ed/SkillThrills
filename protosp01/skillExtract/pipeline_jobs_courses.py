@@ -27,7 +27,7 @@ import datetime
 
 # %%
 
-from prompt_template_temp import PROMPT_TEMPLATES
+from prompt_template import PROMPT_TEMPLATES
 from utils import *
 
 # %%
@@ -154,9 +154,9 @@ def main():
         args.num_samples = 0
         with open(args.ids, "r") as f:
             ids = f.read().splitlines()
-        if "vacancies" in ids[0]:
+        if "vacancies" in ids[0] or "job" in ids[0]:
             args.data_type = "job"
-        elif "learning_opportunities" in ids[0]:
+        elif "learning_opportunities" in ids[0] or "course" in ids[0]:
             args.data_type = "course"
         elif "resume" in ids[0]:
             args.data_type = "cv"
@@ -164,13 +164,18 @@ def main():
         print("Evaluating only ids:", len(ids))
         args.output_path = args.output_path.replace(".json", f"_ids.json")
 
+    print("data type:", args.data_type)
+
     print("Loading data...")
     data = pd.read_csv(args.datapath, encoding="utf-8")
+    print(len(data), "elements loaded")
 
     if args.language != "all" and args.ids is None:
+        print("Filtering by language:", args.language)
         data = data[data["language"] == args.language]
 
-    if args.num_samples > 0:
+    if args.num_samples > 0 and args.ids is None:
+        print("Filtering by last N elements:", args.num_samples)
         data = data[-args.num_samples :]
 
     if args.ids is not None:

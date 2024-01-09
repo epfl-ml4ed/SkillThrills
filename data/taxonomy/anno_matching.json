@@ -1,84 +1,164 @@
 [
     {
-        "doc_id": 6096,
+        "sample_num": 0,
+        "doc_id": 17339,
         "extraction": [
             {
-                "start": 556,
-                "end": 578,
-                "text": "ICT-Providermanagement",
+                "start": 362,
+                "end": 392,
+                "text": "Changes für die Systemwartung ",
                 "label": {
                     "text": "Beginner",
                     "color": "red"
                 },
-                "Match 1": "Optional",
-                "Match 2": "Analysieren von Daten oder Informationen",
-                "Match 3": "Bewegungsanpassung",
-                "Match 4": ""
+                "req_status": "Optional",
+                "match_2": "Explosive Kraft",
+                "match_3": "Führung in der strategischen Ausrichtung",
+                "match_4": ""
             },
             {
-                "start": 921,
-                "end": 936,
-                "text": "flexiblen Team ",
+                "start": 684,
+                "end": 699,
+                "text": "Stelle zeichnet",
                 "label": {
-                    "text": "Intermediate",
-                    "color": "cyan"
+                    "text": "Beginner",
+                    "color": "red"
                 },
-                "Match 1": "Optional",
-                "Match 2": "Selbstreflexion",
-                "Match 3": "",
-                "Match 4": ""
+                "req_status": "Required",
+                "match_2": "Entwicklung von Zielen und Strategien",
+                "match_3": "",
+                "match_4": ""
+            }
+        ]
+    },
+    {
+        "sample_num": 1,
+        "doc_id": 5782,
+        "extraction": [
+            {
+                "start": 1720,
+                "end": 1736,
+                "text": "sich einzusetzen",
+                "label": {
+                    "text": "Beginner",
+                    "color": "red"
+                },
+                "req_status": "Optional",
+                "match_2": "Ambition",
+                "match_3": "Emotionale Regulierung",
+                "match_4": ""
             },
             {
-                "start": 1131,
-                "end": 1148,
-                "text": "Bachelorabschluss",
+                "start": 1565,
+                "end": 1577,
+                "text": "Bundesgasse ",
                 "label": {
-                    "text": "Intermediate",
-                    "color": "cyan"
+                    "text": "Beginner",
+                    "color": "red"
                 },
-                "Match 1": "Required",
-                "Match 2": "Bewegungsanpassung",
-                "Match 3": "Mathematisches Denken",
-                "Match 4": ""
+                "req_status": "Required",
+                "match_2": "ICT Service Operation",
+                "match_3": "",
+                "match_4": ""
+            }
+        ]
+    },
+    {
+        "sample_num": 9,
+        "doc_id": 8175,
+        "doc_type": "job",
+        "extraction": [
+            {
+                "start": 279,
+                "end": 297,
+                "text": "Business Analysten",
+                "label": "Unknown",
+                "req_status": "Required",
+                "implicit_skill": true,
+                "unsure_skill": false,
+                "implicit_level": false,
+                "unsure_level": true,
+                "match_1": "Risikomanagement",
+                "match_1s": "Reaktionszeit und Schnelligkeit",
+                "match_2": "",
+                "match_2s": "",
+                "match_3": "",
+                "match_3s": ""
             },
             {
-                "start": 1467,
-                "end": 1485,
-                "text": "nformationsanalyse",
-                "label": {
-                    "text": "Unknown",
-                    "color": "violet"
-                },
-                "Match 1": "Required",
-                "Match 2": "Bewegungsanpassung",
-                "Match 3": "",
-                "Match 4": ""
+                "start": 1033,
+                "end": 1040,
+                "text": "Deutsch",
+                "label": "Intermediate",
+                "req_status": "Optional",
+                "implicit_skill": false,
+                "unsure_skill": false,
+                "implicit_level": false,
+                "unsure_level": true,
+                "match_1": "Räumliches Vorstellungsvermögen",
+                "match_1s": "Verhandeln",
+                "match_2": "Leistungsorientierung",
+                "match_2s": "",
+                "match_3": "",
+                "match_3s": ""
             },
             {
-                "start": 1512,
-                "end": 1536,
-                "text": "Computerhardwaresystemen",
-                "label": {
-                    "text": "Intermediate",
-                    "color": "cyan"
-                },
-                "Match 1": "SELECT_BELOW",
-                "Match 2": "Fokuswechsel",
-                "Match 3": "",
-                "Match 4": ""
+                "start": 1537,
+                "end": 1554,
+                "text": "Arbeitsbedingunge",
+                "label": "Unknown",
+                "req_status": "Optional",
+                "implicit_skill": false,
+                "unsure_skill": false,
+                "implicit_level": false,
+                "unsure_level": false,
+                "match_1": "Vergleichsfähigkeit",
+                "match_1s": "",
+                "match_2": "",
+                "match_2s": "",
+                "match_3": "",
+                "match_3s": ""
+            }
+        ]
+    },
+    {
+        "sample_num": 9,
+        "doc_id": 7829,
+        "doc_type": "course",
+        "extraction": [
+            {
+                "start": 2128,
+                "end": 2145,
+                "text": " Praktische Übung",
+                "label": "Unknown",
+                "req_status": "Required",
+                "implicit_skill": false,
+                "unsure_skill": true,
+                "implicit_level": true,
+                "unsure_level": false,
+                "match_1": "Betriebswirtschaft der ICT",
+                "match_1s": "",
+                "match_2": "",
+                "match_2s": "",
+                "match_3": "",
+                "match_3s": ""
             },
             {
-                "start": 434,
-                "end": 454,
-                "text": "Bewerbungsunterlagen",
-                "label": {
-                    "text": "Unknown",
-                    "color": "violet"
-                },
-                "Match 1": "Optional",
-                "Match 2": "ICT Service Operation",
-                "Match 3": "Aufnahmefähigkeit",
-                "Match 4": ""
+                "start": 2657,
+                "end": 2671,
+                "text": "Argumentations",
+                "label": "Unknown",
+                "req_status": "Required",
+                "implicit_skill": false,
+                "unsure_skill": true,
+                "implicit_level": false,
+                "unsure_level": true,
+                "match_1": "Ergonomie, Usability",
+                "match_1s": "",
+                "match_2": "",
+                "match_2s": "",
+                "match_3": "",
+                "match_3s": ""
             }
         ]
     }

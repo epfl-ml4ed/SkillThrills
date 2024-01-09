@@ -69,13 +69,10 @@ def num_words_from_string(stringl):
 
 
 def main():
-    # %%
-
     data = pd.read_csv(
         "../data/raw/coco_courses/course_latest.csv", index_col=0, encoding="utf-8"
     )
     print("num rows before filtering:", len(data))
-
     # rename course_id to id
     data.rename(columns={"course_id": "id"}, inplace=True)
 
