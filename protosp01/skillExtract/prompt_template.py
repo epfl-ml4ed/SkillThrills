@@ -88,7 +88,7 @@ en_cv_shots_extr_wlevels = [
     'Sentence: The different projects required careful management of specific STIG. compliance and hardening for the different configurations. \nAnswer: {"management of specific STIG": "unknown"}',
     'Sentence: Highlights Excellent communication techniques Manufacturing systems integration Multidisciplinary exposure Design instruction creation Project management Complex problem solver Advanced critical thinking SharePoint Microsoft Excel \nAnswer: {"communication techniques": "expert", "systems integration": "unknown", "Multidisciplinary": "beginner", "Project management": "unknown", "problem solver": "expert", "critical thinking": "expert"}',
     'Sentence: Group and project management experience for over twelve years. Advanced problem solving skills and expertise. \nAnswer: {"Group and project management": "expert", "problem solving skills": "expert"}',
-    'Sentence: GPA: 4  0 B.S : Marketing , Iowa State University - City , State Marketing Microsoft Front Page Certified New Horizons - Des Moines, IA. \nAnswer: {}',
+    "Sentence: GPA: 4  0 B.S : Marketing , Iowa State University - City , State Marketing Microsoft Front Page Certified New Horizons - Des Moines, IA. \nAnswer: {}",
 ]
 
 
@@ -106,7 +106,7 @@ cv_shots_extr_wlevels = [
     'Sentence: Die verschiedenen Projekte erforderten ein sorgfältiges Management von spezifischen STIG. Compliance und Härtung für die verschiedenen Konfigurationen. \nAnswer: {"Management von spezifischen STIG": "unknown"}',
     'Sentence: Highlights Hervorragende Kommunikationstechniken Integration von Fertigungssystemen Multidisziplinäre Exposition Designanweisungserstellung Projektmanagement Komplexer Problemlöser Fortgeschrittenes kritisches Denken SharePoint Microsoft Excel \nAnswer: {"Kommunikationstechniken": "expert", "Fertigungssystemen": "unknown", "Multidisziplinäre": "beginner", "Projektmanagement": "unknown", "Problemlöser": "expert", "kritisches Denken": "expert"}',
     'Sentence: Gruppen- und Projektmanagementerfahrung seit über zwölf Jahren. Fortgeschrittene Problemlösungsfähigkeiten und Expertise. \nAnswer: {"Gruppen- und Projektmanagement": "expert", "Problemlösungsfähigkeiten": "expert"}',
-    'Sentence: GPA: 4  0 B.S : Marketing , Iowa State University - City , State Marketing Microsoft Front Page Certified New Horizons - Des Moines, IA. \nAnswer: {}',
+    "Sentence: GPA: 4  0 B.S : Marketing , Iowa State University - City , State Marketing Microsoft Front Page Certified New Horizons - Des Moines, IA. \nAnswer: {}",
 ]
 
 ########## MATCHING ##########
@@ -131,7 +131,7 @@ course_shots_match = [
     \nD: "Kommunikation: Die Kompetenz, erfolgreich mit Personen aus verschiedenen kulturellen Hintergründen zu kommunizieren, indem man kulturelle Unterschiede respektiert, Verständnis und Sensibilität zeigt und eine offene und inklusive Kommunikationsumgebung fördert."
     \nE: "Kollaboration: Zusammenarbeit in interdisziplinären Teams: Die Kompetenz, erfolgreich mit Mitgliedern aus verschiedenen Berufsgruppen oder Fachrichtungen zusammenzuarbeiten, indem unterschiedliche Fachkenntnisse, Perspektiven und Arbeitsweisen respektiert und integriert werden, um gemeinsame Ziele zu erreichen."
     \nF: "Kommunikation: Die Kompetenz, in Coaching- und Beratungssituationen einfühlsam auf das Gegenüber (i.d.R. Klienten) einzugehen und ihre Anliegen zu klären, um damit eine vertrauensvolle Beziehung aufzubauen und unterstützende Ratschläge zu geben."
-    \nAnswer: "Kommunikation: Die Kompetenz, erfolgreich mit Personen aus verschiedenen kulturellen Hintergründen zu kommunizieren, indem man kulturelle Unterschiede respektiert, Verständnis und Sensibilität zeigt und eine offene und inklusive Kommunikationsumgebung fördert.", "Kommunikation: Die Kompetenz, in Coaching- und Beratungssituationen einfühlsam auf das Gegenüber (i.d.R. Klienten) einzugehen und ihre Anliegen zu klären, um damit eine vertrauensvolle Beziehung aufzubauen und unterstützende Ratschläge zu geben."
+    \nAnswer: F
     """
 ]
 
@@ -145,7 +145,7 @@ en_course_shots_match = [
     \nD: "Communication: The competence to successfully communicate with individuals from different cultural backgrounds by respecting cultural differences, showing understanding and sensitivity, and fostering an open and inclusive communication environment."
     \nE: "Collaboration: Collaboration in interdisciplinary teams: The competence to successfully work with members from different professional groups or disciplines by respecting and integrating different expertise, perspectives, and work methods to achieve common goals."
     \nF: "Communication: The competence to empathetically engage with the other party (usually clients) in coaching and counseling situations, clarifying their concerns to build a trusting relationship and provide supportive advice."
-    \nAnswer: "Communication: The competence to successfully communicate with individuals from different cultural backgrounds by respecting cultural differences, showing understanding and sensitivity, and fostering an open and inclusive communication environment." "Communication: The competence to empathetically engage with the other party (usually clients) in coaching and counseling situations, clarifying their concerns to build a trusting relationship and provide supportive advice."
+    \nAnswer: D
     """
 ]
 

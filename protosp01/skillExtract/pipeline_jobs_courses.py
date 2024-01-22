@@ -27,7 +27,7 @@ import datetime
 
 # %%
 
-from prompt_template import PROMPT_TEMPLATES
+# from prompt_template import PROMPT_TEMPLATES
 from utils import *
 
 # %%
@@ -63,6 +63,7 @@ def main():
     parser.add_argument("--annotate", action="store_true", help="Whether to annotate the data or not")
     parser.add_argument("--language", type=str, help="Language of the data", default="de")
     parser.add_argument("--chunks", action="store_true", help="Whether data was split into chunks or not")
+    parser.add_argument("--desc", type=str, help="Short description to go into output", default="")
     # fmt: on
 
     ###
@@ -179,6 +180,9 @@ def main():
         data = data[-args.num_samples :]
 
     if args.ids is not None:
+        # convert ids into str
+        ids = [str(id) for id in ids]
+        data["id"] = data["id"].astype(str)
         data = data[data["id"].isin(ids)]
         data_to_save = data.copy()
 
@@ -188,7 +192,7 @@ def main():
         write_json(
             ids_content,
             args.output_path.replace(
-                ".json", f"{nsent}{emb_sh}{tax_v}{chunk}_content.json"
+                ".json", f"{nsent}{emb_sh}{tax_v}{chunk}_content{args.desc}.json"
             ),
         )
 
@@ -329,18 +333,19 @@ def main():
         else:
             detailed_results_dict[item["id"]] = sentences_res_list
 
-        if i % 10 == 0:
-            # save intermediate results
-            write_json(
-                detailed_results_dict,
-                args.output_path.replace(
-                    ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}_intermediate.json"
-                ),
-            )
+        # if i % 10 == 0:
+        #     # save intermediate results
+        #     write_json(
+        #         detailed_results_dict,
+        #         args.output_path.replace(
+        #             ".json",
+        #             f"{nsent}{nsamp}{emb_sh}{tax_v}_intermediate{args.desc}.json",
+        #         ),
+        #     )
 
     if args.debug:
         args.output_path = args.output_path.replace(
-            ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}{chunk}_debug.json"
+            ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}{chunk}_debug{args.desc}.json"
         )
     if args.detailed:
         detailed_results_dict_output = {
@@ -349,7 +354,8 @@ def main():
         write_json(
             detailed_results_dict_output,
             args.output_path.replace(
-                ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}{chunk}_detailed.json"
+                ".json",
+                f"{nsent}{nsamp}{emb_sh}{tax_v}{chunk}_detailed{args.desc}.json",
             ),
         )
 
@@ -421,7 +427,7 @@ def main():
         write_json(
             clean_output_dict,
             args.output_path.replace(
-                ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}{chunk}_clean.json"
+                ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}{chunk}_clean{args.desc}.json"
             ),
         )
     print("Done")
@@ -433,16 +439,19 @@ def main():
         print(
             "Saved detailed results in",
             args.output_path.replace(
-                ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}{chunk}_detailed.json"
+                ".json",
+                f"{nsent}{nsamp}{emb_sh}{tax_v}{chunk}_detailed{args.desc}.json",
             ),
         )
     print(
         "Saved clean results in",
         args.output_path.replace(
-            ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}{chunk}_clean.json"
+            ".json", f"{nsent}{nsamp}{emb_sh}{tax_v}{chunk}_clean{args.desc}.json"
         ),
     )
 
 
 if __name__ == "__main__":
     main()
+
+# %%

@@ -46,7 +46,7 @@ Language.factory("language_detector", func=get_lang_detector)
 nlp_model.add_pipe("language_detector", last=True)
 
 
-from prompt_template import PROMPT_TEMPLATES
+from prompt_template_de_exp import PROMPT_TEMPLATES
 from api_key import API_KEY
 
 CHAT_COMPLETION_MODELS = ["gpt-3.5-turbo", "gpt-4", "gpt-4-1106-preview"]
@@ -54,7 +54,7 @@ TEXT_COMPLETION_MODELS = ["text-davinci-003"]
 COSTS = {
     "gpt-3.5-turbo": {"input": 0.0000015, "output": 0.000002},
     "gpt-4": {"input": 0.00003, "output": 0.00006},
-    "gpt-4-1106-preview": {"input": 0.00003, "output": 0.00006},  # ?
+    "gpt-4-1106-preview": {"input": 0.00001, "output": 0.00003},
     "text-davinci-003": {"input": 0.00002, "output": 0.00002},
 }
 ENCODINGS = {
@@ -321,6 +321,9 @@ class OPENAI:
 
             # 4) user input
             messages.append({"role": "user", "content": sample["sentence"]})
+
+            input_ = "\n".join(message["content"] for message in messages)
+
             max_tokens = self.args.max_tokens
 
             try:
@@ -369,9 +372,11 @@ class OPENAI:
             if self.args.prompt_type == "wreqs":
                 sample["extracted_skills_reqstatus"] = reqs
             self.data[idx] = sample
-            # cost = compute_cost(input_, prediction, self.args.model)
-            # costs += cost
+            output_ = str(prediction)
+            cost = compute_cost(input_, output_, self.args.model)
+            costs += cost
             # TODO recompute cost
+
         return costs
 
     def run_gpt_df_matching(self):
@@ -424,6 +429,8 @@ class OPENAI:
 
                 messages.append({"role": "user", "content": user_input})
 
+                input_ = "\n".join(message["content"] for message in messages)
+
                 # messages_list = [
                 #     messages + [{"role": "user", "content": option}]
                 try:
@@ -455,8 +462,10 @@ class OPENAI:
 
                 self.data[idxx] = sample
 
-                # cost = compute_cost(input_, prediction, self.args.model)
-                # costs += cost
+                output_ = str(prediction)
+                cost = compute_cost(input_, output_, self.args.model)
+                costs += cost
+
         return costs
 
     def get_num_tokens(self, text):
@@ -674,6 +683,48 @@ def select_candidates_from_taxonomy(
 
             # NOTE: this is to handle rule-based/string-matching ways of selecting candidates
             if method == "rules" or method == "mixed":
+                # taxonomy["results"] = taxonomy["name+definition"].str.contains(
+                #     extracted_skill, case=False, regex=False
+                # )
+
+                # # if not taxonomy["results"].any():
+                # #     # print("checking for matches in example")
+                # #     taxonomy["results"] = taxonomy["Example"].str.contains(
+                # #         extracted_skill, case=False, regex=False
+                # #     )
+
+                # # NOTE: 2. if not found, checking for subword matches in name+definition
+                # if not taxonomy["results"].any():
+                #     # print("checking for matches in subwords")
+                #     taxonomy["results"] = False
+                #     for subword in filter_subwords(extracted_skill, splitter):
+                #         taxonomy["results"] = taxonomy["results"] + taxonomy[
+                #             "name+definition"
+                #         ].str.contains(subword, case=False, regex=False)
+
+                # # if not taxonomy["results"].any():
+                # #     if method == "rules":
+                # #         # print("checking for matches in difflib")
+                # #         matching_elements = difflib.get_close_matches(
+                # #             extracted_skill,
+                # #             taxonomy["name+definition"],
+                # #             cutoff=0.4,
+                # #             n=max_candidates,
+                # #         )
+                # #         taxonomy["results"] = taxonomy["name+definition"].isin(
+                # #             matching_elements
+                # #         )
+
+                # if not taxonomy["results"].any():
+                #     print("No candidates found for: ", extracted_skill)
+
+                # # NOTE: 3. if more than 10 candidates, randomly select 10
+                # if taxonomy["results"].sum() > 10:
+                #     true_indices = taxonomy.index[taxonomy["results"]].tolist()
+                #     selected_indices = np.random.choice(true_indices, 10, replace=False)
+                #     taxonomy["results"] = False
+                #     taxonomy.loc[selected_indices, "results"] = True
+
                 taxonomy["results"] = False
                 # we will check for exact matches first = 100% skill in name+definition
                 taxonomy["match_pct"] = (
@@ -705,7 +756,6 @@ def select_candidates_from_taxonomy(
                         <= max_candidates
                     )
                     taxonomy["match_type"] = "fuzzy"
-
             # NOTE: this is to handle embedding-based ways of selecting candidates
             if method == "embeddings" or method == "mixed":
                 # print("checking for highest embedding similarity")

@@ -4,7 +4,7 @@ import argparse
 import os
 import tiktoken
 
-from prompt_template import PROMPT_TEMPLATES
+# from prompt_template import PROMPT_TEMPLATES
 from utils import *
 
 # fmt: off
@@ -94,6 +94,31 @@ def main():
         data = pd.concat([acq_data, req_data], ignore_index=True)
         # replace every 10 tags with a period to avoid too long sentences
 
+        # fix some encoding issues with dictionary
+        replace_dict = {
+            "&Uuml;": "Ü",
+            "&Ouml;": "Ö",
+            "&Auml;": "Ä",
+            "&uuml;": "ü",
+            "&ouml;": "ö",
+            "&auml;": "ä",
+            "&laquo;": "“",  # Left double quotation mark
+            "&raquo;": "”",  # Right double quotation mark
+            "&nbsp;": " ",  # Non-breaking space
+            # "&ndash;": "-",  # en dash
+            # "&mdash;": "-",  # em dash
+            # "&amp;": "&",  # ampersand
+            # "&bdquo;": "„",  # double low-9 quotation mark
+            # "&ldquo;": "“",  # left double quotation mark
+            # "&rdquo;": "”",  # right double quotation mark
+            # "&lsquo;": "‘",  # left single quotation mark
+            # "&rsquo;": "’",  # right single quotation mark
+        } # the following should be replaced but was not when annotations were created
+
+        # %%
+        data["fulltext"] = data["fulltext"].replace(replace_dict, regex=True)
+
+    data["fulltext"] = data["fulltext"].replace(" +", " ", regex=True)
 
     # detect language
     data["language"] = data["fulltext"].apply(detect_language)
@@ -101,7 +126,7 @@ def main():
 
     # heuristics to clean fulltext
     data["fulltext"] = data["fulltext"].apply(replace_html_tags)
-    data = drop_short_text(data, "fulltext", 50)
+    data = drop_short_text(data, "fulltext", 25)
 
     # %%
     # get tokens of each sentence and filter out rows with too long sentences
